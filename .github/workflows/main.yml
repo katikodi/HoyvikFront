@@ -1,0 +1,16 @@
+name: Call Webhook on Push
+
+on:
+  push:
+    branches:
+      - main # Triggers only on pushes to main
+
+jobs:
+  trigger-webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send POST Request
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"event": "push", "repo": "${{ github.repository }}", "commit": "${{ github.sha }}"}' \
+          https://yourdomain.com
