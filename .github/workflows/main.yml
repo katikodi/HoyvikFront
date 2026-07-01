@@ -9,8 +9,9 @@ jobs:
   trigger-webhook:
     runs-on: ubuntu-latest
     steps:
-      - name: Send POST Request
+      - name: Send Discord message
         run: |
-          curl -X POST -H "Content-Type: application/json" \
-          -d '{"event": "push", "repo": "${{ github.repository }}", "commit": "${{ github.sha }}"}' \
-          https://discord.com/api/webhooks/1521778648875794592/FcVk05vpKENJ5ONkPF2Fcid0w_NZXWjp69miiAe16T8iNMMPI9tVAoFwe2K182WMb8c9
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"content\":\"Push to ${{ github.repository }}\nCommit: ${{ github.sha }}\"}" \
+            "https://discord.com/api/webhooks/1521778648875794592/FcVk05vpKENJ5ONkPF2Fcid0w_NZXWjp69miiAe16T8iNMMPI9tVAoFwe2K182WMb8c9L"
