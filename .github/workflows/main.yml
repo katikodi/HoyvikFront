@@ -13,4 +13,4 @@ jobs:
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{"event": "push", "repo": "${{ github.repository }}", "commit": "${{ github.sha }}"}' \
-          https://yourdomain.com
+          https://discord.com/api/webhooks/1521778648875794592/FcVk05vpKENJ5ONkPF2Fcid0w_NZXWjp69miiAe16T8iNMMPI9tVAoFwe2K182WMb8c9
