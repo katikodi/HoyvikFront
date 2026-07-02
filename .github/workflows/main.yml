@@ -1,4 +1,4 @@
-name: Call Webhook on Push
+name: Notify Discord on Push
 
 on:
   push:
@@ -6,13 +6,54 @@ on:
       - main
 
 jobs:
-  trigger-webhook:
+  notify-discord:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send Discord message
+      - name: Send Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d "{\"content\":\"Push to ${{ github.repository }}\nCommit: ${{ github.sha }}\"}" \
-            "${{ secrets.DISCORD_WEBHOOK }}"
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d "{
+            \"embeds\": [{
+              \"title\": \"🚀 New Push to ${{ github.repository }}\",
+              \"url\": \"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\",
+              \"color\": 3447003,
+              \"fields\": [
+                {
+                  \"name\": \"Branch\",
+                  \"value\": \"${{ github.ref_name }}\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"Author\",
+                  \"value\": \"${{ github.actor }}\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"Commit\",
+                  \"value\": \"${{ github.sha }}\",
+                  \"inline\": false
+                },
+                {
+                  \"name\": \"Message\",
+                  \"value\": \"${{ github.event.head_commit.message }}\",
+                  \"inline\": false
+                },
+                {
+                  \"name\": \"View Commit\",
+                  \"value\": \"https://github.com/${{ github.repository }}/commit/${{ github.sha }}\",
+                  \"inline\": false
+                },
+                {
+                  \"name\": \"Workflow Run\",
+                  \"value\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",
+                  \"inline\": false
+                }
+              ],
+              \"timestamp\": \"${{ github.event.head_commit.timestamp }}\"
+            }]
+          }" \
+          "$DISCORD_WEBHOOK"
