@@ -10,6 +10,9 @@ export default function NavBar() {
                 <Link to="booking">Booking</Link>
                 <Link to="events">Events</Link>
             </div>
+            <div>
+                <p>test</p>
+            </div>
         </div>
     );
 }

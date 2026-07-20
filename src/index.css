@@ -54,7 +54,7 @@ body {
   margin: 0;
 }
 
-#root {
+/* #root { Messing up all futer changes
   width: 1126px;
   max-width: 100%;
   margin: 0 auto;
@@ -64,7 +64,7 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-}
+} */
 
 h1,
 h2 {
@@ -95,7 +95,7 @@ p {
   margin: 0;
 }
 
-code,
+/* code, Not needed, there's no code displayed
 .counter {
   font-family: var(--mono);
   display: inline-flex;
@@ -108,4 +108,4 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
-}
+} */

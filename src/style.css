@@ -31,8 +31,21 @@ body {
 /* STRUCTURE HOME PAGE */
 /* ------------------- */
 header {
-    height: 100vh;
+    /* height: 100vh; Why view height */
 }
+
+.nav-bar {
+    display: grid;
+    grid-template: 1fr / 5% 1fr 5%;
+}
+
+.nav-bar div {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    gap: 10px;
+}
+
 #hero {
     background-image: url();
 }
