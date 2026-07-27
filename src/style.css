@@ -31,7 +31,7 @@ body {
 /* STRUCTURE HOME PAGE */
 /* ------------------- */
 header {
-    /* height: 100vh; Why view height */
+    /* height: 100vh; // Why view height */
 }
 
 .nav-bar {
@@ -48,6 +48,25 @@ header {
 
 #hero {
     background-image: url();
+}
+
+.booking {
+    background-color: #B8CBBE;
+    color: black;
+    width: 1476px;
+    display: grid;
+    
+    grid-template-columns: repeat(5 30px); /* can someone help  */
+    grid-template-rows: repeat(2 10px);
+}
+
+.booking:nth-child {
+    width: fit-content;
+}
+
+.booking:nth-child(even) {
+    background-color: orange;
+    order: 1;
 }
 
 /* ---------------------- */

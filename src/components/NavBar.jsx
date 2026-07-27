@@ -4,7 +4,7 @@ export default function NavBar() {
     return (
         <div className="nav-bar" style={{ border: "1px solid white" }}>
             <div>
-                <Link to="/">Home</Link>
+                <Link to="/">Home/logo</Link>
             </div>
             <div>
                 <Link to="booking">Booking</Link>
