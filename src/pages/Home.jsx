@@ -1,5 +1,5 @@
 import Booking from "../components/Booking";
-import heroImageUrl from "../heroImage.jpg";
+import heroImageUrl from "../images/heroImage.jpg";
 
 // TODO: move all this styling into css files
 
