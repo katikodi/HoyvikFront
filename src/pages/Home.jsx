@@ -1,6 +1,8 @@
 import Booking from "../components/Booking";
 import heroImageUrl from "../images/heroImage.jpg";
 
+// TODO: move all this styling into css files
+
 export default function Home() {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -151,6 +153,4 @@ const ShadowGradient = () => {
   );
 };
 
-const HeroBooking = () => {
-    
-}
+const HeroBooking = () => {};
