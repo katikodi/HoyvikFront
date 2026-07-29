@@ -3,8 +3,7 @@ import Home from "../pages/Home";
 import Booking from "../pages/Booking";
 import Events from "../pages/Events";
 import Admin from "../pages/Admin";
-import MainLayout from "../layouts/MainLayout";
-import AdminLayout from "../layouts/AdminLayout";
+import {MainLayout, AdminLayout} from "@/layouts";
 import NotFound from "../components/NotFound";
 import AboutUs from "../pages/AboutUs";
 

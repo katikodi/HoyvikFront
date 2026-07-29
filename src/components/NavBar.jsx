@@ -12,7 +12,7 @@ export default function NavBar() {
                 <Link to="aboutus">Om Oss</Link>
             </div>
             <div>
-                <p>test</p>
+                <Link to="admin">Admin</Link>
             </div>
         </div>
     );
