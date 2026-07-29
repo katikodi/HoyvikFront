@@ -120,7 +120,23 @@ const Nav = () => {
 };
 
 const NavLink = ({ text, linkDestination }) => {
-  return <a href={linkDestination}>{text}</a>;
+  // TODO: figure out if these have a hover effect
+  return (
+    <a
+      href={linkDestination}
+      style={{
+        color: "var(--Background-2, #B8CBBE)",
+        fontFamily: "Cinzel",
+        fontSize: "1rem",
+        fontStyle: "normal",
+        fontWeight: "400",
+        lineHeight: "normal",
+        textDecoration: "none",
+      }}
+    >
+      {text}
+    </a>
+  );
 };
 
 const NavLogo = () => {
