@@ -1,18 +1,34 @@
-.container {
+#mainContainer {
     display: flex;
     align-items: center;
+}
+
+#mainContainer img {
+    width: 25%;
+}
+
+#contentContainer {
+    width: 50%;
+}
+
+#contentContainer button {
+    width: 25%;
+    align-self: center;
+}
+
+.columnContent {
+    display: flex;
     flex-direction: column;
 }
 
-.contentContainer {
+.rowContent {
+    display: flex;
+    flex-direction: row;
+}
+
+.centerContent {
     display: flex;
     justify-content: center;
 }
 
-.container p {
-    width: 50%;
-}
-
-.container img {
-    width: 30%;
-}
+/* TODO: Add support for different screen sizes */
