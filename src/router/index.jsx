@@ -3,6 +3,7 @@ import Home from "../pages/Home";
 import Booking from "../pages/Booking";
 import Events from "../pages/Events";
 import MainLayout from "../layouts/MainLayout";
+import NotFound from "../components/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -14,5 +15,5 @@ export const router = createBrowserRouter([
       { path: "events", element: <Events /> },
     ],
   },
-  { path: "*", element: <h1>404 Not Found</h1> },
+  { path: "*", element: <NotFound /> },
 ]);
