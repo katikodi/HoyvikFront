@@ -1,0 +1,18 @@
+.container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.contentContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.container p {
+    width: 50%;
+}
+
+.container img {
+    width: 30%;
+}
