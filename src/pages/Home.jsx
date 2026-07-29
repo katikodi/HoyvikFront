@@ -1,5 +1,7 @@
 import Booking from "../components/Booking";
 import heroImageUrl from "../images/heroImage.jpg";
+import calendarIconUrl from "../icons/calendarIcon.svg";
+import "../styles/Home.css";
 
 // TODO: move all this styling into css files
 
@@ -28,6 +30,7 @@ const Hero = () => {
         largeText={"Høyvika Ferie og Fritid"}
         CTAText={"CTA Tagline tekst, må vere fangande keywords som er SEO"}
       />
+      <HeroBooking />
     </div>
   );
 };
@@ -169,4 +172,64 @@ const ShadowGradient = () => {
   );
 };
 
-const HeroBooking = () => {};
+const HeroBooking = () => {
+  return (
+    <div style={{ paddingInline: "18rem" }}>
+      <div
+        style={{
+          background: "var(--Background-2, #B8CBBE)",
+          boxShadow: "0 7px 4px 0 rgba(0, 0, 0, 0.25)",
+          display: "flex",
+          flexDirection: "row",
+          paddingInline: "1.8rem",
+          paddingBlock: "3.2rem ",
+        }}
+      >
+        <HeroBookingInput
+          inputType={"date"}
+          labelText={"Innsjekk"}
+          icon={calendarIconUrl}
+          inputId={crypto.randomUUID()}
+        />
+      </div>
+    </div>
+  );
+};
+
+const HeroBookingInput = ({ inputType, labelText, icon, inputId }) => {
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <img
+        src={icon}
+        alt="calendar icon"
+        style={{ height: "1em", width: "1em" }}
+      />
+      <label
+        htmlFor={inputId}
+        style={{
+          color: "var(--Text-text1, #271C22)",
+          fontFamily: "Montserrat",
+          fontSize: "1.25rem",
+          fontStyle: "normal",
+          fontWeight: "400",
+          lineHeight: "normal",
+        }}
+      >
+        {labelText}
+      </label>
+      <input
+        id={inputId}
+        type={inputType}
+        style={{
+          background: "transparent",
+          border: "2px solid var(--Struktur, #2A3430)",
+          display: "flex",
+          width: "14.6875rem",
+          height: "5.3125rem",
+          padding: "1.5rem 11.75rem 1.5625rem 0.6875rem",
+          alignItems: "center",
+        }}
+      ></input>
+    </div>
+  );
+};
