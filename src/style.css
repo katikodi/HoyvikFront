@@ -2,7 +2,14 @@
 /* UNIVERSAL/GLOBAL */
 /* ---------------- */
 :root {
-    --dark: #282831;
+    --bg1: #678A73;
+    --bg2: #B8CBBE;
+    --darkgreen: #2A3430;
+    --brown: #44383E;
+    --brownhover: #52454B;
+    --brightgreen: #9BB678;
+    --textbrown: #271C22;
+    --textsky: #BCE8EF;
 }
 body {
     margin: 0;
