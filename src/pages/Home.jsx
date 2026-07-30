@@ -22,7 +22,7 @@ const Hero = () => {
                 height: "50rem",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "100% auto",
-                backgroundPosition: "center",
+                backgroundPosition: "center"
             }}
         >
             <Nav />
@@ -66,7 +66,7 @@ const HeroLargeText = ({ text }) => {
                 fontSize: "3rem",
                 fontStyle: "normal",
                 fontWeight: "400",
-                lineHeight: "normal",
+                lineHeight: "normal"
             }}
         >
             {text}
@@ -83,7 +83,7 @@ const HeroCTAText = ({ text }) => {
                 fontSize: "1.25rem",
                 fontStyle: "normal",
                 fontWeight: "400",
-                lineHeight: "150%," /* 1.875rem */,
+                lineHeight: "150%," /* 1.875rem */
             }}
         >
             {text}
@@ -98,7 +98,7 @@ const Nav = () => {
                 display: "flex",
                 flexDirection: "row",
                 padding: "1em 2em",
-                justifyContent: "space-between",
+                justifyContent: "space-between"
             }}
         >
             <NavLogo />
@@ -108,7 +108,7 @@ const Nav = () => {
                     flexDirection: "row",
                     gap: "118px",
                     justifyItems: "center",
-                    alignItems: "center",
+                    alignItems: "center"
                 }}
             >
                 <NavLink
@@ -149,7 +149,7 @@ const NavLink = ({ text, linkDestination }) => {
                 fontStyle: "normal",
                 fontWeight: "400",
                 lineHeight: "normal",
-                textDecoration: "none",
+                textDecoration: "none"
             }}
         >
             {text}
@@ -167,7 +167,7 @@ const NavLogo = () => {
                 padding: "1.6875rem 0 1.75rem 0",
                 justifyContent: "center",
                 alignItems: "center",
-                flexShrink: "0",
+                flexShrink: "0"
             }}
         >
             LOGO
@@ -181,7 +181,7 @@ const ShadowGradient = () => {
             style={{
                 background:
                     "linear-gradient(93deg, rgba(62, 85, 70, 0.47) 1.68%, rgba(96, 141, 111, 0.08) 52.57%, rgba(125, 188, 146, 0.00) 97.9%), linear-gradient(106deg, rgba(0, 0, 0, 0.26) 13.4%, rgba(255, 255, 255, 0.00) 100%), linear-gradient(180deg, #1A1A1B 0%, rgba(75, 75, 78, 0.15) 49.73%, rgba(124, 124, 129, 0.00) 100%)",
-                backgroundBlendMode: "normal, darken, normal",
+                backgroundBlendMode: "normal, darken, normal"
             }}
         ></div>
     );
@@ -197,7 +197,7 @@ const HeroBooking = () => {
                     display: "flex",
                     flexDirection: "row",
                     paddingInline: "1.8rem",
-                    paddingBlock: "3.2rem ",
+                    paddingBlock: "3.2rem "
                 }}
             >
                 <HeroBookingInput
@@ -227,7 +227,7 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId }) => {
                     fontSize: "1.25rem",
                     fontStyle: "normal",
                     fontWeight: "400",
-                    lineHeight: "normal",
+                    lineHeight: "normal"
                 }}
             >
                 {labelText}
@@ -242,7 +242,7 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId }) => {
                     width: "14.6875rem",
                     height: "5.3125rem",
                     padding: "1.5rem 11.75rem 1.5625rem 0.6875rem",
-                    alignItems: "center",
+                    alignItems: "center"
                 }}
             ></input>
         </div>

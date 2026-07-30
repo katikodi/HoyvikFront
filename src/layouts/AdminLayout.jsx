@@ -10,7 +10,7 @@ export default function AdminLayout() {
             style={{
                 minHeight: "100vh",
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: "column"
             }}
         >
             <header>
