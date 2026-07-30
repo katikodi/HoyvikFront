@@ -4,6 +4,7 @@ import calendarIconUrl from "../icons/calendarIcon.svg";
 import "../styles/Home.css";
 
 // TODO: move all this styling into css files
+// TODO: change colors to use the css variables
 
 export default function Home() {
     return (
@@ -139,6 +140,7 @@ const Nav = () => {
 
 const NavLink = ({ text, linkDestination }) => {
     // TODO: figure out if these have a hover effect
+    // TODO: should these use react router Link instead of a?
     return (
         <a
             href={linkDestination}
@@ -199,7 +201,9 @@ const HeroBooking = () => {
                     paddingInline: "1.8rem",
                     paddingBlock: "3.2rem ",
                     gap: "1rem",
-                    justifyContent: "space-around"
+                    justifyContent: "space-around",
+                    width: "100%",
+                    maxWidth: "100%"
                 }}
             >
                 <HeroBookingInput
@@ -226,6 +230,10 @@ const HeroBooking = () => {
                     icon={calendarIconUrl}
                     inputId={crypto.randomUUID()}
                 />
+                <Button
+                    text={"SJEKK TILGJENGELIGHET"}
+                    onClick={() => console.log("cluck")}
+                ></Button>
             </div>
         </div>
     );
@@ -233,7 +241,7 @@ const HeroBooking = () => {
 
 const HeroBookingInput = ({ inputType, labelText, icon, inputId }) => {
     return (
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "column", flexGrow: "1" }}>
             <label
                 htmlFor={inputId}
                 style={{
@@ -254,12 +262,30 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId }) => {
                     background: "transparent",
                     border: "2px solid var(--Struktur, #2A3430)",
                     display: "flex",
-                    width: "7.6875rem",
+                    width: "100%",
                     height: "2.5125rem",
                     alignItems: "center",
                     fontSize: "2.25rem"
                 }}
             ></input>
         </div>
+    );
+};
+
+const Button = ({ text, onClick }) => {
+    return (
+        <button
+            style={{
+                display: "flex",
+                height: "2.5125rem",
+                padding: "0 1.0625rem",
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "flex-end"
+            }}
+            onClick={onClick}
+        >
+            {text}
+        </button>
     );
 };
