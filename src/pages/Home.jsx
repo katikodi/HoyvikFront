@@ -330,8 +330,7 @@ const Button = ({ text, onClick, height, filled }) => {
                 padding: "0 1.0625rem",
                 justifyContent: "center",
                 alignItems: "center",
-                alignSelf: "flex-end",
-                
+                alignSelf: "flex-end"
             }}
             onClick={onClick}
         >
