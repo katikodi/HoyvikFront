@@ -23,7 +23,5 @@ export default function AboutUs() {
     );
 }
 
-admin;
-
 const title = "ABOUT US";
 const para = (title + " ").repeat(255);

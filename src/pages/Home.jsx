@@ -12,7 +12,7 @@ export default function Home() {
         </div>
     );
 }
-admin;
+
 const Hero = () => {
     return (
         <div
