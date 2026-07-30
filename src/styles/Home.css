@@ -2,9 +2,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-image: url("../icons/calendarIcon.svg");
     background-repeat: no-repeat;
     background-size: "100px";
+    order: 0;
 }
 
-input::-internal-datetime-container {
-    width: 100%;
-    height: 100%;
+input[type="date"]::-webkit-datetime-edit {
+    display: none;
+    order: 1;
 }

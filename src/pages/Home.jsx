@@ -197,9 +197,29 @@ const HeroBooking = () => {
                     display: "flex",
                     flexDirection: "row",
                     paddingInline: "1.8rem",
-                    paddingBlock: "3.2rem "
+                    paddingBlock: "3.2rem ",
+                    gap: "1rem",
+                    justifyContent: "space-around"
                 }}
             >
+                <HeroBookingInput
+                    inputType={"date"}
+                    labelText={"Innsjekk"}
+                    icon={calendarIconUrl}
+                    inputId={crypto.randomUUID()}
+                />
+                <HeroBookingInput
+                    inputType={"date"}
+                    labelText={"Innsjekk"}
+                    icon={calendarIconUrl}
+                    inputId={crypto.randomUUID()}
+                />
+                <HeroBookingInput
+                    inputType={"date"}
+                    labelText={"Innsjekk"}
+                    icon={calendarIconUrl}
+                    inputId={crypto.randomUUID()}
+                />
                 <HeroBookingInput
                     inputType={"date"}
                     labelText={"Innsjekk"}
@@ -214,11 +234,6 @@ const HeroBooking = () => {
 const HeroBookingInput = ({ inputType, labelText, icon, inputId }) => {
     return (
         <div style={{ display: "flex", flexDirection: "column" }}>
-            <img
-                src={icon}
-                alt="calendar icon"
-                style={{ height: "1em", width: "1em" }}
-            />
             <label
                 htmlFor={inputId}
                 style={{
@@ -239,10 +254,10 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId }) => {
                     background: "transparent",
                     border: "2px solid var(--Struktur, #2A3430)",
                     display: "flex",
-                    width: "14.6875rem",
-                    height: "5.3125rem",
-                    padding: "1.5rem 11.75rem 1.5625rem 0.6875rem",
-                    alignItems: "center"
+                    width: "7.6875rem",
+                    height: "2.5125rem",
+                    alignItems: "center",
+                    fontSize: "2.25rem"
                 }}
             ></input>
         </div>
