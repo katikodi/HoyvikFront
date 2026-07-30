@@ -5,21 +5,21 @@ import { AdminBar } from "@/components";
 // import '../style.css';
 
 export default function AdminLayout() {
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <header>
-        <AdminBar/>
-      </header>
+    return (
+        <div
+            style={{
+                minHeight: "100vh",
+                display: "flex",
+                flexDirection: "column",
+            }}
+        >
+            <header>
+                <AdminBar />
+            </header>
 
-      <main style={{ flex: 1, border:"1px solid white", padding:"10px", margin:"10px"}}>
-        <Outlet />
-      </main>
-    </div>
-  );
+            <main style={{ flex: 1, border: "1px solid white", padding: "10px", margin: "10px" }}>
+                <Outlet />
+            </main>
+        </div>
+    );
 }
