@@ -12,8 +12,11 @@ import boatUrl from "@/icons/boatOnTrailer.svg";
 // TODO: move all this styling into css files
 // TODO: change colors to use the css variables
 // TODO: fix the fonts on this page
+// TODO: many of these components have pretty bad names tbh, i'm to lazy fix, if anyone cares feel free
 
 export default function Home() {
+    // TODO: there's probably a better place to have this data
+    // might not matter if we're moving this to the db
     const icons = [
         {
             id: crypto.randomUUID(),
@@ -318,7 +321,7 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
     );
 };
 
-const Button = ({ text, onClick, height }) => {
+const Button = ({ text, onClick, height, filled }) => {
     return (
         <button
             style={{
@@ -327,7 +330,8 @@ const Button = ({ text, onClick, height }) => {
                 padding: "0 1.0625rem",
                 justifyContent: "center",
                 alignItems: "center",
-                alignSelf: "flex-end"
+                alignSelf: "flex-end",
+                
             }}
             onClick={onClick}
         >
@@ -383,6 +387,53 @@ const IconSectionIcon = ({ icon, text }) => {
                 className="thicc-monsterrat"
             >
                 {text}
+            </p>
+        </div>
+    );
+};
+// TODO: wtf is this section called?
+const NextSection = () => {
+    return (
+        <div
+            style={{
+                background: "var(--Background-2, #B8CBBE)"
+            }}
+        >
+            test
+        </div>
+    );
+};
+
+// TODO: i have no idea what to name these sections
+const RandomSection = () => {
+    return (
+        <div
+            style={{
+                background: "transparent",
+                display: "flex",
+                flexDirection: "row"
+            }}
+        ></div>
+    );
+};
+
+const CopySection = ({ copy, onClick, buttonText }) => {
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column"
+            }}
+        >
+            <p
+                className="monsterrat"
+                style={{
+                    color: "var(--Text-text-opacity-down, rgba(39, 28, 34, 0.70))",
+
+                    fontSize: "3rem"
+                }}
+            >
+                {copy}
             </p>
         </div>
     );
