@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function NavBar() {
+export default function AdminBar() {
     return (
         <div
             className="nav-bar"
@@ -10,12 +10,12 @@ export default function NavBar() {
                 <Link to="/">Home/logo</Link>
             </div>
             <div>
-                <Link to="booking">Booking</Link>
-                <Link to="events">Events</Link>
-                <Link to="aboutus">Om Oss</Link>
+                <Link to="booking">Admin</Link>
+                <Link to="events">Admin</Link>
+                <Link to="aboutus">Om Admin</Link>
             </div>
             <div>
-                <Link to="admin">Admin</Link>
+                <p>Admin bar!!</p>
             </div>
         </div>
     );

@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
-import "../style.css";
+import { AdminBar } from "@/components";
+// import '../style.css';
 
-export default function MainLayout() {
+export default function AdminLayout() {
     return (
         <div
             style={{
@@ -13,16 +14,12 @@ export default function MainLayout() {
             }}
         >
             <header>
-                <NavBar />
+                <AdminBar />
             </header>
 
-            <main style={{ flex: 1, border: "1px solid white" }}>
+            <main style={{ flex: 1, border: "1px solid white", padding: "10px", margin: "10px" }}>
                 <Outlet />
             </main>
-
-            <footer>
-                <Footer />
-            </footer>
         </div>
     );
 }

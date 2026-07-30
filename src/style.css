@@ -11,22 +11,26 @@
     --textbrown: #271C22;
     --textsky: #BCE8EF;
 }
+
 body {
     margin: 0;
     padding: 0;
 }
+
 .montserrat {
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
 }
+
 .cinzel {
     font-family: "Cinzel", serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
 }
+
 .albert-sans {
     font-family: "Albert Sans", sans-serif;
     font-optical-sizing: auto;
@@ -62,8 +66,9 @@ header {
     color: black;
     width: 1476px;
     display: grid;
-    
-    grid-template-columns: repeat(5 30px); /* can someone help  */
+
+    grid-template-columns: repeat(5 30px);
+    /* can someone help  */
     grid-template-rows: repeat(2 10px);
 }
 
