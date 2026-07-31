@@ -225,6 +225,8 @@ const ShadowGradient = () => {
 };
 
 const HeroBooking = () => {
+    // TODO: this solution feels inelegant
+    // i suspect grid would be cleaner
     const buttonHeight = 4;
     return (
         <div
