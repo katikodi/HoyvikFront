@@ -282,6 +282,7 @@ const HeroBooking = () => {
                     text={"SJEKK TILGJENGELIGHET"}
                     onClick={() => console.log("cluck")}
                     height={buttonHeight}
+                    color={"var(--accent-cta, #44383E)"}
                 ></Button>
             </div>
         </div>
@@ -321,7 +322,7 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
     );
 };
 
-const Button = ({ text, onClick, height, filled }) => {
+const Button = ({ text, onClick, height, color, filled = true }) => {
     return (
         <button
             style={{
@@ -330,7 +331,9 @@ const Button = ({ text, onClick, height, filled }) => {
                 padding: "0 1.0625rem",
                 justifyContent: "center",
                 alignItems: "center",
-                alignSelf: "flex-end"
+                alignSelf: "flex-end",
+                backgroundColor: filled ? `${color}` : "transparent",
+                border: filled ? "0" : `1px solid ${color}`
             }}
             onClick={onClick}
         >
