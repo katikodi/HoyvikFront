@@ -163,7 +163,7 @@ User is logged in but does not have the required role:
 
 # Frontend Authentication Flow
 
-## Guest User
+## Guest
 
 ```
 Open website
@@ -180,7 +180,7 @@ Display public pages
 
 ---
 
-## Logged In User
+## Logging in
 
 ```
 Login form submitted
