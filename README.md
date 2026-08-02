@@ -160,23 +160,6 @@ User is logged in but does not have the required role:
 
 ---
 
-# Example Admin Request
-
-```http
-GET /api/admin/example
-```
-
-Requires:
-
-```json
-{
-    "roles": [
-        "Admin"
-    ]
-}
-```
-
----
 
 # Frontend Authentication Flow
 
