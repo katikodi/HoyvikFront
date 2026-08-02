@@ -1,22 +1,27 @@
-import { Link } from "react-router-dom";
+import { useAuth } from "@/auth/AuthContext";
+import { NavLink } from "react-router-dom";
 
 export default function NavBar() {
+    const { isAdmin } = useAuth();
     return (
         <div
             className="nav-bar"
             style={{ border: "1px solid white" }}
         >
             <div>
-                <Link to="/">Home/logo</Link>
+                <NavLink to="/">Home/logo</NavLink>
             </div>
             <div>
-                <Link to="booking">Booking</Link>
-                <Link to="events">Events</Link>
-                <Link to="aboutus">Om Oss</Link>
+                <NavLink to="booking">Booking</NavLink>
+                <NavLink to="events">Events</NavLink>
+                <NavLink to="aboutus">Om Oss</NavLink>
             </div>
-            <div>
-                <Link to="admin">Admin</Link>
-            </div>
+
+            {isAdmin && (
+                <div>
+                    <NavLink to="admin">Admin</NavLink>
+                </div>
+            )}
         </div>
     );
 }

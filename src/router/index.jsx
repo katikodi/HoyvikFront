@@ -3,11 +3,17 @@ import Home from "../pages/Home";
 import Booking from "../pages/Booking";
 import Events from "../pages/Events";
 import Admin from "../pages/Admin";
-import { MainLayout, AdminLayout } from "@/layouts";
+import MainLayout from "../layouts/MainLayout";
+import AdminLayout from "../layouts/AdminLayout";
 import NotFound from "../components/NotFound";
 import AboutUs from "../pages/AboutUs";
+import AuthRoute from "../components/AuthRoute";
+import AdminRoute from "../components/AdminRoute";
+import Login from "../pages/auth/Login";
+import Profile from "@/pages/auth/Profile";
 
 export const router = createBrowserRouter([
+    //any user
     {
         path: "/",
         element: <MainLayout />,
@@ -15,13 +21,30 @@ export const router = createBrowserRouter([
             { index: true, element: <Home /> },
             { path: "booking", element: <Booking /> },
             { path: "events", element: <Events /> },
-            { path: "aboutus", element: <AboutUs /> }
+            { path: "aboutus", element: <AboutUs /> },
+            { path: "login", element: <Login /> }
         ]
     },
+    //Logged-in Users
     {
-        path: "/admin",
-        element: <AdminLayout />,
-        children: [{ index: true, element: <Admin /> }]
+        element: <AuthRoute />,
+        children: [
+            {
+                path: "/profile",
+                element: <Profile />
+            }
+        ]
+    },
+    //admin only
+    {
+        element: <AdminRoute />,
+        children: [
+            {
+                path: "/admin",
+                element: <AdminLayout />,
+                children: [{ index: true, element: <Admin /> }]
+            }
+        ]
     },
     { path: "*", element: <NotFound /> }
 ]);
