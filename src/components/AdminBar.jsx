@@ -20,3 +20,5 @@ export default function AdminBar() {
         </div>
     );
 }
+
+const testVariable = "TEST";
