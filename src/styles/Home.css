@@ -9,3 +9,7 @@ input[type="date"]::-webkit-datetime-edit {
     display: none;
     order: 1;
 }
+
+button {
+    border: 0;
+}

@@ -8,6 +8,10 @@ import turstierIconUrl from "@/icons/manHiking.svg";
 import cabinUrl from "@/icons/cabinWithSmokingChimney.svg";
 import vikingUrl from "@/icons/vikingHelmet.svg";
 import boatUrl from "@/icons/boatOnTrailer.svg";
+import vikingStuffUrl from "@/images/randomVikingStuff.jpg";
+import rom1Url from "@/images/rom1.jpg";
+import rom2Url from "@/images/rom2.jpg";
+import rom3Url from "@/images/rom3.jpg";
 
 // TODO: move all this styling into css files
 // TODO: change colors to use the css variables
@@ -45,6 +49,7 @@ export default function Home() {
         <div style={{ display: "flex", flexDirection: "column" }}>
             <Hero />
             <IconSection icons={icons} />
+            <NextSection />
         </div>
     );
 }
@@ -229,7 +234,7 @@ const ShadowGradient = () => {
 const HeroBooking = () => {
     // TODO: this solution feels inelegant
     // i suspect grid would be cleaner
-    const buttonHeight = 4;
+    const buttonHeight = "4rem";
     return (
         <div
             style={{
@@ -282,12 +287,18 @@ const HeroBooking = () => {
                     inputId={crypto.randomUUID()}
                     height={buttonHeight}
                 />
-                <Button
-                    text={"SJEKK TILGJENGELIGHET"}
-                    onClick={() => console.log("cluck")}
-                    height={buttonHeight}
-                    color={"var(--accent-cta, #44383E)"}
-                ></Button>
+                <div
+                    style={{
+                        alignSelf: "flex-end"
+                    }}
+                >
+                    <Button
+                        text={"SJEKK TILGJENGELIGHET"}
+                        onClick={() => console.log("cluck")}
+                        height={buttonHeight}
+                        color={"var(--accent-cta, #44383E)"}
+                    ></Button>
+                </div>
             </div>
         </div>
     );
@@ -317,7 +328,7 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
                     border: "2px solid var(--Struktur, #2A3430)",
                     display: "flex",
                     width: "100%",
-                    height: `${height}rem`,
+                    height: height,
                     alignItems: "center",
                     fontSize: "2.25rem"
                 }}
@@ -326,18 +337,19 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
     );
 };
 
-const Button = ({ text, onClick, height, color, filled = true }) => {
+const Button = ({ text, onClick, height, color, filled = true, style = {} }) => {
     return (
         <button
             style={{
                 display: "flex",
-                height: `${height}rem`,
+                height: height,
                 padding: "0 1.0625rem",
                 justifyContent: "center",
                 alignItems: "center",
-                alignSelf: "flex-end",
+                // alignSelf: "flex-end",
                 backgroundColor: filled ? `${color}` : "transparent",
-                border: filled ? "0" : `1px solid ${color}`
+                border: filled ? "0" : `3px solid ${color}`,
+                ...style
             }}
             onClick={onClick}
         >
@@ -405,25 +417,14 @@ const NextSection = () => {
                 background: "var(--Background-2, #B8CBBE)"
             }}
         >
-            test
+            <RandomSection />
         </div>
     );
 };
 
 // TODO: i have no idea what to name these sections
 const RandomSection = () => {
-    return (
-        <div
-            style={{
-                background: "transparent",
-                display: "flex",
-                flexDirection: "row"
-            }}
-        ></div>
-    );
-};
-
-const CopySection = ({ copy, onClick, buttonText }) => {
+    const copyText = "Placeholder tekst. Kan vere about section f.eks som forklare meir om ka service som blir solgt";
     return (
         <div
             style={{
@@ -431,16 +432,154 @@ const CopySection = ({ copy, onClick, buttonText }) => {
                 flexDirection: "column"
             }}
         >
+            <div
+                style={{
+                    background: "transparent",
+                    display: "flex",
+                    flexDirection: "row"
+                }}
+            >
+                <CopySection
+                    copy={copyText}
+                    onClick={() => {
+                        console.log("cta cluck");
+                    }}
+                    buttonText={"CTA 2"}
+                />
+                <div style={{ flexGrow: "1", display: "flex" }}>
+                    <img
+                        style={{ width: "80%", height: "auto", marginLeft: "auto" }}
+                        src={vikingStuffUrl}
+                        alt="image of random viking stuff"
+                    />
+                </div>
+            </div>
+            <ImageCarousel />
+        </div>
+    );
+};
+
+const CopySection = ({ copy, onClick, buttonText }) => {
+    return (
+        <div
+            style={{
+                paddingTop: "3rem",
+                display: "flex",
+                flexDirection: "column",
+                flexGrow: "1",
+                justifyContent: "flex-start",
+                gap: "2rem",
+                alignItems: "flex-start",
+                paddingInline: "5rem"
+            }}
+        >
             <p
                 className="monsterrat"
                 style={{
                     color: "var(--Text-text-opacity-down, rgba(39, 28, 34, 0.70))",
-
-                    fontSize: "3rem"
+                    fontSize: "1.5rem",
+                    fontStyle: " normal",
+                    fontWeight: "400",
+                    lineHeight: "normal"
                 }}
             >
                 {copy}
             </p>
+            <Button
+                style={{
+                    display: "flex",
+                    width: "10.875rem",
+                    padding: "1rem 0 0.9375rem 0",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    color: "var(--accent-cta, #44383E)",
+                    fontFamily: "Montserrat",
+                    fontSize: "1.2rem",
+                    fontStyle: "normal",
+                    fontWeight: "400",
+                    lineHeight: "normal"
+                }}
+                text={buttonText || "CTA"}
+                onClick={onClick}
+                height="2rem"
+                filled={false}
+                color="#44383E"
+            />
+        </div>
+    );
+};
+
+const ImageCarousel = () => {
+    return (
+        <div style={{ display: "flex", flexDirection: "row", gap: "1rem", justifyContent: "center", paddingBlock: "3rem" }}>
+            <CarouselCard
+                imageUrl={rom1Url}
+                imageText="ROM"
+            />
+            <CarouselCard
+                imageUrl={rom1Url}
+                imageText="ROM"
+            />
+            <CarouselCard
+                imageUrl={rom1Url}
+                imageText="ROM"
+            />
+        </div>
+    );
+};
+
+const CarouselCard = ({ imageUrl, imageText }) => {
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                border: "2px solid var(--Struktur, #2A3430)",
+                boxShadow: "6px 6px 4px 0 rgba(0, 0, 0, 0.25)",
+                height: "20rem",
+                width: "20rem"
+            }}
+        >
+            <div
+                style={{
+                    backgroundImage: `url(${imageUrl})`,
+                    flexGrow: "1",
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    text: "center",
+                    color: "#FFF",
+                    fontFamily: "Montserrat",
+                    fontSize: "1.25rem",
+                    fontStyle: "normal",
+                    fontWeight: "600",
+                    lineHeight: "normal"
+                }}
+            >
+                {imageText}
+            </div>
+            <div
+                style={{
+                    display: "flex",
+                    width: "100%",
+                    height: "6.4375rem",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    background: "var(--Background, #678A73)",
+                    paddingInline: "1rem"
+                }}
+            >
+                <Button
+                    filled={false}
+                    style={{ border: "2px solid var(--Text-text1, #271C22)", width: "7rem", marginLeft: "auto" }}
+                    height={"2rem"}
+                    onClick={() => {
+                        console.log("room click");
+                    }}
+                />
+            </div>
         </div>
     );
 };
