@@ -1,7 +1,6 @@
 import Booking from "../components/Booking";
 
 export default function Home() {
-    const var1 = "test"
     return (
         <>
             <hero>
