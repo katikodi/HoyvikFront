@@ -12,6 +12,8 @@ import boatUrl from "@/icons/boatOnTrailer.svg";
 // TODO: move all this styling into css files
 // TODO: change colors to use the css variables
 // TODO: fix the fonts on this page
+// TODO: change divs to semantic elements
+// TODO: verify accessability
 // TODO: many of these components have pretty bad names tbh, i'm to lazy fix, if anyone cares feel free
 
 export default function Home() {
