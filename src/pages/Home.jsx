@@ -13,9 +13,6 @@ import rom1Url from "@/images/rom1.jpg";
 import rom2Url from "@/images/rom2.jpg";
 import rom3Url from "@/images/rom3.jpg";
 
-// TODO: move all this styling into css files
-// TODO: change colors to use the css variables
-// TODO: fix the fonts on this page
 // TODO: change divs to semantic elements
 // TODO: verify accessability
 // TODO: many of these components have pretty bad names tbh, i'm to lazy fix, if anyone cares feel free
@@ -58,15 +55,9 @@ const Hero = () => {
     return (
         <div
             style={{
-                backgroundImage: `linear-gradient(93deg, rgba(62, 85, 70, 0.47) 1.68%, rgba(96, 141, 111, 0.08) 52.57%, rgba(125, 188, 146, 0.00) 97.9%), linear-gradient(106deg, rgba(0, 0, 0, 0.26) 13.4%, rgba(255, 255, 255, 0.00) 100%), linear-gradient(180deg, #1A1A1B 0%, rgba(75, 75, 78, 0.15) 49.73%, rgba(124, 124, 129, 0.00) 100%), url(${heroImageUrl}`,
-                backgroundBlendMode: "normal, darken, normal",
-                height: "100dvh",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "100% auto",
-                backgroundPosition: "center",
-                display: "flex",
-                flexDirection: "column"
+                backgroundImage: `linear-gradient(93deg, rgba(62, 85, 70, 0.47) 1.68%, rgba(96, 141, 111, 0.08) 52.57%, rgba(125, 188, 146, 0.00) 97.9%), linear-gradient(106deg, rgba(0, 0, 0, 0.26) 13.4%, rgba(255, 255, 255, 0.00) 100%), linear-gradient(180deg, #1A1A1B 0%, rgba(75, 75, 78, 0.15) 49.73%, rgba(124, 124, 129, 0.00) 100%), url(${heroImageUrl}`
             }}
+            className="hero"
         >
             <Nav />
             <HeroTextContent
@@ -80,7 +71,10 @@ const Hero = () => {
 
 const HeroTextContent = ({ largeText, CTAText }) => {
     return (
-        <div style={{ width: "22rem", paddingLeft: "5.5rem" }}>
+        <div
+            className="hero-text-container"
+            style={{ color: "var(--brightgreen)" }}
+        >
             <HeroLargeText text={largeText} />
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -100,60 +94,16 @@ const HeroTextContent = ({ largeText, CTAText }) => {
 };
 
 const HeroLargeText = ({ text }) => {
-    return (
-        <h1
-            style={{
-                color: "var(--Button-or-accent-3, #9BB678)",
-                textShadow: "0 4px 4px rgba(0, 0, 0, 0.50)",
-                fontFamily: "Cinzel",
-                fontSize: "3rem",
-                fontStyle: "normal",
-                fontWeight: "400",
-                lineHeight: "normal"
-            }}
-        >
-            {text}
-        </h1>
-    );
+    return <h1 className="hero-large-text cinzel">{text}</h1>;
 };
 const HeroCTAText = ({ text }) => {
-    return (
-        <h2
-            style={{
-                color: "var(--Button-or-accent-3, #9BB678)",
-                textShadow: "0 4px 4px rgba(0, 0, 0, 0.50)",
-                fontFamily: "Montserrat",
-                fontSize: "1.25rem",
-                fontStyle: "normal",
-                fontWeight: "400",
-                lineHeight: "150%," /* 1.875rem */
-            }}
-        >
-            {text}
-        </h2>
-    );
+    return <h2 className="monsterrat hero-cta-text">{text}</h2>;
 };
 const Nav = () => {
     return (
-        <nav
-            style={{
-                background: "transparent",
-                display: "flex",
-                flexDirection: "row",
-                padding: "1em 2em",
-                justifyContent: "space-between"
-            }}
-        >
+        <nav className="nav">
             <NavLogo />
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "118px",
-                    justifyItems: "center",
-                    alignItems: "center"
-                }}
-            >
+            <div className="nav-links-container">
                 <NavLink
                     text="Rom"
                     linkDestination="/Booking"
@@ -186,14 +136,9 @@ const NavLink = ({ text, linkDestination }) => {
     return (
         <a
             href={linkDestination}
+            className="cinzel nav-link"
             style={{
-                color: "var(--Background-2, #B8CBBE)",
-                fontFamily: "Cinzel",
-                fontSize: "1rem",
-                fontStyle: "normal",
-                fontWeight: "400",
-                lineHeight: "normal",
-                textDecoration: "none"
+                color: "var(--bg-2)"
             }}
         >
             {text}
@@ -202,33 +147,7 @@ const NavLink = ({ text, linkDestination }) => {
 };
 
 const NavLogo = () => {
-    return (
-        <div
-            style={{
-                display: "flex",
-                width: "15.5rem",
-                height: "4.9375rem",
-                padding: "1.6875rem 0 1.75rem 0",
-                justifyContent: "center",
-                alignItems: "center",
-                flexShrink: "0"
-            }}
-        >
-            LOGO
-        </div>
-    );
-};
-
-const ShadowGradient = () => {
-    return (
-        <div
-            style={{
-                background:
-                    "linear-gradient(93deg, rgba(62, 85, 70, 0.47) 1.68%, rgba(96, 141, 111, 0.08) 52.57%, rgba(125, 188, 146, 0.00) 97.9%), linear-gradient(106deg, rgba(0, 0, 0, 0.26) 13.4%, rgba(255, 255, 255, 0.00) 100%), linear-gradient(180deg, #1A1A1B 0%, rgba(75, 75, 78, 0.15) 49.73%, rgba(124, 124, 129, 0.00) 100%)",
-                backgroundBlendMode: "normal, darken, normal"
-            }}
-        ></div>
-    );
+    return <div className="nav-logo">LOGO</div>;
 };
 
 const HeroBooking = () => {
@@ -236,27 +155,11 @@ const HeroBooking = () => {
     // i suspect grid would be cleaner
     const buttonHeight = "4rem";
     return (
-        <div
-            style={{
-                paddingLeft: "12rem",
-                paddingRight: "6rem",
-                marginTop: "auto",
-                position: "relative",
-                transform: "translateY(30%)"
-            }}
-        >
+        <div className="hero-booking-container">
             <div
+                className="hero-booking"
                 style={{
-                    background: "var(--Background-2, #B8CBBE)",
-                    boxShadow: "0 7px 4px 0 rgba(0, 0, 0, 0.25)",
-                    display: "flex",
-                    flexDirection: "row",
-                    paddingInline: "1.8rem",
-                    paddingBlock: "1rem ",
-                    gap: "1rem",
-                    justifyContent: "space-around",
-                    width: "100%",
-                    maxWidth: "100%"
+                    background: "var(--bg2)"
                 }}
             >
                 <HeroBookingInput
@@ -287,18 +190,12 @@ const HeroBooking = () => {
                     inputId={crypto.randomUUID()}
                     height={buttonHeight}
                 />
-                <div
-                    style={{
-                        alignSelf: "flex-end"
-                    }}
-                >
-                    <Button
-                        text={"SJEKK TILGJENGELIGHET"}
-                        onClick={() => console.log("cluck")}
-                        height={buttonHeight}
-                        color={"var(--accent-cta, #44383E)"}
-                    ></Button>
-                </div>
+                <Button
+                    className="booking-button"
+                    style={{ backgroundColor: "var(--brown)", height: `${buttonHeight}` }}
+                    text={"SJEKK TILGJENGELIGHET"}
+                    onClick={() => console.log("cluck")}
+                ></Button>
             </div>
         </div>
     );
@@ -309,49 +206,37 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
         <div style={{ display: "flex", flexDirection: "column", flexGrow: "1", gap: "0.3rem" }}>
             <label
                 htmlFor={inputId}
+                className="monsterrat hero-booking-label"
                 style={{
-                    color: "var(--Text-text1, #271C22)",
-                    fontFamily: "Montserrat",
-                    fontSize: "0.75rem",
-                    fontStyle: "normal",
-                    fontWeight: "400",
-                    lineHeight: "normal"
+                    color: "var(--textbrown)"
                 }}
             >
                 {labelText}
             </label>
             <input
+                className="hero-booking-input"
                 id={inputId}
                 type={inputType}
                 style={{
-                    background: "transparent",
-                    border: "2px solid var(--Struktur, #2A3430)",
-                    display: "flex",
-                    width: "100%",
-                    height: height,
-                    alignItems: "center",
-                    fontSize: "2.25rem"
+                    border: "2px solid var(--darkgreen)",
+                    height: height
                 }}
             ></input>
         </div>
     );
 };
 
-const Button = ({ text, onClick, height, color, filled = true, style = {} }) => {
+const Button = ({ text, onClick, height, color, filled = true, style = {}, className }) => {
     return (
         <button
             style={{
-                display: "flex",
                 height: height,
-                padding: "0 1.0625rem",
-                justifyContent: "center",
-                alignItems: "center",
-                // alignSelf: "flex-end",
                 backgroundColor: filled ? `${color}` : "transparent",
                 border: filled ? "0" : `3px solid ${color}`,
                 ...style
             }}
             onClick={onClick}
+            className={className}
         >
             {text}
         </button>
@@ -361,18 +246,10 @@ const Button = ({ text, onClick, height, color, filled = true, style = {} }) => 
 const IconSection = ({ icons }) => {
     return (
         <div
+            className="icon-section"
             style={{
-                display: "inline-flex",
-                // height: "10.8125rem",
-                padding: "5.1875rem 3.8125rem 5.25rem 3.8125rem",
-                justifyContent: "center",
-                alignItems: "center",
-                background: "var(--Background, #678A73)",
-                boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25)",
-                display: "flex",
-                flexDirection: "row",
-                paddingInline: "3.2rem",
-                gap: "14rem"
+                background: "var(--bg1)",
+                color: "var(--icons)"
             }}
         >
             {icons.map(icon => (
@@ -388,24 +265,12 @@ const IconSection = ({ icons }) => {
 
 const IconSectionIcon = ({ icon, text }) => {
     return (
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center"
-            }}
-        >
+        <div className="icon-section-icon">
             <img
-                style={{ width: "5rem", height: "5rem", aspectRatio: "1/1" }}
                 src={icon}
                 alt={`icon av ${text}`}
             />
-            <p
-                style={{ alignSelf: "stretch", textWrap: "nowrap", textAlign: "center" }}
-                className="thicc-monsterrat"
-            >
-                {text}
-            </p>
+            <p className="thicc-monsterrat">{text}</p>
         </div>
     );
 };
@@ -414,7 +279,7 @@ const NextSection = () => {
     return (
         <div
             style={{
-                background: "var(--Background-2, #B8CBBE)"
+                background: "var(--bg2)"
             }}
         >
             <RandomSection />
@@ -426,19 +291,8 @@ const NextSection = () => {
 const RandomSection = () => {
     const copyText = "Placeholder tekst. Kan vere about section f.eks som forklare meir om ka service som blir solgt";
     return (
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column"
-            }}
-        >
-            <div
-                style={{
-                    background: "transparent",
-                    display: "flex",
-                    flexDirection: "row"
-                }}
-            >
+        <div className="random-section">
+            <div className="random-section-section">
                 <CopySection
                     copy={copyText}
                     onClick={() => {
@@ -446,9 +300,8 @@ const RandomSection = () => {
                     }}
                     buttonText={"CTA 2"}
                 />
-                <div style={{ flexGrow: "1", display: "flex" }}>
+                <div className="random-section-section-img-container">
                     <img
-                        style={{ width: "80%", height: "auto", marginLeft: "auto" }}
                         src={vikingStuffUrl}
                         alt="image of random viking stuff"
                     />
@@ -461,43 +314,18 @@ const RandomSection = () => {
 
 const CopySection = ({ copy, onClick, buttonText }) => {
     return (
-        <div
-            style={{
-                paddingTop: "3rem",
-                display: "flex",
-                flexDirection: "column",
-                flexGrow: "1",
-                justifyContent: "flex-start",
-                gap: "2rem",
-                alignItems: "flex-start",
-                paddingInline: "5rem"
-            }}
-        >
+        <div className="copy-section">
             <p
                 className="monsterrat"
                 style={{
-                    color: "var(--Text-text-opacity-down, rgba(39, 28, 34, 0.70))",
-                    fontSize: "1.5rem",
-                    fontStyle: " normal",
-                    fontWeight: "400",
-                    lineHeight: "normal"
+                    color: "var(--Text-text-opacity-down)"
                 }}
             >
                 {copy}
             </p>
             <Button
                 style={{
-                    display: "flex",
-                    width: "10.875rem",
-                    padding: "1rem 0 0.9375rem 0",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "var(--accent-cta, #44383E)",
-                    fontFamily: "Montserrat",
-                    fontSize: "1.2rem",
-                    fontStyle: "normal",
-                    fontWeight: "400",
-                    lineHeight: "normal"
+                    color: "var(--brown)"
                 }}
                 text={buttonText || "CTA"}
                 onClick={onClick}
@@ -511,7 +339,7 @@ const CopySection = ({ copy, onClick, buttonText }) => {
 
 const ImageCarousel = () => {
     return (
-        <div style={{ display: "flex", flexDirection: "row", gap: "1rem", justifyContent: "center", paddingBlock: "3rem" }}>
+        <div className="image-carousel">
             <CarouselCard
                 imageUrl={rom1Url}
                 imageText="ROM"
@@ -531,49 +359,28 @@ const ImageCarousel = () => {
 const CarouselCard = ({ imageUrl, imageText }) => {
     return (
         <div
+            className="carousel-card"
             style={{
-                display: "flex",
-                flexDirection: "column",
-                border: "2px solid var(--Struktur, #2A3430)",
-                boxShadow: "6px 6px 4px 0 rgba(0, 0, 0, 0.25)",
-                height: "20rem",
-                width: "20rem"
+                border: "2px solid var(--darkgreen)"
             }}
         >
             <div
+                className="carousel-card-image thicc-monsterrat"
                 style={{
-                    backgroundImage: `url(${imageUrl})`,
-                    flexGrow: "1",
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    text: "center",
-                    color: "#FFF",
-                    fontFamily: "Montserrat",
-                    fontSize: "1.25rem",
-                    fontStyle: "normal",
-                    fontWeight: "600",
-                    lineHeight: "normal"
+                    backgroundImage: `url(${imageUrl})`
                 }}
             >
                 {imageText}
             </div>
             <div
+                className="carousel-card-header"
                 style={{
-                    display: "flex",
-                    width: "100%",
-                    height: "6.4375rem",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                    background: "var(--Background, #678A73)",
-                    paddingInline: "1rem"
+                    background: "var(--bg1)"
                 }}
             >
                 <Button
                     filled={false}
-                    style={{ border: "2px solid var(--Text-text1, #271C22)", width: "7rem", marginLeft: "auto" }}
+                    style={{ border: "2px solid var(--textbrown)" }}
                     height={"2rem"}
                     onClick={() => {
                         console.log("room click");

@@ -11,6 +11,7 @@
     --textbrown: #271c22;
     --textsky: #bce8ef;
     --icons: #111815;
+    --Text-text-opacity-down: rgba(39, 28, 34, 0.7);
 }
 * {
     box-sizing: border-box;
@@ -32,7 +33,6 @@ body {
     font-optical-sizing: auto;
     font-weight: 600;
     font-style: normal;
-    color: var(--icons);
 }
 
 .cinzel {
