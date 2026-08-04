@@ -29,7 +29,7 @@ fetch("/api/example", {
 
 ---
 
-# POST `/api/register`
+# POST `/api/auth/register`
 
 Creates a new user account.
 
@@ -61,7 +61,7 @@ Returned when the registration data is invalid.
 
 ---
 
-# POST `/api/login`
+# POST `/api/auth/login`
 
 Logs in a user and creates an authentication session.
 
@@ -94,7 +94,7 @@ Returned when the email or password is incorrect.
 
 ---
 
-# POST `/api/logout`
+# POST `/api/auth/logout`
 
 Logs out the current user and removes the authentication session.
 
