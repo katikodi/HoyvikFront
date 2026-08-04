@@ -31,14 +31,18 @@ button {
 
 .hero-large-text {
     text-shadow: "0 4px 4px rgba(0, 0, 0, 0.50)";
-    font-size: 3rem;
+    line-height: normal;
+    font-size: 2rem;
+    font-style: normal;
+    font-weight: 400;
     line-height: normal;
 }
 
 .hero-cta-text {
     text-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
-    font-size: 1.25rem;
+    font-size: 1rem;
     line-height: 150%; /* 1.875rem */
+    font-weight: 400;
 }
 
 .nav {
