@@ -12,7 +12,7 @@ var api = builder.AddProject<Projects.Hoyvik_API>("backend")
 	.WithExternalHttpEndpoints();
 
 
-var frontend = builder.AddViteApp("frontend", "C:\\Users\\LynoH\\Desktop\\Source\\Project\\høyvik\\HoyvikFront")
+var frontend = builder.AddViteApp("frontend", "../../frontend")
 	.WithReference(api)
 	.WaitFor(api);
 
