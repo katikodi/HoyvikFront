@@ -1,15 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
-import Home from "../pages/Home";
-import Booking from "../pages/Booking";
-import Events from "../pages/Events";
-import Admin from "../pages/Admin";
-import MainLayout from "../layouts/MainLayout";
-import AdminLayout from "../layouts/AdminLayout";
-import NotFound from "../components/NotFound";
-import AboutUs from "../pages/AboutUs";
-import AuthRoute from "../components/AuthRoute";
-import AdminRoute from "../components/AdminRoute";
-import Login from "../pages/auth/Login";
+import Home from "@/pages/Home";
+import Booking from "@/pages/Booking";
+import Events from "@/pages/Events";
+import Admin from "@/pages/Admin";
+import MainLayout from "@/layouts/MainLayout";
+import AdminLayout from "@/layouts/AdminLayout";
+import NotFound from "@/components/NotFound";
+import AboutUs from "@/pages/AboutUs";
+import AuthRoute from "@/components/AuthRoute";
+import AdminRoute from "@/components/AdminRoute";
+import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import Profile from "@/pages/auth/Profile";
 
