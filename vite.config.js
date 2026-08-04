@@ -1,14 +1,29 @@
-import { defineConfig } from "vite";
+
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import { fileURLToPath, URL } from "node:url";
+import { defineConfig, loadEnv } from "vite";
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({mode}) => {
+  const env = loadEnv(mode, process.cwd(), "");
+
+  return {
     plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
+    server: {
+      proxy: {
+        // Proxy API calls to the app service
+        '/api': {
+          target: process.env.services__backend__https__0 || process.env.services__backend__http__0,
+          changeOrigin: false,
+          secure: false
+        }
+      }
+    },
     resolve: {
         alias: {
             "@": fileURLToPath(new URL("./src", import.meta.url))
         }
     }
+  }
 });
