@@ -30,7 +30,7 @@ button {
 }
 
 .hero-large-text {
-    text-shadow: "0 4px 4px rgba(0, 0, 0, 0.50)";
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
     line-height: normal;
     font-size: 2rem;
     font-style: normal;
