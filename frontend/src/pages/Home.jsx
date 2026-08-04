@@ -12,12 +12,13 @@ import vikingStuffUrl from "@/images/randomVikingStuff.jpg";
 import rom1Url from "@/images/rom1.jpg";
 import rom2Url from "@/images/rom2.jpg";
 import rom3Url from "@/images/rom3.jpg";
-
+import { NavLink } from "react-router-dom";
 // TODO: change divs to semantic elements
 // TODO: verify accessability
 // TODO: many of these components have pretty bad names tbh, i'm to lazy fix, if anyone cares feel free
 
 export default function Home() {
+    
     // TODO: there's probably a better place to have this data
     // might not matter if we're moving this to the db
     const icons = [
@@ -104,47 +105,27 @@ const Nav = () => {
         <nav className="nav">
             <NavLogo />
             <div className="nav-links-container">
-                <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
-                />
-                <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
-                />
-                <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
-                />
-                <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
-                />
-                <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
-                />
+                <NavLink to={"/booking"}>
+                    Booking
+                </NavLink>
+                <NavLink to={"/booking"}>
+                    Booking
+                </NavLink>                
+                <NavLink to={"/booking"}>
+                    Booking
+                </NavLink>                
+                <NavLink to={"/booking"}>
+                    Booking
+                </NavLink>                
+                <NavLink to={"/booking"}>
+                    Booking
+                </NavLink>
             </div>
             <NavLogo />
         </nav>
     );
 };
 
-const NavLink = ({ text, linkDestination }) => {
-    // TODO: figure out if these have a hover effect
-    // TODO: should these use react router Link instead of a?
-    return (
-        <a
-            href={linkDestination}
-            className="cinzel nav-link"
-            style={{
-                color: "var(--bg-2)"
-            }}
-        >
-            {text}
-        </a>
-    );
-};
 
 const NavLogo = () => {
     return <div className="nav-logo">LOGO</div>;
