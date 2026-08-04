@@ -2,7 +2,7 @@ using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+using Stripe;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
@@ -11,6 +11,9 @@ builder.Services.AddAuthorizationBuilder()
 	.AddDefaultPolicy("Guest", p => p.RequireRole("guest"))
 	.AddPolicy("User", p => p.RequireRole("user"))
 	.AddPolicy("Admin", p => p.RequireRole("admin"));
+
+
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 
 
 builder.Services
@@ -71,7 +74,7 @@ if(app.Environment.IsDevelopment())
 }
 
 if(app.Environment.IsProduction())
-app.UseHttpsRedirection();
+	app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

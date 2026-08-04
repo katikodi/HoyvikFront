@@ -12,7 +12,9 @@ var api = builder.AddProject<Projects.Hoyvik_API>("backend")
 	.WithExternalHttpEndpoints();
 
 
-var frontend = builder.AddViteApp("frontend", "../../frontend")
+var frontend = builder
+	.AddViteApp("frontend", "../../frontend")
+	.WithHttpEndpoint(port: 54131, name: "http")
 	.WithReference(api)
 	.WaitFor(api);
 

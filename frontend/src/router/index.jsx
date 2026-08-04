@@ -12,6 +12,7 @@ import AdminRoute from "@/components/AdminRoute";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import Profile from "@/pages/auth/Profile";
+import PaymentSucceeded from "@/pages/payment/PaymentSucceeded";
 
 export const router = createBrowserRouter([
     //any user
@@ -24,7 +25,8 @@ export const router = createBrowserRouter([
             { path: "events", element: <Events /> },
             { path: "aboutus", element: <AboutUs /> },
             { path: "login", element: <Login /> },
-            { path: "register", element: <Register/>}
+            { path: "register", element: <Register/>},
+            { path: "payment/payment-success", element: <PaymentSucceeded/>}
         ]
     },
     //Logged-in Users
