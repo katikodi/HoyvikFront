@@ -10,6 +10,7 @@ import AboutUs from "../pages/AboutUs";
 import AuthRoute from "../components/AuthRoute";
 import AdminRoute from "../components/AdminRoute";
 import Login from "../pages/auth/Login";
+import Register from "@/pages/auth/Register";
 import Profile from "@/pages/auth/Profile";
 
 export const router = createBrowserRouter([
@@ -22,7 +23,8 @@ export const router = createBrowserRouter([
             { path: "booking", element: <Booking /> },
             { path: "events", element: <Events /> },
             { path: "aboutus", element: <AboutUs /> },
-            { path: "login", element: <Login /> }
+            { path: "login", element: <Login /> },
+            { path: "register", element: <Register/>}
         ]
     },
     //Logged-in Users

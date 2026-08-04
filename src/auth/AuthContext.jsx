@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
 
     const isAdmin = user?.roles?.includes("admin") ?? false;
 
+
     async function fetchUser() {
         try {
             const response = await fetch("/api/auth/me", {
@@ -29,7 +30,7 @@ export function AuthProvider({ children }) {
 
 
     async function login(email, password) {
-        const response = await fetch("/api/login", {
+        const response = await fetch("/api/auth/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -42,6 +43,7 @@ export function AuthProvider({ children }) {
         });
 
         if (!response.ok) {
+            console.log("login failed");
             return false;
         }
 
@@ -51,28 +53,32 @@ export function AuthProvider({ children }) {
     }
 
 
-    async function register(email, password) {
-        const response = await fetch("/api/register", {
+    async function register(email, password, confirmPassword) {
+        const response = await fetch("/api/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 email,
-                password
+                password, 
+                confirmPassword
             })
         });
 
+
+
         if (response.ok) {
             await login(email, password);
+            return true;
         }
+        return false;
 
-        return response.ok;
     }
 
 
     async function logout() {
-        await fetch("/api/logout", {
+        await fetch("/api/auth/logout", {
             method: "POST",
             credentials: "include"
         });
