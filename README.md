@@ -22,10 +22,10 @@ fetch("/api/example", {
 
 | Method | Endpoint | Description | Authentication |
 |--------|----------|-------------|----------------|
-| POST | `/api/register` | Create a new account | Not required |
-| POST | `/api/login` | Login a user | Not required |
-| POST | `/api/logout` | Logout current user | Required |
-| GET | `/api/auth/me` | Get current user information | Optional |
+| POST | `/api/auth/register` | Create a new account | Not required |
+| POST | `/api/auth/login` | Login a user | Not required |
+| POST | `/api/auth/logout` | Logout current user | Required |
+| GET | `/api/auth/auth/me` | Get current user information | Optional |
 
 ---
 
@@ -186,7 +186,7 @@ Display public pages
 Login form submitted
       |
       v
-POST /api/login
+POST /api/auth/login
       |
       v
 Authentication cookie created
@@ -205,7 +205,7 @@ User information returned
 ## Login
 
 ```javascript
-await fetch("/api/login", {
+await fetch("/api/auth/login", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -235,7 +235,7 @@ const user = await response.json();
 ## Logout
 
 ```javascript
-await fetch("/api/logout", {
+await fetch("/api/auth/logout", {
     method: "POST",
     credentials: "include"
 });
