@@ -202,6 +202,7 @@ button {
     gap: 1rem;
     justify-content: center;
     padding-block: 3rem;
+    padding-top: 10rem;
 }
 
 .carousel-card {
