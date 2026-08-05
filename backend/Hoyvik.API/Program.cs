@@ -82,7 +82,7 @@ if(app.Environment.IsProduction())
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapApiEndpoints();
-
+//app.MapApiEndpoints();
+app.MapApiEndpointsProtected();
 app.Run();
 

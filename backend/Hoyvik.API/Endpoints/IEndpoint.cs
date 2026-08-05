@@ -36,4 +36,26 @@ public static class EndpointDiscoveryExtensions
 		}
 		return app;
 	}
+
+	//maps all endpoints with authorization required
+	public static WebApplication MapApiEndpointsProtected(this WebApplication app, string prefix = "/api", params string[] policies)
+	{
+		var api = app.MapGroup(prefix).RequireAuthorization(policies);
+
+
+		using var scope = app.Services.CreateScope();
+
+		var logger = scope.ServiceProvider
+			.GetRequiredService<ILoggerFactory>()
+			.CreateLogger("ProtectedEndpointRegistration");
+
+		var endpoints = scope.ServiceProvider.GetServices<IEndpoint>();
+
+		foreach(var endpoint in endpoints)
+		{
+			endpoint.MapEndpoint(api);
+			logger?.LogInformation("Registered protected {endpoint}", endpoint.GetType().Name);
+		}
+		return app;
+	}
 }
