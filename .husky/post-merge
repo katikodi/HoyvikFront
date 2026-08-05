@@ -1,3 +1,5 @@
+echo "RUNNING POST MERGE"
+
 npm ci --ignore-scripts
 
 cd "./frontend" &&

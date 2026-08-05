@@ -1,1 +1,3 @@
+echo "RUNNING PRE-COMMIT"
+
 npx lint-staged
