@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 echo "RUNNING POST MERGE"
