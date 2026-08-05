@@ -3,4 +3,6 @@ echo "Checking if dependencies have changed."
 if git diff --name-only HEAD@{1} HEAD | grep -Eq '^(package\.json|package-lock\.json)$'; then
   echo "Dependencies changed. Running safe auto-install..."
   npm ci --ignore-scripts
+else
+  echo "No dependency changes."
 fi
