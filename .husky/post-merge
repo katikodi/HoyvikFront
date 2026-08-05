@@ -4,3 +4,5 @@ npm ci --ignore-scripts
 
 cd "./frontend" &&
 npm ci --ignore-scripts
+
+cd ..
