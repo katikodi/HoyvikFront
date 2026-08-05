@@ -9,13 +9,21 @@ public class CheckoutEndpoint : IEndpoint
 	public void MapEndpoint(RouteGroupBuilder app) =>
 		app.MapPost("/payment/create-checkout-session", CreateCheckoutSession);
 
-	async Task<IResult> CreateCheckoutSession()
+	async Task<IResult> CreateCheckoutSession(ILogger<CheckoutEndpoint> logger)
 	{
+		//calculate checkin -> checkout price
+
+
 		var options = new SessionCreateOptions
 		{
 			Mode = "payment",
-			SuccessUrl = "http://localhost:54131/payment/payment-success",
+			SuccessUrl = $"http://localhost:54131/payment/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
 			CancelUrl = "http://localhost:54131/payment/payment-cancel",
+			Currency = "nok",
+			Metadata = new() {
+				{"BookingId", ""},
+				{"CheckIn", "" }
+			},
 			LineItems = [
 				new SessionLineItemOptions(){
 					PriceData = new(){
@@ -25,18 +33,19 @@ public class CheckoutEndpoint : IEndpoint
 						},
 						UnitAmount = 2500,
 					},
-					Quantity = 1
+					Quantity = 1,
 				}
 			]
 		};
 
 		var service = new SessionService();
 
-		var session = await service.CreateAsync(options);
 
+		var session = await service.CreateAsync(options);
 
 		return Results.Ok(new
 		{
+			//send the frontend the url to visit to finalize the order
 			url = session.Url
 		});
 	}
@@ -47,7 +56,7 @@ public class StripeWebhook : IEndpoint
 {
 	public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/payment/webhook", Webhook);
 
-	async Task<IResult> Webhook(HttpRequest request, IConfiguration config, UserDbContext db, ILogger<StripeWebhook> logger)
+	async Task<IResult> Webhook(HttpRequest request, IConfiguration config, Database db, ILogger<StripeWebhook> logger)
 	{
 		var json = await new StreamReader(request.Body).ReadToEndAsync();
 
@@ -57,11 +66,11 @@ public class StripeWebhook : IEndpoint
 
 		try
 		{
-			stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, config["Stripe:WebhookSecret"] ?? throw new Exception("missing webhook secret"));
+			stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, config["Stripe:WebhookSecret"] ?? throw new Exception("Stripe:WebhookSecret is missing"));
 		}
 		catch(Exception ex)
 		{
-			logger.LogError("EventUtility.ConstruEvent: {ex}", ex);
+			logger.LogError(ex, "EventUtility.ConstructEvent");
 			return Results.BadRequest();
 		}
 

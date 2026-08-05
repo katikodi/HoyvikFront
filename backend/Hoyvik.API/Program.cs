@@ -26,12 +26,12 @@ builder.Services
 		x.Password.RequireNonAlphanumeric = false;
 	})
 	.AddDefaultTokenProviders()
-	.AddEntityFrameworkStores<UserDbContext>();
+	.AddEntityFrameworkStores<Database>();
 
 
 builder.Services.RegisterEndpoints();
 
-builder.AddNpgsqlDbContext<UserDbContext>("database");
+builder.AddNpgsqlDbContext<Database>("database");
 
 
 builder.Services.ConfigureApplicationCookie(x =>
@@ -67,8 +67,12 @@ if(app.Environment.IsDevelopment())
 	app.MapOpenApi();
 
 	using var scope = app.Services.CreateScope();
-	var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-	await db.Database.MigrateAsync();
+	var db = scope.ServiceProvider.GetRequiredService<Database>();
+
+	db.Database.EnsureDeleted();
+	db.Database.EnsureCreated();
+	if(!db.Database.GetMigrations().Any())
+		await db.Database.MigrateAsync();
 
 	await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
