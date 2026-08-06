@@ -1,6 +1,14 @@
-import Booking from "../components/Booking";
+// -------------------------------------------------------------
+// STYLE IMPORTS
 import "../styles/Home.css";
 
+// -------------------------------------------------------------
+// COMPONENT IMPORTS
+import Booking from "../components/Booking";
+import Button from "@/components/Button";
+
+// ------------------------------------------------------------
+// ICON AND IMAGE IMPORTS
 // TODO: is there a better way of importing these urls?
 import heroImageUrl from "../images/heroImage.jpg";
 import calendarIconUrl from "../icons/calendarIcon.svg";
@@ -12,6 +20,7 @@ import vikingStuffUrl from "@/images/randomVikingStuff.jpg";
 import rom1Url from "@/images/rom1.jpg";
 import rom2Url from "@/images/rom2.jpg";
 import rom3Url from "@/images/rom3.jpg";
+// -------------------------------------------------------------
 
 // TODO: change divs to semantic elements
 // TODO: verify accessability
@@ -105,8 +114,8 @@ const Nav = () => {
             <NavLogo />
             <div className="nav-links-container">
                 <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
+                    text="SignIn"
+                    linkDestination="/signIn"
                 />
                 <NavLink
                     text="Rom"
@@ -223,23 +232,6 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
                 }}
             ></input>
         </div>
-    );
-};
-
-const Button = ({ text, onClick, height, color, filled = true, style = {}, className }) => {
-    return (
-        <button
-            style={{
-                height: height,
-                backgroundColor: filled ? `${color}` : "transparent",
-                border: filled ? "0" : `3px solid ${color}`,
-                ...style
-            }}
-            onClick={onClick}
-            className={className}
-        >
-            {text}
-        </button>
     );
 };
 
