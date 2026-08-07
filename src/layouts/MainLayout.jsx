@@ -9,14 +9,15 @@ export default function MainLayout() {
             style={{
                 minHeight: "100vh",
                 display: "flex",
-                flexDirection: "column"
+                flexDirection: "column",
+                overflowX: "clip"
             }}
         >
             <header>
                 <NavBar />
             </header>
 
-            <main style={{ flex: 1, border: "1px solid white" }}>
+            <main style={{ flex: 1, border: "1px solid white", width: "100%", height: "100%" }}>
                 <Outlet />
             </main>
 

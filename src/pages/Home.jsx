@@ -111,11 +111,12 @@ const HeroCTAText = ({ text }) => {
 const Nav = () => {
     return (
         <nav className="nav">
+            {/* THESE LINK DESTINATIONS ARE TEMPORARY */}
             <NavLogo />
             <div className="nav-links-container">
                 <NavLink
                     text="SignIn"
-                    linkDestination="/signIn"
+                    linkDestination="/signin"
                 />
                 <NavLink
                     text="Rom"

@@ -1,0 +1,83 @@
+import { useForm } from "react-hook-form";
+import "@/style.css";
+import "@/styles/Form.css";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/auth/AuthContext";
+import { Navigate, useNavigate } from "react-router-dom";
+const SignIn = () => {
+    const { login } = useAuth();
+    const onSubmit = async data => {
+        const result = await login(data.email, data.confirmPassword);
+        if (result) {
+            Navigate("/");
+        }
+        // const response = await fetch("/api/auth/login", {
+        //     method: "POST",
+        //     body: JSON.stringify(data),
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     }
+        // });
+
+        // console.log(response    );
+        // if(response.status == 200){
+        //     navigate("/");
+        // }
+    };
+
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors }
+    } = useForm();
+    return (
+        <div className="signup-background">
+            <div className="form-container">
+                <h1
+                    className="cinzel"
+                    style={{ color: "var(--textbrown)" }}
+                >
+                    Sign in
+                </h1>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <input
+                        type="email"
+                        placeholder="johndoe@email.com"
+                        {...register("email", { required: true })}
+                    />
+                    {errors.email && <span className="error">Email is required!</span>}
+                    <input
+                        type="password"
+                        placeholder="password"
+                        {...register("password", { required: true })}
+                    />
+                    <Link
+                        style={{
+                            color: "var(--darkgreen)"
+                        }}
+                        // TODO: set up password reset
+                        // to={"/"}
+                    >
+                        Forgot your password?
+                    </Link>
+
+                    <input
+                        type="submit"
+                        value="SIGN IN"
+                    />
+                </form>
+                <Link
+                    style={{
+                        color: "var(--darkgreen)"
+                    }}
+                    to={"/signup"}
+                >
+                    Don't have an account?
+                </Link>
+            </div>
+        </div>
+    );
+};
+
+export default SignIn;

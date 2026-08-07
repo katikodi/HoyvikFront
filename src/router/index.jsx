@@ -13,6 +13,7 @@ import Login from "../pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import Profile from "@/pages/auth/Profile";
 import SignUp from "@/pages/Signup";
+import SignIn from "@/pages/Signin";
 
 export const router = createBrowserRouter([
     //any user
@@ -26,7 +27,8 @@ export const router = createBrowserRouter([
             { path: "aboutus", element: <AboutUs /> },
             { path: "login", element: <Login /> },
             { path: "register", element: <Register /> },
-            { path: "signup", element: <SignUp /> }
+            { path: "signup", element: <SignUp /> },
+            { path: "signin", element: <SignIn /> }
         ]
     },
     //Logged-in Users
