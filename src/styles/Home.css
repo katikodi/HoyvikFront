@@ -1,11 +1,15 @@
 html {
     --booking-input-height: 4rem;
+    --booking-input-icon-size: 30px;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
     background-image: url("../icons/calendarIcon.svg");
     background-repeat: no-repeat;
-    background-size: "100px";
+    height: var(--booking-input-icon-size);
+    width: var(--booking-input-icon-size);
+    background-size: cover;
     order: 0;
 }
 
@@ -98,7 +102,10 @@ button {
     color: var(--textbrown);
 }
 
-.hero-booking-input {
+.hero-booking-input,
+.hero-booking-input:hover,
+.hero-booking-input:active,
+.hero-booking-input:focus-visible {
     background: transparent;
     display: flex;
     width: 100%;

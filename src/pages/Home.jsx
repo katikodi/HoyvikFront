@@ -147,7 +147,6 @@ const HeroBooking = () => {
 };
 
 const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
-    // TODO: fix icons changing size on hover
     return (
         <div className="hero-booking-input-container">
             <label
