@@ -2,6 +2,7 @@ using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,9 @@ builder.Services.AddAuthorizationBuilder()
 	.AddDefaultPolicy("Guest", p => p.RequireRole("guest"))
 	.AddPolicy("User", p => p.RequireRole("user"))
 	.AddPolicy("Admin", p => p.RequireRole("admin"));
+
+
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 
 
 builder.Services
@@ -23,12 +27,12 @@ builder.Services
 		x.Password.RequireNonAlphanumeric = false;
 	})
 	.AddDefaultTokenProviders()
-	.AddEntityFrameworkStores<UserDbContext>();
+	.AddEntityFrameworkStores<Database>();
 
 
 builder.Services.RegisterEndpoints();
 
-builder.AddNpgsqlDbContext<UserDbContext>("database");
+builder.AddNpgsqlDbContext<Database>("database");
 
 
 builder.Services.ConfigureApplicationCookie(x =>
@@ -64,18 +68,22 @@ if(app.Environment.IsDevelopment())
 	app.MapOpenApi();
 
 	using var scope = app.Services.CreateScope();
-	var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-	await db.Database.MigrateAsync();
+	var db = scope.ServiceProvider.GetRequiredService<Database>();
+
+	db.Database.EnsureDeleted();
+	db.Database.EnsureCreated();
+
+	if(!db.Database.GetMigrations().Any())
+		await db.Database.MigrateAsync();
 
 	await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
 if(app.Environment.IsProduction())
-app.UseHttpsRedirection();
+	app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapApiEndpoints();
-
 app.Run();
 

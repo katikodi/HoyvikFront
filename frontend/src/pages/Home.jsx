@@ -105,19 +105,20 @@ const Nav = () => {
         <nav className="nav">
             <NavLogo />
             <div className="nav-links-container">
-                <NavLink to={"/booking"}>
+
+                <NavLink to={"/booking"} className="cinzel nav-link" style={{color: "var(--bg-2)"}}>
                     Booking
                 </NavLink>
-                <NavLink to={"/booking"}>
+                <NavLink to={"/booking"} className="cinzel nav-link" style={{color: "var(--bg-2)"}}>
                     Booking
-                </NavLink>                
-                <NavLink to={"/booking"}>
+                </NavLink>
+                <NavLink to={"/booking"} className="cinzel nav-link" style={{color: "var(--bg-2)"}}>
                     Booking
-                </NavLink>                
-                <NavLink to={"/booking"}>
+                </NavLink>
+                <NavLink to={"/booking"} className="cinzel nav-link" style={{color: "var(--bg-2)"}}>
                     Booking
-                </NavLink>                
-                <NavLink to={"/booking"}>
+                </NavLink>
+                <NavLink to={"/booking"} className="cinzel nav-link" style={{color: "var(--bg-2)"}}>
                     Booking
                 </NavLink>
             </div>
