@@ -1,17 +1,15 @@
-// -------------------------------------------------------------
-// STYLE IMPORTS
-import "../styles/Home.css";
+import "@/styles/Home.css";
 
 // -------------------------------------------------------------
 // COMPONENT IMPORTS
-import Booking from "../components/Booking";
+import Booking from "@/components/Booking";
 import Button from "@/components/Button";
 
 // ------------------------------------------------------------
 // ICON AND IMAGE IMPORTS
 // TODO: is there a better way of importing these urls?
-import heroImageUrl from "../images/heroImage.jpg";
-import calendarIconUrl from "../icons/calendarIcon.svg";
+import heroImageUrl from "@/images/heroImage.jpg";
+import calendarIconUrl from "@/icons/calendarIcon.svg";
 import turstierIconUrl from "@/icons/manHiking.svg";
 import cabinUrl from "@/icons/cabinWithSmokingChimney.svg";
 import vikingUrl from "@/icons/vikingHelmet.svg";
