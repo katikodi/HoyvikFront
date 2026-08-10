@@ -11,6 +11,7 @@ export default defineConfig(({mode}) => {
   return {
     plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
     server: {
+      port: 54131,
       proxy: {
         // Proxy API calls to the app service
         '/api': {

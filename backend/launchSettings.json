@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "hoyvik.api",
+      "serviceActions": {
+        "hoyvik.api": "StartDebugging",
+        "postgres": "StartWithoutDebugging"
+      }
+    }
+  }
+}

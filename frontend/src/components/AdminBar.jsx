@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import {NavLink } from "react-router-dom";
 
 export default function AdminBar() {
     return (
@@ -7,12 +7,12 @@ export default function AdminBar() {
             style={{ border: "1px solid white" }}
         >
             <div>
-                <Link to="/">Home/logo</Link>
+                <NavLink to="/">Home/logo</NavLink>
             </div>
             <div>
-                <Link to="booking">Admin</Link>
-                <Link to="events">Admin</Link>
-                <Link to="aboutus">Om Admin</Link>
+                <NavLink to="booking">Admin</NavLink>
+                <NavLink to="events">Admin</NavLink>
+                <NavLink to="aboutus">Om Admin</NavLink>
             </div>
             <div>
                 <p>Admin bar!!</p>
