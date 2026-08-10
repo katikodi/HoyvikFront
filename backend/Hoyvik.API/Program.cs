@@ -3,6 +3,7 @@ using Hoyvik.API.Endpoints;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
@@ -71,6 +72,7 @@ if(app.Environment.IsDevelopment())
 
 	db.Database.EnsureDeleted();
 	db.Database.EnsureCreated();
+
 	if(!db.Database.GetMigrations().Any())
 		await db.Database.MigrateAsync();
 
@@ -82,7 +84,6 @@ if(app.Environment.IsProduction())
 
 app.UseAuthentication();
 app.UseAuthorization();
-//app.MapApiEndpoints();
-app.MapApiEndpointsProtected();
+app.MapApiEndpoints();
 app.Run();
 
