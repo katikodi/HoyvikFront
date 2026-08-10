@@ -45,6 +45,7 @@ button {
     padding-top: 200px;
     width: 22rem;
     padding-left: 5.5rem;
+    color: var(--brightgreen);
 }
 
 .hero-large-text {
@@ -69,7 +70,6 @@ button {
     margin-top: auto;
     position: relative;
     transform: translateY(30%);
-    color: var(--brightgreen);
 
     z-index: 55;
 }

@@ -20,6 +20,7 @@ html {
     width: 100%;
     height: var(--header-height);
     z-index: 100;
+    backdrop-filter: brightness(70%);
 }
 
 .nav-links-container {

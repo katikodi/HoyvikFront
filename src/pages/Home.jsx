@@ -52,7 +52,7 @@ export default function Home() {
         }
     ];
     return (
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "column", backgroundColor: "var(--bg1)" }}>
             <Hero />
             <IconSection icons={icons} />
             <AboutSection />
