@@ -28,7 +28,8 @@ export const router = createBrowserRouter([
             { path: "login", element: <Login /> },
             { path: "register", element: <Register /> },
             { path: "signup", element: <SignUp /> },
-            { path: "signin", element: <SignIn /> }
+            { path: "signin", element: <SignIn /> },
+            { path: "admin", element: <Admin /> }
         ]
     },
     //Logged-in Users

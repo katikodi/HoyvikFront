@@ -150,7 +150,8 @@ button {
 }
 
 .icon-section .blocker {
-    background-color: var(--bg1);
+    background-color: rgba(from var(--bg1) / 80);
+    backdrop-filter: brightness(70%);
 }
 
 .icon-section-icon > img {

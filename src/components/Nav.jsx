@@ -10,8 +10,8 @@ const Nav = () => {
                     linkDestination="/signin"
                 />
                 <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
+                    text="Admin"
+                    linkDestination="/admin"
                 />
                 <NavLink
                     text="Rom"
