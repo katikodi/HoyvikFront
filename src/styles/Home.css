@@ -1,3 +1,7 @@
+html {
+    --booking-input-height: 4rem;
+}
+
 input[type="date"]::-webkit-calendar-picker-indicator {
     background-image: url("../icons/calendarIcon.svg");
     background-repeat: no-repeat;
@@ -22,9 +26,19 @@ button {
     background-position: center;
     display: flex;
     flex-direction: column;
+    background-image:
+        linear-gradient(93deg, rgba(62, 85, 70, 0.47) 1.68%, rgba(96, 141, 111, 0.08) 52.57%, rgba(125, 188, 146, 0) 97.9%),
+        linear-gradient(106deg, rgba(0, 0, 0, 0.26) 13.4%, rgba(255, 255, 255, 0) 100%),
+        linear-gradient(180deg, #1a1a1b 0%, rgba(75, 75, 78, 0.15) 49.73%, rgba(124, 124, 129, 0) 100%),
+        url("@/images/heroImage.jpg");
 }
 
+.hero .blocker {
+    backdrop-filter: blur(2px);
+    z-index: 60;
+}
 .hero-text-container {
+    padding-top: 200px;
     width: 22rem;
     padding-left: 5.5rem;
 }
@@ -45,44 +59,15 @@ button {
     font-weight: 400;
 }
 
-.nav {
-    background: transparent;
-    display: flex;
-    flex-direction: row;
-    padding: 1em 2em;
-    justify-content: space-between;
-}
-
-.nav-links-container {
-    display: flex;
-    flex-direction: row;
-    gap: 118px;
-    justify-items: center;
-    align-items: center;
-}
-
-.nav-link {
-    font-size: 1rem;
-    line-height: normal;
-    text-decoration: none;
-}
-
-.nav-logo {
-    display: flex;
-    width: 15.5rem;
-    height: 4.9375rem;
-    padding: 1.6875rem 0 1.75rem 0;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-}
-
 .hero-booking-container {
     padding-left: 12rem;
     padding-right: 6rem;
     margin-top: auto;
     position: relative;
     transform: translateY(30%);
+    color: var(--brightgreen);
+
+    z-index: 55;
 }
 
 .hero-booking {
@@ -95,6 +80,12 @@ button {
     justify-content: space-around;
     width: 100%;
     max-width: 100%;
+    background: var(--bg2);
+}
+
+.hero-booking > button {
+    background-color: var(--brown);
+    height: var(--booking-input-height);
 }
 
 .booking-button {
@@ -104,6 +95,7 @@ button {
 .hero-booking-label {
     font-size: 0.75rem;
     line-height: normal;
+    color: var(--textbrown);
 }
 
 .hero-booking-input {
@@ -112,8 +104,16 @@ button {
     width: 100%;
     align-items: center;
     font-size: 2.25rem;
+    border: 2px solid var(--darkgreen);
+    height: var(--booking-input-height);
 }
 
+.hero-booking-input-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 0.3rem;
+}
 button {
     display: flex;
     padding: 0 1.0625rem;
@@ -121,8 +121,8 @@ button {
     align-items: center;
 }
 
-.icon-section {
-    display: inline-flex;
+.icon-container {
+    height: 300px;
     padding: 5.1875rem 3.8125rem 5.25rem 3.8125rem;
     justify-content: center;
     align-items: center;
@@ -131,12 +131,19 @@ button {
     flex-direction: row;
     padding-inline: 3.2rem;
     gap: 14rem;
+
+    background: var(--bg1);
+    color: var(--icons);
 }
 
 .icon-section-icon {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.icon-section .blocker {
+    background-color: var(--bg1);
 }
 
 .icon-section-icon > img {
@@ -151,11 +158,21 @@ button {
     text-align: center;
 }
 
+.about-section {
+    background: var(--bg2);
+}
+
+.about-section .blocker {
+    background-color: var(--bg2);
+}
+
 .random-section {
     display: flex;
     flex-direction: column;
 }
-
+.random-section .blocker {
+    background-color: green;
+}
 .random-section-section {
     background: transparent;
     display: flex;
@@ -181,6 +198,7 @@ button {
     gap: 2rem;
     align-items: flex-start;
     padding-inline: 5rem;
+    color: var(--Text-text-opacity-down);
 }
 
 .copy-section > p {
@@ -194,6 +212,7 @@ button {
     padding: 1rem 0 0.9375rem 0;
     font-size: 1.2rem;
     line-height: normal;
+    color: var(--brown);
 }
 
 .image-carousel {
@@ -211,6 +230,7 @@ button {
     box-shadow: 6px 6px 4px 0 rgba(0, 0, 0, 0.25);
     height: 20rem;
     width: 20rem;
+    border: 2px solid var(--darkgreen);
 }
 
 .carousel-card-image {
@@ -235,9 +255,11 @@ button {
     justify-content: space-around;
     align-items: center;
     padding-inline: 1rem;
+    background: var(--bg1);
 }
 
 .carousel-card-header > button {
     width: 7rem;
     margin-left: auto;
+    border: 2px solid var(--textbrown);
 }

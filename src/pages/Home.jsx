@@ -55,20 +55,15 @@ export default function Home() {
         <div style={{ display: "flex", flexDirection: "column" }}>
             <Hero />
             <IconSection icons={icons} />
-            <NextSection />
+            <AboutSection />
         </div>
     );
 }
 
 const Hero = () => {
     return (
-        <div
-            style={{
-                backgroundImage: `linear-gradient(93deg, rgba(62, 85, 70, 0.47) 1.68%, rgba(96, 141, 111, 0.08) 52.57%, rgba(125, 188, 146, 0.00) 97.9%), linear-gradient(106deg, rgba(0, 0, 0, 0.26) 13.4%, rgba(255, 255, 255, 0.00) 100%), linear-gradient(180deg, #1A1A1B 0%, rgba(75, 75, 78, 0.15) 49.73%, rgba(124, 124, 129, 0.00) 100%), url(${heroImageUrl}`
-            }}
-            className="hero"
-        >
-            <Nav />
+        <div className="hero">
+            <div className="blocker"></div>
             <HeroTextContent
                 largeText={"Høyvika Ferie og Fritid"}
                 CTAText={"CTA Tagline tekst, må vere fangande keywords som er SEO"}
@@ -80,10 +75,7 @@ const Hero = () => {
 
 const HeroTextContent = ({ largeText, CTAText }) => {
     return (
-        <div
-            className="hero-text-container"
-            style={{ color: "var(--brightgreen)" }}
-        >
+        <div className="hero-text-container">
             <HeroLargeText text={largeText} />
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -108,57 +100,6 @@ const HeroLargeText = ({ text }) => {
 const HeroCTAText = ({ text }) => {
     return <h2 className="monsterrat hero-cta-text">{text}</h2>;
 };
-const Nav = () => {
-    return (
-        <nav className="nav">
-            {/* THESE LINK DESTINATIONS ARE TEMPORARY */}
-            <NavLogo />
-            <div className="nav-links-container">
-                <NavLink
-                    text="SignIn"
-                    linkDestination="/signin"
-                />
-                <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
-                />
-                <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
-                />
-                <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
-                />
-                <NavLink
-                    text="Rom"
-                    linkDestination="/Booking"
-                />
-            </div>
-            <NavLogo />
-        </nav>
-    );
-};
-
-const NavLink = ({ text, linkDestination }) => {
-    // TODO: figure out if these have a hover effect
-    // TODO: should these use react router Link instead of a?
-    return (
-        <a
-            href={linkDestination}
-            className="cinzel nav-link"
-            style={{
-                color: "var(--bg-2)"
-            }}
-        >
-            {text}
-        </a>
-    );
-};
-
-const NavLogo = () => {
-    return <div className="nav-logo">LOGO</div>;
-};
 
 const HeroBooking = () => {
     // TODO: this solution feels inelegant
@@ -166,12 +107,7 @@ const HeroBooking = () => {
     const buttonHeight = "4rem";
     return (
         <div className="hero-booking-container">
-            <div
-                className="hero-booking"
-                style={{
-                    background: "var(--bg2)"
-                }}
-            >
+            <div className="hero-booking">
                 <HeroBookingInput
                     inputType={"date"}
                     labelText={"Innsjekk"}
@@ -202,7 +138,6 @@ const HeroBooking = () => {
                 />
                 <Button
                     className="booking-button"
-                    style={{ backgroundColor: "var(--brown)", height: `${buttonHeight}` }}
                     text={"SJEKK TILGJENGELIGHET"}
                     onClick={() => console.log("cluck")}
                 ></Button>
@@ -212,14 +147,12 @@ const HeroBooking = () => {
 };
 
 const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
+    // TODO: fix icons changing size on hover
     return (
-        <div style={{ display: "flex", flexDirection: "column", flexGrow: "1", gap: "0.3rem" }}>
+        <div className="hero-booking-input-container">
             <label
                 htmlFor={inputId}
                 className="monsterrat hero-booking-label"
-                style={{
-                    color: "var(--textbrown)"
-                }}
             >
                 {labelText}
             </label>
@@ -227,10 +160,6 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
                 className="hero-booking-input"
                 id={inputId}
                 type={inputType}
-                style={{
-                    border: "2px solid var(--darkgreen)",
-                    height: height
-                }}
             ></input>
         </div>
     );
@@ -238,20 +167,17 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
 
 const IconSection = ({ icons }) => {
     return (
-        <div
-            className="icon-section"
-            style={{
-                background: "var(--bg1)",
-                color: "var(--icons)"
-            }}
-        >
-            {icons.map(icon => (
-                <IconSectionIcon
-                    key={icon.id}
-                    icon={icon.iconURL}
-                    text={icon.text}
-                />
-            ))}
+        <div className="icon-section">
+            <div className="blocker"></div>
+            <div className="icon-container">
+                {icons.map(icon => (
+                    <IconSectionIcon
+                        key={icon.id}
+                        icon={icon.iconURL}
+                        text={icon.text}
+                    />
+                ))}
+            </div>
         </div>
     );
 };
@@ -268,13 +194,10 @@ const IconSectionIcon = ({ icon, text }) => {
     );
 };
 // TODO: wtf is this section called?
-const NextSection = () => {
+const AboutSection = () => {
     return (
-        <div
-            style={{
-                background: "var(--bg2)"
-            }}
-        >
+        <div className="about-section">
+            <div className="blocker"></div>
             <RandomSection />
         </div>
     );
@@ -308,18 +231,8 @@ const RandomSection = () => {
 const CopySection = ({ copy, onClick, buttonText }) => {
     return (
         <div className="copy-section">
-            <p
-                className="monsterrat"
-                style={{
-                    color: "var(--Text-text-opacity-down)"
-                }}
-            >
-                {copy}
-            </p>
+            <p className="monsterrat">{copy}</p>
             <Button
-                style={{
-                    color: "var(--brown)"
-                }}
                 text={buttonText || "CTA"}
                 onClick={onClick}
                 height="2rem"
@@ -351,12 +264,7 @@ const ImageCarousel = () => {
 
 const CarouselCard = ({ imageUrl, imageText }) => {
     return (
-        <div
-            className="carousel-card"
-            style={{
-                border: "2px solid var(--darkgreen)"
-            }}
-        >
+        <div className="carousel-card">
             <div
                 className="carousel-card-image thicc-monsterrat"
                 style={{
@@ -365,15 +273,9 @@ const CarouselCard = ({ imageUrl, imageText }) => {
             >
                 {imageText}
             </div>
-            <div
-                className="carousel-card-header"
-                style={{
-                    background: "var(--bg1)"
-                }}
-            >
+            <div className="carousel-card-header">
                 <Button
                     filled={false}
-                    style={{ border: "2px solid var(--textbrown)" }}
                     height={"2rem"}
                     onClick={() => {
                         console.log("room click");
