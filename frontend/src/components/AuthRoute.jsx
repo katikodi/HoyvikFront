@@ -11,7 +11,7 @@ export default function AuthRoute() {
         console.log("not logged in. redirecting to login page");
         return (
             <Navigate
-                to="/login"
+                to="/Signin"
                 replace
             />
         );

@@ -2,16 +2,26 @@ import "@/styles/Nav.css";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 const Nav = () => {
-    const { isAdmin } = useAuth();
+    const { isAdmin, user, logout } = useAuth();
 
     return (
         <nav className="nav">
             {/* THESE LINK DESTINATIONS ARE TEMPORARY */}
             <NavLogo />
             <div className="nav-links-container">
-                <NavLink to="/signin">Sign in</NavLink>
+                {user ? <NavLink to="/profile">Profile</NavLink> : <NavLink to="/Signin">Sign in</NavLink>}
 
                 {isAdmin && <NavLink to="/admin">Admin</NavLink>}
+                {user && (
+                    <NavLink
+                        to="/"
+                        onClick={async () => {
+                            await logout();
+                        }}
+                    >
+                        Log out
+                    </NavLink>
+                )}
 
                 <NavLink to="/Booking">Rom</NavLink>
             </div>

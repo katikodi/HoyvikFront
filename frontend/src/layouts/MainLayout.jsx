@@ -15,7 +15,6 @@ export default function MainLayout() {
             }}
         >
             <header>
-                <div className="blocker"></div>
                 <Nav />
                 {/* <NavBar /> */}
             </header>

@@ -1,9 +1,9 @@
+import "@/style.css";
 import { Outlet } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import AdminBar from "@/components/AdminBar";
-
-// import '@/style.css';
+import Nav from "@/components/Nav";
 
 export default function AdminLayout() {
     return (
@@ -11,14 +11,17 @@ export default function AdminLayout() {
             style={{
                 minHeight: "100vh",
                 display: "flex",
-                flexDirection: "column"
+                flexDirection: "column",
+                overflowX: "clip"
             }}
         >
             <header>
-                <AdminBar />
+                <Nav />
+                <div className="blocker"></div>
+                {/* <AdminBar /> */}
             </header>
 
-            <main style={{ flex: 1, border: "1px solid white", padding: "10px", margin: "10px" }}>
+            <main style={{ flex: 1, border: "1px solid white", width: "100%", height: "100%" }}>
                 <Outlet />
             </main>
         </div>

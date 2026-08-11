@@ -6,10 +6,11 @@ import { useAuth } from "@/auth/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
 const SignIn = () => {
     const { login } = useAuth();
+    let navigate = useNavigate();
     const onSubmit = async data => {
-        const result = await login(data.email, data.confirmPassword);
+        const result = await login(data.email, data.password);
         if (result) {
-            Navigate("/");
+            navigate("/");
         }
         // const response = await fetch("/api/auth/login", {
         //     method: "POST",
