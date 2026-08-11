@@ -9,19 +9,19 @@ export default function AdminLayout() {
     return (
         <div
             style={{
+                maxHeight: "100vh",
                 minHeight: "100vh",
                 display: "flex",
                 flexDirection: "column",
-                overflowX: "clip"
+                overflow: "clip"
             }}
         >
             <header>
                 <Nav />
-                <div className="blocker"></div>
                 {/* <AdminBar /> */}
             </header>
 
-            <main style={{ flex: 1, border: "1px solid white", width: "100%", height: "100%" }}>
+            <main style={{ flex: 1, border: "1px solid white", width: "100%", height: "100%", overflow: "clip" }}>
                 <Outlet />
             </main>
         </div>
