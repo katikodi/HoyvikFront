@@ -31,11 +31,16 @@ html {
     align-items: center;
 }
 
-.nav-link {
+a {
     font-size: 1rem;
     line-height: normal;
     text-decoration: none;
     color: var(--bg-2);
+}
+
+a.active {
+    font-size: 1.3rem;
+    text-decoration: underline;
 }
 
 .nav-logo {
@@ -46,8 +51,4 @@ html {
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-}
-
-a {
-    color: var(--bg-2);
 }
