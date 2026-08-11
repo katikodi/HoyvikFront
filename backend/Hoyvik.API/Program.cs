@@ -73,7 +73,7 @@ if(app.Environment.IsDevelopment())
 	db.Database.EnsureDeleted();
 	db.Database.EnsureCreated();
 
-	if(!db.Database.GetMigrations().Any())
+	if (!db.Database.GetMigrations().Any())
 		await db.Database.MigrateAsync();
 
 	await IdentitySeeder.SeedAsync(scope.ServiceProvider);
@@ -85,5 +85,7 @@ if(app.Environment.IsProduction())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapApiEndpoints();
+
+
 app.Run();
 
