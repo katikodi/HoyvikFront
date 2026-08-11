@@ -9,13 +9,12 @@ export default function MainLayout() {
             style={{
                 minHeight: "100vh",
                 display: "flex",
-                flexDirection: "column"
-                // overflowX: "clip"
+                flexDirection: "column",
+                overflowX: "clip"
             }}
         >
             <header>
-                {/* Why blocker?? */}
-                {/* <div className="blocker"></div> */}
+                <div className="blocker"></div>
                 <Nav />
                 {/* <NavBar /> */}
             </header>
