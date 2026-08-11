@@ -2,7 +2,7 @@
 // HOOKS / COMPONENTS
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffects } from "react";
 
 // -----------------------------------
 // STYLES
@@ -19,6 +19,38 @@ import vikingHelmetUrl from "@/icons/vikingHelmet.svg";
 // -----------------------------------
 
 export const Admin = () => {
+    const [users, setUsers] = useState(null);
+
+    async function fetchUsers() {
+        const response = await fetch("/api/admin/users", {
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            setUsers(null);
+            return;
+        }
+
+        const data = await response.json();
+        setUsers(data.users);
+    }
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    // if (!users) return <p>No users</p>;
+    //  <ul>
+    //         {users.map(user => (
+    //             <User
+    //                 key={user.id}
+    //                 user={user}
+    //             />
+    //         ))}
+    //     </ul>
     return (
         <div
             style={{
@@ -290,4 +322,13 @@ const EditIcons = () => {
     );
 };
 
-export default Admin;
+function User({ user }) {
+    const { id, userName, email } = user;
+    return (
+        <li style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+            <h3>{userName}</h3>
+            <p>{email}</p>
+            <small>{id}</small>
+        </li>
+    );
+}

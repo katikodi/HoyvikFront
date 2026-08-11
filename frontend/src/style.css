@@ -78,9 +78,9 @@ header {
     width: 1476px;
     display: grid;
 
-    grid-template-columns: repeat(5 30px);
+    grid-template-columns: repeat(5, 30px);
     /* can someone help  */
-    grid-template-rows: repeat(2 10px);
+    grid-template-rows: repeat(2, 10px);
 }
 
 .booking:nth-child {

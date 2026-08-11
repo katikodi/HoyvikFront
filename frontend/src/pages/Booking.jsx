@@ -1,37 +1,39 @@
 import { useEffect } from "react";
-
 export default function Booking() {
     useEffect(() => {
-        async function fetchData(){
-            const response = await fetch("/api/payment/create-checkout-session",{
+        const controller = new AbortController();
+        let timeoutId;
+
+        async function startCheckout() {
+            const response = await fetch("/api/payment/create-checkout-session", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 credentials: "include",
+                signal: controller.signal
             });
 
             const result = await response.json();
 
-            if(response.ok){
-                return result.url;
+            if (!response.ok || !result.url) return;
+
+            timeoutId = setTimeout(() => {
+                window.location.href = result.url;
+            }, 5000);
+        }
+
+        startCheckout().catch(error => {
+            if (error.name !== "AbortError") {
+                console.error(error);
             }
+        });
 
-            return null;
-        }
+        return () => {
+            clearTimeout(timeoutId);
+            controller.abort();
+        };
+    }, []);
 
-
-        async function startCheckout(){
-            const url = await fetchData();
-            window.location.href = url;
-        }
-
-         startCheckout();
-    },);
-
-    return (
-        <div>
-            <h2>YO</h2>
-        </div>
-    );
+    return <div>You are being redirected....</div>;
 }

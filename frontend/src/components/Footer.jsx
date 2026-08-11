@@ -1,9 +1,6 @@
 export default function Footer() {
     return (
-        <div
-            className="footer"
-            style={{ border: "1px solid gray" }}
-        >
+        <div className="footer">
             <h1>Footer</h1>
         </div>
     );

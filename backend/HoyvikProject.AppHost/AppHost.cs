@@ -4,6 +4,7 @@ var postgres = builder
 	.AddPostgres("postgres")
 	.WithDataVolume("hoyvik_data")
 	.WithPgAdmin()
+	.WithHttpEndpoint(port: 5432, targetPort: 5432)
 	.WithLifetime(ContainerLifetime.Persistent);
 
 var db = postgres.AddDatabase("database", "hoyvika");
