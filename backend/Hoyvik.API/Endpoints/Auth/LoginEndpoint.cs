@@ -15,10 +15,15 @@ public class LoginEndpoint : IEndpoint
     {
         var user = await userManager.FindByEmailAsync(request.Email);
 
+
         if (user is not null)
         {
-            await signInManager.SignInAsync(user, true);
-            return Results.Ok();
+            if (await userManager.CheckPasswordAsync(user, request.Password))
+            {
+                await signInManager.SignInAsync(user, true);
+                return Results.Ok();
+            }
+            return Results.BadRequest();
         }
 
 
@@ -26,6 +31,6 @@ public class LoginEndpoint : IEndpoint
     }
 
     record LoginRequest(
-		string Email,
-		string Password);
+        string Email,
+        string Password);
 }
