@@ -1,7 +1,5 @@
-import UsersList from "@/components/admin/UsersList";
-
 export const Admin = () => {
-    return <UsersList></UsersList>;
+    <></>;
 };
 
 const EditSection = () => {
