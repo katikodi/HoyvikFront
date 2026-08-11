@@ -2,7 +2,7 @@
 // HOOKS / COMPONENTS
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { useState, useEffects } from "react";
+import { useState, useEffect } from "react";
 
 // -----------------------------------
 // STYLES
@@ -18,7 +18,7 @@ import Button from "@/components/Button";
 import vikingHelmetUrl from "@/icons/vikingHelmet.svg";
 // -----------------------------------
 
-export const Admin = () => {
+const Admin = () => {
     const [users, setUsers] = useState(null);
 
     async function fetchUsers() {
@@ -72,7 +72,7 @@ export const Admin = () => {
         </div>
     );
 };
-
+export default Admin;
 const SideBar = () => {
     return <div style={{ maxWidth: "10rem", backgroundColor: "var(--bg1)", flex: "1 0 10rem" }}></div>;
 };
