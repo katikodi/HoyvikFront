@@ -9,7 +9,6 @@ export function AuthProvider({ children }) {
     const isAdmin = user?.roles?.includes("admin") ?? false;
 
     async function fetchUser() {
-        console.log("-----");
         try {
             const response = await fetch("/api/auth/me", {
                 credentials: "include"
