@@ -79,6 +79,7 @@ export function AuthProvider({ children }) {
     }
 
     useEffect(() => {
+        console.log("useeffect");
         fetchUser().finally(() => setLoading(false));
     }, []);
 

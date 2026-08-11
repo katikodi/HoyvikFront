@@ -9,12 +9,7 @@ export default function AuthRoute() {
 
     if (!user) {
         console.log("not logged in. redirecting to login page");
-        return (
-            <Navigate
-                to="/login"
-                replace
-            />
-        );
+        return <Navigate to="/signin" />;
     }
 
     return <Outlet />;

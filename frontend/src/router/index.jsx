@@ -9,12 +9,11 @@ import NotFound from "@/components/NotFound";
 import AboutUs from "@/pages/AboutUs";
 import AuthRoute from "@/components/AuthRoute";
 import AdminRoute from "@/components/AdminRoute";
-import Login from "@/pages/auth/Login";
-import Register from "@/pages/auth/Register";
 import Profile from "@/pages/auth/Profile";
 import SignUp from "@/pages/Signup";
 import SignIn from "@/pages/Signin";
 import PaymentSucceeded from "@/pages/payment/PaymentSucceeded";
+import PaymentCancelled from "@/pages/payment/PaymentCancelled";
 
 export const router = createBrowserRouter([
     //any user
@@ -26,12 +25,11 @@ export const router = createBrowserRouter([
             { path: "booking", element: <Booking /> },
             { path: "events", element: <Events /> },
             { path: "aboutus", element: <AboutUs /> },
-            { path: "login", element: <Login /> },
-            { path: "register", element: <Register /> },
             { path: "signup", element: <SignUp /> },
             { path: "signin", element: <SignIn /> },
             { path: "admin", element: <Admin /> },
-            { path: "payment/payment-success", element: <PaymentSucceeded /> }
+            { path: "payment/payment-success", element: <PaymentSucceeded /> },
+            { path: "payment/payment-cancel", element: <PaymentCancelled /> }
         ]
     },
     //Logged-in Users

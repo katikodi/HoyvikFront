@@ -15,7 +15,8 @@ html {
     flex-direction: row;
     padding: 1em 2em;
     justify-content: space-between;
-    position: fixed;
+    /*Why fixed??*/
+    /* position: fixed; */
     inset-block-start: 0;
     width: 100%;
     height: var(--header-height);

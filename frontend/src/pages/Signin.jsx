@@ -3,26 +3,24 @@ import "@/style.css";
 import "@/styles/Form.css";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/auth/AuthContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
 const SignIn = () => {
-    const { login } = useAuth();
+    const { login, user } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            navigate("/");
+        }
+    }, [user]);
+
     const onSubmit = async data => {
         const result = await login(data.email, data.confirmPassword);
         if (result) {
-            Navigate("/");
+            navigate("/");
         }
-        // const response = await fetch("/api/auth/login", {
-        //     method: "POST",
-        //     body: JSON.stringify(data),
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     }
-        // });
-
-        // console.log(response    );
-        // if(response.status == 200){
-        //     navigate("/");
-        // }
     };
 
     const {
@@ -31,6 +29,7 @@ const SignIn = () => {
         watch,
         formState: { errors }
     } = useForm();
+
     return (
         <div className="signup-background">
             <div className="form-container">

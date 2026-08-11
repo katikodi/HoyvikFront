@@ -1,11 +1,7 @@
+import UsersList from "@/components/admin/UsersList";
+
 export const Admin = () => {
-    return (
-        <div>
-            <div className="blocker"></div>
-            <h1>Admin Panel</h1>
-            <p>Welcome to the admin panel!</p>
-        </div>
-    );
+    return <UsersList></UsersList>;
 };
 
 const EditSection = () => {
