@@ -25,6 +25,11 @@ const SignIn = () => {
 
     return (
         <div className="signup-background">
+            <div style={{ color: "red", padding: "1rem" }}>
+                <p>btw</p>
+                <p>username: admin@admin.com</p>
+                <p>password: admin@admin.com</p>
+            </div>
             <div className="form-container">
                 <h1
                     className="cinzel"
