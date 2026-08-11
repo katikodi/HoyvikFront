@@ -16,7 +16,8 @@ html {
     padding: 1em 2em;
     justify-content: space-between;
     /*Why fixed??*/
-    /* position: fixed; */
+    /* can you stop fucking with my styles??? */
+    position: fixed;
     inset-block-start: 0;
     width: 100%;
     height: var(--header-height);
