@@ -16,6 +16,7 @@ import uploadIconUrl from "@/icons/uploadIcon.svg";
 import chevronDownUrl from "@/icons/chevronDown.svg";
 import Button from "@/components/Button";
 import vikingHelmetUrl from "@/icons/vikingHelmet.svg";
+import userIconUrl from "@/icons/userIcon.svg";
 // -----------------------------------
 
 const Admin = () => {
@@ -51,47 +52,78 @@ const Admin = () => {
     //             />
     //         ))}
     //     </ul>
+    const sidebarWidth = "10vw";
+
+    return (
+        <Layout
+            sidebarWidth={sidebarWidth}
+            style={{ flex: "1 1 auto" }}
+        >
+            <EditPage pageName={"Home"} />
+            <SaveBar sidebarWidth={sidebarWidth} />
+        </Layout>
+    );
+    {
+        /* <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "clip" }}> */
+    }
+    {
+        /* <div
+                    style={{ flex: "1 1 10rem", overflowY: "scroll", overflowX: "clip", padding: "2rem", width: "100%" }}
+                ></div> */
+    }
+    {
+        /* </div> */
+    }
+};
+
+const Layout = ({ sidebarWidth, children }) => {
     return (
         <div
             style={{
                 display: "flex",
                 flexDirection: "row",
                 backgroundColor: "white",
-                height: "100vh",
-                width: "100vw",
-                overflow: "clip"
+                height: "100%",
+                width: "100%",
+                overflow: "clip",
+                backgroundColor: "#F7F7F4",
+                paddingBlockStart: "3rem"
             }}
         >
-            <SideBar />
-            <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "clip" }}>
-                <div style={{ flex: "1 1 10rem", overflowY: "scroll", overflowX: "clip", padding: "2rem", width: "100%" }}>
-                    <EditPage pageName={"Home"} />
-                </div>
-                <SaveBar />
-            </div>
+            <SideBar sidebarWidth={sidebarWidth} />
+
+            <div style={{ flex: "1 1 auto" }}>{children}</div>
+            <Pages />
         </div>
     );
 };
 export default Admin;
-const SideBar = () => {
-    return <div style={{ maxWidth: "10rem", backgroundColor: "var(--bg1)", flex: "1 0 10rem" }}></div>;
+const SideBar = ({ sidebarWidth }) => {
+    return <div style={{ maxWidth: `${sidebarWidth}`, backgroundColor: "var(--bg1)", flex: "1 0 10rem" }}></div>;
 };
-const SaveBar = () => {
+const SaveBar = ({ unsavedChanges = true, sidebarWidth }) => {
     return (
         <div
             style={{
-                display: "flex",
+                display: unsavedChanges ? "flex" : "none",
                 flexDirection: "row",
                 justifyContent: "space-between",
                 paddingInline: "1rem",
-                backgroundColor: "var(--brightgreen)",
-                height: "3rem"
+                backgroundColor: "var(--bg2)",
+                height: "3rem",
+                position: "absolute",
+                bottom: "0",
+                left: `${sidebarWidth}`,
+                border: "1px solid red",
+                width: `${100 - parseFloat(sidebarWidth)}vw`,
+                alignItems: "center",
+                textAlign: "center"
             }}
         >
-            <h2>Save Changes</h2>
-            <div>
-                <Button></Button>
-                <Button></Button>
+            <h2 style={{ color: "black", margin: "0" }}>Save Changes</h2>
+            <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
+                <Button>Save</Button>
+                <Button>Save</Button>
             </div>
         </div>
     );
@@ -103,10 +135,8 @@ const EditPage = ({ pageName, children }) => {
                 display: "flex",
                 flexDirection: "column",
                 gap: "2rem",
-                flex: "1 1 auto",
                 paddingInline: "2rem",
-                maxHeight: "100%",
-                width: "100%"
+                maxHeight: "100%"
             }}
         >
             <div
@@ -115,9 +145,19 @@ const EditPage = ({ pageName, children }) => {
                     flexDirection: "row"
                 }}
             >
-                <h1>{pageName}</h1>
+                <h1 style={{ margin: "0" }}>{pageName}</h1>
             </div>
-            <div style={{ overflowY: "clip", overflowX: "clip", flex: "1 1 auto" }}>
+            <div
+                style={{
+                    overflowY: "scroll",
+                    overflowX: "clip",
+                    flex: "1 1 auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "2rem",
+                    paddingBottom: "20vh"
+                }}
+            >
                 <EditSection />
                 <EditIcons />
             </div>
@@ -127,36 +167,19 @@ const EditPage = ({ pageName, children }) => {
 
 const EditContainer = ({ title, children }) => {
     const [collapsed, setCollapsed] = useState(false);
-
-    return collapsed ? (
+    return (
         <div
             style={{
                 width: "100%",
                 padding: "1rem",
-                display: "flex",
-                justifyContent: "space-between",
-                backgroundColor: "#777",
-                color: "white",
+                backgroundColor: "#FEFEFE",
+                color: "black",
                 paddingInline: "2rem"
             }}
         >
-            <h2 style={{ margin: "0", paddingBottom: "1rem", paddingTop: "0px" }}>{title}</h2>
-            <img
-                src={chevronDownUrl}
-                alt="chevron down"
-                style={{ height: "30px", width: "30px" }}
-                onClick={() => {
-                    setCollapsed(prev => !prev);
-                }}
-            />
-        </div>
-    ) : (
-        <div
-            className="edit-section"
-            style={{ padding: "1rem", width: "100%", overflow: "clip", gap: "1rem", backgroundColor: "#777", color: "white" }}
-        >
-            <div style={{ width: "100%" }}>
-                <div style={{ marginLeft: "auto", width: "fit-content" }}>
+            {collapsed ? (
+                <div style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+                    <h2 style={{ margin: "0", paddingBottom: "1rem", paddingTop: "0px" }}>{title}</h2>
                     <img
                         src={chevronDownUrl}
                         alt="chevron down"
@@ -166,19 +189,39 @@ const EditContainer = ({ title, children }) => {
                         }}
                     />
                 </div>
-            </div>
-            <h2 style={{ margin: "0", padding: "0" }}>{title}</h2>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    border: "1px solid red",
-                    padding: "5px",
-                    width: "100%"
-                }}
-            >
-                {children}
-            </div>
+            ) : (
+                <div
+                    className="edit-section"
+                    style={{
+                        overflow: "clip",
+                        gap: "1rem"
+                    }}
+                >
+                    <div style={{ marginLeft: "auto", width: "fit-content" }}>
+                        <img
+                            src={chevronDownUrl}
+                            alt="chevron down"
+                            style={{ height: "30px", width: "30px" }}
+                            onClick={() => {
+                                setCollapsed(prev => !prev);
+                            }}
+                        />
+                    </div>
+                    <h2 style={{ margin: "0", padding: "0" }}>{title}</h2>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            border: "1px solid red",
+                            padding: "5px",
+                            width: "100%"
+                            // overflowY: "scroll"
+                        }}
+                    >
+                        {children}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -216,18 +259,18 @@ const EditSection = () => {
                         style={{ height: "100%", width: "100%", objectFit: "contain" }}
                     />
                     <Button
-                        text={
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "5px" }}>
-                                <img
-                                    src={uploadIconUrl}
-                                    style={{ height: "1rem" }}
-                                />
-                                Upload Image
-                            </div>
-                        }
                         style={{ width: "fit-content" }}
                         height="2rem"
-                    ></Button>
+                    >
+                        {" "}
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "5px" }}>
+                            <img
+                                src={uploadIconUrl}
+                                style={{ height: "1rem" }}
+                            />
+                            Upload Image
+                        </div>
+                    </Button>
                 </div>
                 <form
                     onSubmit={handleSubmit(onSubmit)}
@@ -267,11 +310,6 @@ const EditSection = () => {
         </EditContainer>
     );
 };
-// const products = [
-//   { productName: "Shirt", productId: 5, stock: 32 },
-//   { productName: "Pants", productId: 6, stock: 5 },
-//   { productName: "Socks", productId: 10, stock: 22 },
-// ];
 
 const EditIcons = () => {
     return (
@@ -322,6 +360,96 @@ const EditIcons = () => {
     );
 };
 
+const Pages = () => {
+    return (
+        <div
+            style={{
+                background: "transparent",
+                flexBasis: "30vw",
+                maxWidth: "30vw",
+                flexGrow: "1",
+                flexShrink: "0",
+                paddingInline: "2rem",
+                display: "flex",
+                flexDirection: "column",
+                paddingBlock: "1rem",
+                gap: "1rem"
+            }}
+        >
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    gap: "1rem"
+                }}
+            >
+                <div
+                    style={{
+                        fontSize: "8px",
+                        lineHeight: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        background: "transparent",
+                        border: "1px solid black",
+                        color: "black",
+                        paddingLeft: "5px",
+                        flex: "1 1 auto"
+                    }}
+                >
+                    <p>Last Changed: Today</p>
+                </div>
+                <select
+                    id="select-user"
+                    style={{ background: "transparent", borderRadius: "0", paddingBlock: 0, flex: "1 1 auto" }}
+                >
+                    <Button style={{ paddingLeft: "0px" }}>
+                        <selectedcontent></selectedcontent>
+                    </Button>
+                    <Option
+                        value="admin"
+                        iconsrc={userIconUrl}
+                    >
+                        <span class="option-label">Admin</span>
+                    </Option>
+                    <Option
+                        value="user"
+                        iconsrc={userIconUrl}
+                    >
+                        <span class="option-label">User</span>
+                    </Option>
+                    <Option
+                        value="guest"
+                        iconsrc={userIconUrl}
+                    >
+                        <span class="option-label">Guest</span>
+                    </Option>
+                </select>
+            </div>
+            <div style={{ background: "#FEFEFE", height: "50vh", width: "100%", border: "1px solid  #696969" }}></div>
+        </div>
+    );
+};
+const Option = ({ value, iconsrc, children }) => {
+    return (
+        <option value={value}>
+            <div style={{ display: "flex", alignItems: "center", height: "2rem", lineHeight: "1rem", gap: "1rem" }}>
+                <span
+                    class="icon"
+                    aria-hidden="true"
+                >
+                    <img
+                        src={iconsrc}
+                        alt="user icon"
+                        height="2rem"
+                        width="2rem"
+                    />
+                </span>
+                {children}
+            </div>
+        </option>
+    );
+};
 function User({ user }) {
     const { id, userName, email } = user;
     return (

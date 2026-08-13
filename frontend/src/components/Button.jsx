@@ -1,4 +1,4 @@
-const Button = ({ text, onClick, height, color, filled = true, style = {}, className }) => {
+const Button = ({ onClick, height = "2rem", color, filled = true, style = {}, className, children }) => {
     return (
         <button
             style={{
@@ -10,7 +10,7 @@ const Button = ({ text, onClick, height, color, filled = true, style = {}, class
             onClick={onClick}
             className={className}
         >
-            {text}
+            {children}
         </button>
     );
 };

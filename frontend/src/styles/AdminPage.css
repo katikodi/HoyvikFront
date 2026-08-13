@@ -5,3 +5,26 @@
     align-items: flex-start;
     justify-content: center;
 }
+
+select,
+::picker(select) {
+    appearance: base-select;
+    background-color: white;
+    color: black;
+}
+
+select img {
+    height: 2rem;
+    width: 2rem;
+    object-fit: contain;
+}
+
+select::picker-icon {
+    content: url("@/icons/chevronDown.svg");
+    transform: scale(2);
+    height: 1rem;
+}
+
+* {
+    margin: 0;
+}

@@ -136,9 +136,10 @@ const HeroBooking = () => {
                 />
                 <Button
                     className="booking-button"
-                    text={"SJEKK TILGJENGELIGHET"}
                     onClick={() => console.log("cluck")}
-                ></Button>
+                >
+                    "SJEKK TILGJENGELIGHET"
+                </Button>
             </div>
         </div>
     );
@@ -230,12 +231,13 @@ const CopySection = ({ copy, onClick, buttonText }) => {
         <div className="copy-section">
             <p className="monsterrat">{copy}</p>
             <Button
-                text={buttonText || "CTA"}
                 onClick={onClick}
                 height="2rem"
                 filled={false}
                 color="#44383E"
-            />
+            >
+                {buttonText || "CTA"}
+            </Button>
         </div>
     );
 };

@@ -9,8 +9,7 @@ export default function AdminLayout() {
     return (
         <div
             style={{
-                maxHeight: "100vh",
-                minHeight: "100vh",
+                height: "100vh",
                 display: "flex",
                 flexDirection: "column",
                 overflow: "clip"
