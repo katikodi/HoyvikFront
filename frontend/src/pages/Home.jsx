@@ -135,10 +135,11 @@ const HeroBooking = () => {
                     height={buttonHeight}
                 />
                 <Button
+                    height={buttonHeight}
                     className="booking-button"
                     onClick={() => console.log("cluck")}
                 >
-                    "SJEKK TILGJENGELIGHET"
+                    SJEKK TILGJENGELIGHET
                 </Button>
             </div>
         </div>
