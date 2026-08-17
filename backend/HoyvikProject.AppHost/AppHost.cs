@@ -1,10 +1,14 @@
+using Microsoft.Extensions.Configuration;
+
 var builder = DistributedApplication.CreateBuilder(args);
+
+
 
 var postgres = builder
 	.AddPostgres("postgres")
 	.WithDataVolume("hoyvik_data")
 	.WithPgAdmin()
-	.WithHttpEndpoint(port: 5432, targetPort: 5432)
+	.WithHttpEndpoint(port: 5400, targetPort: 5400)
 	.WithLifetime(ContainerLifetime.Persistent);
 
 var db = postgres.AddDatabase("database", "hoyvika");
