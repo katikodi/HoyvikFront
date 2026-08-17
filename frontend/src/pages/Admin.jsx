@@ -267,19 +267,19 @@ const Pages = () => {
                         value="admin"
                         iconsrc={userIconUrl}
                     >
-                        <span class="option-label">Admin</span>
+                        <span className="option-label">Admin</span>
                     </Option>
                     <Option
                         value="user"
                         iconsrc={userIconUrl}
                     >
-                        <span class="option-label">User</span>
+                        <span className="option-label">User</span>
                     </Option>
                     <Option
                         value="guest"
                         iconsrc={userIconUrl}
                     >
-                        <span class="option-label">Guest</span>
+                        <span className="option-label">Guest</span>
                     </Option>
                 </select>
             </div>
@@ -292,7 +292,7 @@ const Option = ({ value, iconsrc, children }) => {
         <option value={value}>
             <div className="option-content">
                 <span
-                    class="icon"
+                    className="icon"
                     aria-hidden="true"
                 >
                     <img
