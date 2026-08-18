@@ -173,9 +173,7 @@ const EditContainer = ({ title, children }) => {
 };
 
 const EditSection = () => {
-    const onSubmit = data => {
-        console.log(data);
-    };
+    const onSubmit = data => {};
     const {
         register,
         handleSubmit,
@@ -231,10 +229,30 @@ const EditIcons = ({ icons, setIcons }) => {
             return newObj;
         });
     };
-    console.log(icons);
+    const setSrc = (iconId, src) => {
+        setIcons(prev => {
+            const newObj = { ...prev };
+            newObj[iconId].url = src;
+            return newObj;
+        });
+    };
+    const [currentEditing, setCurrentEditing] = useState(undefined);
+    const enableEditing = id => {
+        setCurrentEditing(id);
+    };
+    const onLeave = id => {
+        if (currentEditing === id) {
+            setCurrentEditing(undefined);
+        }
+    };
     return (
         <EditContainer title={"Icons"}>
-            <div className="edit-icons">
+            <div
+                className="edit-icons"
+                onMouseLeave={() => {
+                    setCurrentEditing(undefined);
+                }}
+            >
                 <IconSection blocker={false}>
                     {Object.values(icons).map(icon => (
                         <EditIcon
@@ -242,9 +260,17 @@ const EditIcons = ({ icons, setIcons }) => {
                             src={icon.url}
                             text={icon.text}
                             setText={text => {
-                                console.log("setting text");
-                                console.log(`new text: ${text} on icon ${icon.id}`);
                                 setText(icon.id, text);
+                            }}
+                            setSrc={src => {
+                                setSrc(icon.id, src);
+                            }}
+                            isEditing={currentEditing === icon.id}
+                            enableEditting={() => {
+                                enableEditing(icon.id);
+                            }}
+                            onLeave={() => {
+                                onLeave(icon.id);
                             }}
                         />
                     ))}

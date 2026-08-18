@@ -4,18 +4,17 @@
     align-items: center;
     flex: 1 1 0px;
     overflow: clip;
+    letter-spacing: normal;
 }
 
-.icon > img {
+.icon img,
+.edit-icon img {
     width: 100%;
     height: auto;
     aspect-ratio: 1/1;
 }
 
-.icon > p {
-    /* text-wrap: pretty; */
-    /* word-break: break-all; */
-    overflow-wrap: anywhere;
+.icon p {
     text-align: center;
     hyphens: auto;
 }
@@ -23,24 +22,52 @@
 .icon-text-container {
     width: 100%;
     max-width: 100%;
-    height: 30px;
+    height: 20px;
     text-align: center;
-    border: 1px solid green;
     display: flex;
     justify-content: center;
+    align-items: center;
+    overflow: clip;
+    border: 1px solid transparent;
 }
 
 .icon-text-container:hover {
+    border: 1px solid green;
 }
 
 .edit-icon input,
-.edit-icon input:hover {
+.edit-icon input:hover,
+.edit-icon input:focus {
+    overflow-wrap: anywhere;
+    text-align: center;
+    hyphens: auto;
     background-color: #eee;
+
     color: var(--icons);
-    max-width: 100%;
+
     width: 0px;
-    border: 0;
     height: 100%;
+    max-width: 100%;
+
+    padding: 0px;
+    border: 0px;
+
     flex: 1 1;
-    padding-inline: 0px;
+    text-align: center;
+    outline: 0;
+}
+
+.edit-icon > label > input[type="file"] {
+    display: none;
+    height: 0px;
+    width: 0px;
+}
+
+.edit-icon label {
+    width: 100%;
+    border: 1px solid transparent;
+}
+
+.edit-icon label:hover {
+    border-color: #333;
 }

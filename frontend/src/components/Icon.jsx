@@ -1,5 +1,5 @@
 import "@/styles/Icon.css";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const Icon = ({ src, text }) => {
     return (
@@ -20,21 +20,50 @@ const Icon = ({ src, text }) => {
     );
 };
 
-const IconTextContainer = ({ children }) => {
-    return <div className="icon-text-container">{children}</div>;
+const IconTextContainer = ({ children, ...props }) => {
+    return (
+        <div
+            className="icon-text-container"
+            {...props}
+        >
+            {children}
+        </div>
+    );
 };
 
-const EditIcon = ({ src, text, setSrc, setText }) => {
-    const [isEditing, setIsEditing] = useState(false);
+const EditIcon = ({ src, text, setSrc, setText, isEditing, enableEditting, onLeave }) => {
+    const inputRef = useRef();
+
+    inputRef?.current?.focus();
+    const handleEntter = () => {
+        enableEditting();
+    };
+
     return (
-        <div className="icon edit-icon">
-            <img
-                src={src}
-                alt={`icon av ${text}`}
-            />
-            <IconTextContainer className="thicc-monsterrat">
+        <div
+            className="icon edit-icon"
+            onMouseEnter={handleEntter}
+            onMouseLeave={onLeave}
+        >
+            <label>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => {
+                        setSrc(URL.createObjectURL(e.target.files[0]));
+                    }}
+                />
+                <img
+                    src={src}
+                    alt={`icon av ${text}`}
+                />
+            </label>
+
+            <IconTextContainer>
                 {isEditing ? (
                     <input
+                        ref={inputRef}
+                        autoFocus={true}
                         type="text"
                         value={text}
                         onChange={e => setText(e.target.value)}
@@ -44,9 +73,6 @@ const EditIcon = ({ src, text, setSrc, setText }) => {
                     <p
                         className="thicc-monsterrat"
                         lang="no"
-                        onClick={() => {
-                            setIsEditing(prev => !prev);
-                        }}
                     >
                         {text}
                     </p>

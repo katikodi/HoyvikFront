@@ -29,8 +29,10 @@
     .icon-input,
     .icon-input:hover,
     .icon-input:active,
-    .icon-input:focus-visible {
+    .icon-input:focus-visible,
+    .icon-text-container p {
         font-size: 1cqw;
+        line-height: 1cqw;
     }
 }
 

@@ -1,7 +1,7 @@
 import "@/styles/IconSection.css";
 import Icon from "@/components/Icon";
 
-const IconSection = ({ children, blocker = true }) => {
+const IconSection = ({ children, blocker = true, onMouseLeave }) => {
     return (
         <div className="icon-section">
             {blocker && <div className="blocker"></div>}
