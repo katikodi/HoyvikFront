@@ -128,44 +128,6 @@ button {
     align-items: center;
 }
 
-.icon-container {
-    height: 300px;
-    padding: 5.1875rem 3.8125rem 5.25rem 3.8125rem;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-direction: row;
-    padding-inline: 3.2rem;
-    gap: 14rem;
-
-    background: var(--bg1);
-    color: var(--icons);
-}
-
-.icon-section-icon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.icon-section .blocker {
-    background-color: rgba(from var(--bg1) r g b / 80%);
-    backdrop-filter: brightness(70%);
-}
-
-.icon-section-icon > img {
-    width: 5rem;
-    height: 5rem;
-    aspect-ratio: 1/1;
-}
-
-.icon-section-icon > p {
-    align-self: stretch;
-    text-wrap: nowrap;
-    text-align: center;
-}
-
 .about-section {
     background: var(--bg2);
 }

@@ -1,0 +1,39 @@
+.icon-section .blocker {
+    background-color: rgba(from var(--bg1) r g b / 80%);
+    backdrop-filter: brightness(70%);
+}
+
+.icon-container {
+    container-name: iconcontainer;
+    container-type: inline-size;
+    --ref-width: 1920;
+    --ref-height: 525;
+    --aspect-ratio: calc(var(--ref-width) / var(--ref-height));
+    width: 100%;
+    /* aspect-ratio: var(--aspect-ratio); */
+    padding-inline: calc(100% * (61 / var(--ref-width)));
+    padding-block: calc(100% * (80 / var(--ref-height)));
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: row;
+    gap: calc(100% * (300 / 1800));
+    /* font-size: 1cqw; */
+    background: var(--bg1);
+    color: var(--icons);
+}
+
+@container iconcontainer {
+    *,
+    .icon-input,
+    .icon-input:hover,
+    .icon-input:active,
+    .icon-input:focus-visible {
+        font-size: 1cqw;
+    }
+}
+
+.icon-section {
+    width: 100%;
+}

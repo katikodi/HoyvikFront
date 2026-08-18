@@ -1,0 +1,24 @@
+{
+    "icons": [
+        {
+            "id": 0,
+            "url": "/icons/cabinWithSmokingChimney.svg",
+            "text": "Hytter & Leiligheter"
+        },
+        {
+            "id": 1,
+            "url": "/icons/vikingHelmet.svg",
+            "text": "Vikingaktiviteter"
+        },
+        {
+            "id": 2,
+            "url": "/icons/boatOnTrailer.svg",
+            "text": "Båtutleie"
+        },
+        {
+            "id": 3,
+            "url": "/icons/manHiking.svg",
+            "text": "Turstier"
+        }
+    ]
+}

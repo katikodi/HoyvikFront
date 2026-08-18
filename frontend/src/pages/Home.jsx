@@ -4,6 +4,8 @@ import "@/styles/Home.css";
 // COMPONENT IMPORTS
 import Booking from "@/components/Booking";
 import Button from "@/components/Button";
+import Icon from "@/components/Icon";
+import IconSection from "@/components/IconSection";
 
 // ------------------------------------------------------------
 // ICON AND IMAGE IMPORTS
@@ -19,7 +21,10 @@ import rom1Url from "@/images/rom1.jpg";
 import rom2Url from "@/images/rom2.jpg";
 import rom3Url from "@/images/rom3.jpg";
 // -------------------------------------------------------------
+// DADA IMPORTS
 
+import { icons } from "@/test-data/icons.json";
+// -------------------------------------------------------------
 // TODO: change divs to semantic elements
 // TODO: verify accessability
 // TODO: many of these components have pretty bad names tbh, i'm to lazy fix, if anyone cares feel free
@@ -27,32 +32,18 @@ import rom3Url from "@/images/rom3.jpg";
 export default function Home() {
     // TODO: there's probably a better place to have this data
     // might not matter if we're moving this to the db
-    const icons = [
-        {
-            id: crypto.randomUUID(),
-            iconURL: cabinUrl,
-            text: "Hytter & Leiligheter"
-        },
-        {
-            id: crypto.randomUUID(),
-            iconURL: vikingUrl,
-            text: "Vikingaktiviteter"
-        },
-        {
-            id: crypto.randomUUID(),
-            iconURL: boatUrl,
-            text: "Båtutleie"
-        },
-        {
-            id: crypto.randomUUID(),
-            iconURL: turstierIconUrl,
-            text: "Turstier"
-        }
-    ];
     return (
         <div style={{ display: "flex", flexDirection: "column", backgroundColor: "var(--bg1)" }}>
             <Hero />
-            <IconSection icons={icons} />
+            <IconSection>
+                {icons.map(icon => (
+                    <Icon
+                        key={icon.id}
+                        src={icon.url}
+                        text={icon.text}
+                    />
+                ))}
+            </IconSection>
             <AboutSection />
         </div>
     );
@@ -164,34 +155,6 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
     );
 };
 
-const IconSection = ({ icons }) => {
-    return (
-        <div className="icon-section">
-            <div className="blocker"></div>
-            <div className="icon-container">
-                {icons.map(icon => (
-                    <IconSectionIcon
-                        key={icon.id}
-                        icon={icon.iconURL}
-                        text={icon.text}
-                    />
-                ))}
-            </div>
-        </div>
-    );
-};
-
-const IconSectionIcon = ({ icon, text }) => {
-    return (
-        <div className="icon-section-icon">
-            <img
-                src={icon}
-                alt={`icon av ${text}`}
-            />
-            <p className="thicc-monsterrat">{text}</p>
-        </div>
-    );
-};
 // TODO: wtf is this section called?
 const AboutSection = () => {
     return (

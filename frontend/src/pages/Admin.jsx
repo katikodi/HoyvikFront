@@ -1,8 +1,11 @@
 // -----------------------------------
-// HOOKS / COMPONENTS
+// HOOKS
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+// -----------------------------------
+//COMPONENTS
+import Icon, { EditIcon } from "@/components/Icon";
 
 // -----------------------------------
 // STYLES
@@ -17,6 +20,10 @@ import chevronDownUrl from "@/icons/chevronDown.svg";
 import Button from "@/components/Button";
 import vikingHelmetUrl from "@/icons/vikingHelmet.svg";
 import userIconUrl from "@/icons/userIcon.svg";
+// -----------------------------------
+// DADA IMPORTS
+import { icons as iconData } from "@/test-data/icons.json";
+import IconSection from "@/components/IconSection";
 // -----------------------------------
 
 const Admin = () => {
@@ -54,10 +61,17 @@ const Admin = () => {
     //         ))}
     //     </ul>
     const sidebarWidth = "10vw";
+    const [icons, setIcons] = useState({ ...iconData });
 
     return (
         <Layout sidebarWidth={sidebarWidth}>
-            <EditPage pageName={"Home"} />
+            <EditPage pageName={"Home"}>
+                <EditSection />
+                <EditIcons
+                    icons={icons}
+                    setIcons={setIcons}
+                />
+            </EditPage>
             <SaveBar sidebarWidth={sidebarWidth} />
         </Layout>
     );
@@ -119,10 +133,7 @@ const EditPage = ({ pageName, children }) => {
     return (
         <div className="edit-page">
             <h1>{pageName}</h1>
-            <div className="edit-page-sections">
-                <EditSection />
-                <EditIcons />
-            </div>
+            <div className="edit-page-sections">{children}</div>
         </div>
     );
 };
@@ -212,38 +223,32 @@ const EditSection = () => {
     );
 };
 
-const EditIcons = () => {
+const EditIcons = ({ icons, setIcons }) => {
+    const setText = (iconId, text) => {
+        setIcons(prev => {
+            const newObj = { ...prev };
+            newObj[iconId].text = text;
+            return newObj;
+        });
+    };
+    console.log(icons);
     return (
         <EditContainer title={"Icons"}>
             <div className="edit-icons">
-                <div>
-                    <img
-                        src={vikingHelmetUrl}
-                        alt="viking helmet icon"
-                        className="edit-icon-image"
-                    />
-                </div>
-                <div>
-                    <img
-                        src={vikingHelmetUrl}
-                        alt="viking helmet icon"
-                        className="edit-icon-image"
-                    />
-                </div>
-                <div>
-                    <img
-                        src={vikingHelmetUrl}
-                        alt="viking helmet icon"
-                        className="edit-icon-image"
-                    />
-                </div>
-                <div>
-                    <img
-                        src={vikingHelmetUrl}
-                        alt="viking helmet icon"
-                        className="edit-icon-image"
-                    />
-                </div>
+                <IconSection blocker={false}>
+                    {Object.values(icons).map(icon => (
+                        <EditIcon
+                            key={icon.id}
+                            src={icon.url}
+                            text={icon.text}
+                            setText={text => {
+                                console.log("setting text");
+                                console.log(`new text: ${text} on icon ${icon.id}`);
+                                setText(icon.id, text);
+                            }}
+                        />
+                    ))}
+                </IconSection>
             </div>
         </EditContainer>
     );
@@ -291,10 +296,7 @@ const Option = ({ value, iconsrc, children }) => {
     return (
         <option value={value}>
             <div className="option-content">
-                <span
-                    className="icon"
-                    aria-hidden="true"
-                >
+                <span aria-hidden="true">
                     <img
                         src={iconsrc}
                         alt="user icon"

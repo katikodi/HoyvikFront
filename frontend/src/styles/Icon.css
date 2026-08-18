@@ -1,0 +1,46 @@
+.icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 0px;
+    overflow: clip;
+}
+
+.icon > img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+}
+
+.icon > p {
+    /* text-wrap: pretty; */
+    /* word-break: break-all; */
+    overflow-wrap: anywhere;
+    text-align: center;
+    hyphens: auto;
+}
+
+.icon-text-container {
+    width: 100%;
+    max-width: 100%;
+    height: 30px;
+    text-align: center;
+    border: 1px solid green;
+    display: flex;
+    justify-content: center;
+}
+
+.icon-text-container:hover {
+}
+
+.edit-icon input,
+.edit-icon input:hover {
+    background-color: #eee;
+    color: var(--icons);
+    max-width: 100%;
+    width: 0px;
+    border: 0;
+    height: 100%;
+    flex: 1 1;
+    padding-inline: 0px;
+}
