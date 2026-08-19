@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/auth/AuthContext";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import "@/styles/Form.css";
 import "@/styles/Booking.css";
 import "@/styles/Home.css";
-import Button from "@/components/Button";
 
 const Booking = () => {
     const [stage, setStage] = useState(0);
@@ -15,8 +12,6 @@ const Booking = () => {
         watch,
         formState: { errors }
     } = useForm();
-    console.log(stage);
-    const { register: registerUser } = useAuth();
     const onSubmit = () => {
         console.log("submittted");
     };
