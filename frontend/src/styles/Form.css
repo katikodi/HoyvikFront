@@ -2,7 +2,7 @@ form input,
 form input:active,
 form input:hover,
 form input:focus-visible {
-    height: 2rem;
+    height: 4rem;
     border-radius: 0;
     border: 2px solid var(--darkgreen);
     background-color: var(--bg2);
@@ -11,13 +11,12 @@ form input:focus-visible {
     font-size: 1rem;
     color: var(--darkgreen);
     outline: 0;
-    width: 90%;
+    width: 100%;
 }
 
 form input[type="submit"] {
     border: 0;
     display: flex;
-    height: 2rem;
     padding: 0 1.0625rem;
     justify-content: center;
     align-items: center;
@@ -62,3 +61,18 @@ form {
     justify-content: center;
     align-items: center;
 }
+
+/* input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    background-image: url("../icons/calendarIcon.svg");
+    background-repeat: no-repeat;
+    height: var(--booking-input-icon-size);
+    width: var(--booking-input-icon-size);
+    background-size: cover;
+    order: 0;
+}
+
+input[type="date"]::-webkit-datetime-edit {
+    display: none;
+    order: 1;
+}  */

@@ -1,0 +1,45 @@
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 2rem;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.center {
+    justify-content: center;
+    align-items: center;
+}
+
+.booking-input-container {
+    max-width: 50%;
+    flex: 1 1 0px;
+}
+
+.gap-sm {
+    gap: 5px;
+}
+
+.gap-1 {
+    gap: 1rem;
+}
+
+.gap-2 {
+    gap: 2rem;
+}
+
+.gap-4 {
+    gap: 4rem;
+}
+
+.gap-6 {
+    gap: 6rem;
+}

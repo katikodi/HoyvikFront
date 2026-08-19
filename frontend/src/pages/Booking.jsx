@@ -1,5 +1,155 @@
-import { useEffect } from "react";
-export default function Booking() {
+import { useEffect, useState } from "react";
+import { useAuth } from "@/auth/AuthContext";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import "@/styles/Form.css";
+import "@/styles/Booking.css";
+import "@/styles/Home.css";
+import Button from "@/components/Button";
+
+const Booking = () => {
+    const [stage, setStage] = useState(0);
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors }
+    } = useForm();
+    console.log(stage);
+    const { register: registerUser } = useAuth();
+    const onSubmit = () => {
+        console.log("submittted");
+    };
+
+    const bookingStages = {
+        0: <BookingStageOne />,
+        1: <BookingStageTwo register={register} />,
+        2: <Redirect />
+    };
+    return (
+        <div className="signup-background">
+            <div
+                className="form-container"
+                style={{ width: "70%" }}
+            >
+                <h1
+                    className="cinzel"
+                    style={{ color: "var(--textbrown)" }}
+                >
+                    Book your stay
+                </h1>
+
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    {bookingStages[stage]}
+                    {/* <BookingStageOne /> */}
+                    {Object.keys(bookingStages).length - 1 > stage && (
+                        <div className="flex-row gap-1">
+                            <input
+                                type="submit"
+                                value="Prev"
+                                onClick={() => {
+                                    setStage(prev => prev - 1);
+                                }}
+                            />
+
+                            <input
+                                type="submit"
+                                value="Next"
+                                onClick={() => {
+                                    setStage(prev => prev + 1);
+                                }}
+                            />
+                        </div>
+                    )}
+                </form>
+            </div>
+        </div>
+    );
+};
+export default Booking;
+
+const BookingStageOne = () => {
+    return (
+        <div className="flex-row space-between">
+            <CalendarInput
+                inputId={crypto.randomUUID()}
+                labelText="From"
+            />
+            <CalendarInput
+                inputId={crypto.randomUUID()}
+                labelText="To"
+            />
+        </div>
+    );
+};
+const BookingStageTwo = ({ register }) => {
+    return (
+        <div className="flex-col center gap-1">
+            <div className="flex-row space-between">
+                <input
+                    type="text"
+                    placeholder="John"
+                    {...register("first-name", { required: true })}
+                />
+                <input
+                    type="text"
+                    placeholder="Doe"
+                    {...register("last-name", { required: true })}
+                />
+            </div>
+            <input
+                type="email"
+                placeholder="john@doe.com"
+                {...register("email", { required: true })}
+            />
+        </div>
+    );
+};
+
+const BookingStageThree = ({ register }) => {
+    return (
+        <div className="flex-col center gap-1">
+            <div className="flex-row space-between">
+                <input
+                    type="text"
+                    placeholder="John"
+                    {...register("first-name", { required: true })}
+                />
+                <input
+                    type="text"
+                    placeholder="Doe"
+                    {...register("last-name", { required: true })}
+                />
+            </div>
+            <input
+                type="email"
+                placeholder="john@doe.com"
+                {...register("email", { required: true })}
+            />
+        </div>
+    );
+};
+
+const CalendarInput = ({ inputId, labelText }) => {
+    return (
+        <div className="booking-input-container flex-col gap-sm">
+            <label
+                htmlFor={inputId}
+                className="monsterrat hero-booking-label"
+            >
+                {labelText}
+            </label>
+            <input
+                className=""
+                id={inputId}
+                type="date"
+            ></input>
+        </div>
+    );
+};
+
+const Redirect = () => {
+    // TODO: does stripe redirect to a order reciept or something?
     useEffect(() => {
         const controller = new AbortController();
         let timeoutId;
@@ -20,7 +170,7 @@ export default function Booking() {
 
             timeoutId = setTimeout(() => {
                 window.location.href = result.url;
-            }, 5000);
+            }, 1000);
         }
 
         startCheckout().catch(error => {
@@ -33,7 +183,6 @@ export default function Booking() {
             clearTimeout(timeoutId);
             controller.abort();
         };
-    }, []);
-
+    });
     return <div>You are being redirected....</div>;
-}
+};
