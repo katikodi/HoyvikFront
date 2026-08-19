@@ -9,7 +9,7 @@ const Nav = () => {
         <nav className="nav">
             <NavLogo />
             <div className="nav-links-container">
-                <NavLink to="/Booking">Rom</NavLink>
+                <NavLink to="/Booking">Booking</NavLink>
 
                 {user ? (
                     <>
@@ -21,6 +21,7 @@ const Nav = () => {
                 )}
                 {isAdmin && <NavLink to="/admin">Admin</NavLink>}
             </div>
+            <NavLogo />
         </nav>
     );
 };
