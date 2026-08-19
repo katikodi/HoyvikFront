@@ -1,5 +1,6 @@
 import { useAuth } from "@/auth/AuthContext";
 import { Navigate, useNavigate, Link } from "react-router-dom";
+import Button from "@/components/Button";
 
 export default function Profile() {
     const { user, logout } = useAuth();
@@ -20,7 +21,12 @@ export default function Profile() {
                 })}
             </ul>
 
-            <button onClick={logout}>Logout</button>
+            <Link
+                to="/"
+                onClick={logout}
+            >
+                <Button>Logout</Button>
+            </Link>
         </div>
     );
 }

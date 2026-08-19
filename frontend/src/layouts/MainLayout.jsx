@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Footer from "@/components/Footer";
 import "@/style.css";
+import "@/styles/UtilClasses.css";
 import Nav from "@/components/Nav";
 
 export default function MainLayout() {

@@ -3,25 +3,35 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
 const Nav = () => {
-    const { isAdmin, user } = useAuth();
-
+    const { isAdmin, user, logout } = useAuth();
     return (
         <nav className="nav">
             <NavLogo />
-            <div className="nav-links-container">
+            <div className="flex-row center gap-6">
                 <NavLink to="/Booking">Booking</NavLink>
+                <NavLink to="/Aktiviteter">Aktiviteter</NavLink>
 
+                <NavLink to="/Om Oss">Om Oss</NavLink>
+
+                <NavLink to="/Kontakt">Kontakt</NavLink>
+                <NavLink to="/Nettbutikk">Nettbutikk</NavLink>
+            </div>
+            <div className="flex-row center gap-1 width-fit-content">
+                {isAdmin && <NavLink to="/admin">Admin</NavLink>}
                 {user ? (
                     <>
                         <NavLink to="/profile">Profile</NavLink>
-                        <NavLink to="/signout">Sign out</NavLink>
+                        {/* <NavLink
+                            to="/"
+                            onClick={logout}
+                        >
+                            Sign out
+                        </NavLink> */}
                     </>
                 ) : (
                     <NavLink to="/signin">Sign in</NavLink>
                 )}
-                {isAdmin && <NavLink to="/admin">Admin</NavLink>}
             </div>
-            <NavLogo />
         </nav>
     );
 };
