@@ -33,7 +33,7 @@ export default function Home() {
     // TODO: there's probably a better place to have this data
     // might not matter if we're moving this to the db
     return (
-        <div style={{ display: "flex", flexDirection: "column", backgroundColor: "var(--bg1)" }}>
+        <div className="flex-col bg-primary">
             <Hero />
             <IconSection>
                 {icons.map(icon => (
