@@ -31,9 +31,9 @@ button {
     display: flex;
     flex-direction: column;
     background-image:
-        linear-gradient(93deg, rgb(62, 85, 70, 0.47) 1.68%, rgb(96, 141, 111, 0.08) 52.57%, rgb(125, 188, 146, 0) 97.9%),
-        linear-gradient(106deg, rgb(0, 0, 0, 0.26) 13.4%, rgb(255, 255, 255, 0) 100%),
-        linear-gradient(180deg, rgb(26, 26, 27) 0%, rgb(75, 75, 78, 0.15) 49.73%, rgb(124, 124, 129, 0) 100%),
+        linear-gradient(93deg, rgba(62, 85, 70, 0.47) 1.68%, rgba(96, 141, 111, 0.08) 52.57%, rgba(125, 188, 146, 0) 97.9%),
+        linear-gradient(106deg, rgba(0, 0, 0, 0.26) 13.4%, rgba(255, 255, 255, 0) 100%),
+        linear-gradient(in srgb 180deg, rgba(26, 26, 27, 1) 0%, rgba(26, 26, 27, 0.15) 49.73%, rgba(26, 26, 27, 0) 100%),
         url("@/images/heroImage.webp");
 }
 
@@ -49,7 +49,7 @@ button {
 }
 
 .hero-large-text {
-    text-shadow: 0 4px 4px rgb(0, 0, 0, 0.5);
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
     line-height: normal;
     font-size: 2rem;
     font-style: normal;
@@ -58,7 +58,7 @@ button {
 }
 
 .hero-cta-text {
-    text-shadow: 0 4px 4px rgb(0, 0, 0, 0.5);
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
     font-size: 1rem;
     line-height: 150%; /* 1.875rem */
     font-weight: 400;
@@ -75,7 +75,7 @@ button {
 }
 
 .hero-booking {
-    box-shadow: 0 7px 4px 0 rgb(0, 0, 0, 0.25);
+    box-shadow: 0 7px 4px 0 rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: row;
     padding-inline: 1.8rem;
@@ -197,7 +197,7 @@ button {
 .carousel-card {
     display: flex;
     flex-direction: column;
-    box-shadow: 6px 6px 4px 0 rgb(0, 0, 0, 0.25);
+    box-shadow: 6px 6px 4px 0 rgba(0, 0, 0, 0.25);
     height: 20rem;
     width: 20rem;
     border: 2px solid var(--darkgreen);
