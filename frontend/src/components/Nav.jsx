@@ -11,7 +11,7 @@ const Nav = () => {
                 <NavLink to="/Booking">Booking</NavLink>
                 <NavLink to="/Aktiviteter">Aktiviteter</NavLink>
 
-                <NavLink to="/Om Oss">Om Oss</NavLink>
+                <NavLink to="/aboutUs">Om Oss</NavLink>
 
                 <NavLink to="/Kontakt">Kontakt</NavLink>
                 <NavLink to="/Nettbutikk">Nettbutikk</NavLink>

@@ -14,7 +14,7 @@ import "@/styles/AdminPage.css";
 
 // -----------------------------------
 // ASSETS
-import heroImgUrl from "@/images/heroImage.jpg";
+import heroImgUrl from "@/images/heroImage.webp";
 import uploadIconUrl from "@/icons/uploadIcon.svg";
 import chevronDownUrl from "@/icons/chevronDown.svg";
 import Button from "@/components/Button";
@@ -61,16 +61,12 @@ const Admin = () => {
     //         ))}
     //     </ul>
     const sidebarWidth = "10vw";
-    const [icons, setIcons] = useState({ ...iconData });
 
     return (
         <Layout sidebarWidth={sidebarWidth}>
             <EditPage pageName={"Home"}>
                 <EditSection />
-                <EditIcons
-                    icons={icons}
-                    setIcons={setIcons}
-                />
+                <EditIcons />
             </EditPage>
             <SaveBar sidebarWidth={sidebarWidth} />
         </Layout>
@@ -221,7 +217,8 @@ const EditSection = () => {
     );
 };
 
-const EditIcons = ({ icons, setIcons }) => {
+const EditIcons = ({}) => {
+    const [icons, setIcons] = useState({ ...iconData });
     const setText = (iconId, text) => {
         setIcons(prev => {
             const newObj = { ...prev };

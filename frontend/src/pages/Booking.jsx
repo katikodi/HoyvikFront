@@ -5,6 +5,7 @@ import "@/styles/Booking.css";
 import "@/styles/Home.css";
 
 const Booking = () => {
+    // TODO: maybe add animation when switching form
     const [stage, setStage] = useState(0);
     const {
         register,
@@ -19,7 +20,8 @@ const Booking = () => {
     const bookingStages = {
         0: <BookingStageOne />,
         1: <BookingStageTwo register={register} />,
-        2: <Redirect />
+        2: <BookingStageThree register={register} />,
+        3: <Redirect />
     };
     return (
         <div className="signup-background">
@@ -97,6 +99,11 @@ const BookingStageTwo = ({ register }) => {
                 placeholder="john@doe.com"
                 {...register("email", { required: true })}
             />
+            <input
+                type="tel"
+                placeholder="123 45 678"
+                {...register("phone", { required: true })}
+            />
         </div>
     );
 };
@@ -106,19 +113,19 @@ const BookingStageThree = ({ register }) => {
         <div className="flex-col center gap-1">
             <div className="flex-row space-between">
                 <input
-                    type="text"
-                    placeholder="John"
+                    type="number"
+                    placeholder="2671"
                     {...register("first-name", { required: true })}
                 />
                 <input
                     type="text"
-                    placeholder="Doe"
+                    placeholder="Lupinvegen 5"
                     {...register("last-name", { required: true })}
                 />
             </div>
             <input
-                type="email"
-                placeholder="john@doe.com"
+                type="text"
+                placeholder="optional. unit number etc"
                 {...register("email", { required: true })}
             />
         </div>

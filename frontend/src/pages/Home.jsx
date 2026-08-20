@@ -10,16 +10,16 @@ import IconSection from "@/components/IconSection";
 // ------------------------------------------------------------
 // ICON AND IMAGE IMPORTS
 // TODO: is there a better way of importing these urls?
-import heroImageUrl from "@/images/heroImage.jpg";
+import heroImageUrl from "@/images/heroImage.webp";
 import calendarIconUrl from "@/icons/calendarIcon.svg";
 import turstierIconUrl from "@/icons/manHiking.svg";
 import cabinUrl from "@/icons/cabinWithSmokingChimney.svg";
 import vikingUrl from "@/icons/vikingHelmet.svg";
 import boatUrl from "@/icons/boatOnTrailer.svg";
-import vikingStuffUrl from "@/images/randomVikingStuff.jpg";
-import rom1Url from "@/images/rom1.jpg";
-import rom2Url from "@/images/rom2.jpg";
-import rom3Url from "@/images/rom3.jpg";
+import vikingStuffUrl from "@/images/randomVikingStuff.webp";
+import rom1Url from "@/images/rom1.webp";
+import rom2Url from "@/images/rom2.webp";
+import rom3Url from "@/images/rom3.webp";
 // -------------------------------------------------------------
 // DADA IMPORTS
 

@@ -16,7 +16,10 @@ export default function AboutUs() {
                         <p>{para}</p>
                         <button>BUTTON BUTTON BUTTON</button>
                     </div>
-                    <img src="https://cdn.discordapp.com/attachments/1508798814847373344/1519992055034675220/image.png?ex=6a6a6b2a&is=6a6919aa&hm=ffec9725f186b34b59581e5f6e256ddeece9eaefe96c32697feedde06d148f27&" />
+                    <img
+                        src="/images/jhonny_hans_blisco.webp"
+                        style={{ height: "40rem", width: "auto" }}
+                    />
                 </div>
             </div>
         </>
