@@ -3,6 +3,7 @@ import "@/style.css";
 import "@/styles/Form.css";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/auth/AuthContext";
+
 const SignUp = () => {
     const {
         register,

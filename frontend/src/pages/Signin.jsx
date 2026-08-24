@@ -25,11 +25,6 @@ const SignIn = () => {
 
     return (
         <div className="signup-background">
-            <div style={{ color: "red", padding: "1rem" }}>
-                <p>btw</p>
-                <p>username: admin@admin.com</p>
-                <p>password: admin@admin.com</p>
-            </div>
             <div className="form-container">
                 <h1
                     className="cinzel"
@@ -41,12 +36,14 @@ const SignIn = () => {
                     <input
                         type="email"
                         placeholder="johndoe@email.com"
+                        defaultValue={"admin@admin.com"}
                         {...register("email", { required: true })}
                     />
                     {errors.email && <span className="error">Email is required!</span>}
                     <input
                         type="password"
                         placeholder="password"
+                        defaultValue={"admin@admin.com"}
                         {...register("password", { required: true })}
                     />
                     <Link

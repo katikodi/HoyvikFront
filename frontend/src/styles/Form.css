@@ -28,6 +28,13 @@ form input[type="submit"] {
     line-height: normal;
 }
 
+form input[type="submit"]:hover {
+    background-color: gray;
+}
+form input[type="submit"]:active {
+    background-color: rgb(61, 60, 60);
+}
+
 form {
     display: flex;
     flex-direction: column;
