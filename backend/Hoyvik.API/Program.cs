@@ -85,7 +85,11 @@ if(app.Environment.IsProduction())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapApiEndpoints();
-
+app.UseFileServer(new FileServerOptions {
+	RequestPath = "/content",
+	EnableDirectoryBrowsing = true,
+	EnableDefaultFiles = true
+});
 
 app.Run();
 
