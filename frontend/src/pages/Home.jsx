@@ -9,7 +9,6 @@ import IconSection from "@/components/IconSection";
 
 // ------------------------------------------------------------
 // ICON AND IMAGE IMPORTS
-// TODO: is there a better way of importing these urls?
 import heroImageUrl from "@/images/heroImage.webp";
 import calendarIconUrl from "@/icons/calendarIcon.svg";
 import turstierIconUrl from "@/icons/manHiking.svg";
@@ -25,13 +24,8 @@ import rom3Url from "@/images/rom3.webp";
 
 import { icons } from "@/test-data/icons.json";
 // -------------------------------------------------------------
-// TODO: change divs to semantic elements
-// TODO: verify accessability
-// TODO: many of these components have pretty bad names tbh, i'm to lazy fix, if anyone cares feel free
 
 export default function Home() {
-    // TODO: there's probably a better place to have this data
-    // might not matter if we're moving this to the db
     return (
         <div className="flex-col bg-primary">
             <Hero />

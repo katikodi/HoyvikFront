@@ -5,7 +5,6 @@ import "@/styles/Booking.css";
 import "@/styles/Home.css";
 
 const Booking = () => {
-    // TODO: maybe add animation when switching form
     const [stage, setStage] = useState(0);
     const {
         register,
