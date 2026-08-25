@@ -86,7 +86,11 @@ const HeroCTAText = ({ text }) => {
 };
 
 const HeroBooking = () => {
-    const bookingInputs = [{ label: "Innsjekk" }, { label: "Utsjekk" }, { label: "Gjester" }, { label: "Rom" }];
+    const bookingInputs = [
+        { label: "Innsjekk", inputType: "date" },
+        { label: "Utsjekk", inputType: "date" },
+        { label: "Gjester", inputType: "number" }
+    ];
 
     return (
         <div className="hero-booking-container">
@@ -94,9 +98,10 @@ const HeroBooking = () => {
                 {bookingInputs.map(e => (
                     <HeroBookingInput
                         key={e.label}
-                        inputType="date"
+                        inputType={e.inputType}
                         labelText={e.label}
                         inputId={crypto.randomUUID()}
+                        additionalClassNames={e.additionalClassNames}
                     />
                 ))}
                 <NewButton
@@ -111,7 +116,9 @@ const HeroBooking = () => {
     );
 };
 
-const HeroBookingInput = ({ inputType, labelText, inputId }) => {
+const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames = [] }) => {
+    const classNames = [...additionalClassNames, "hero-booking-input"].join(" ");
+
     return (
         <div className="hero-booking-input-container">
             <label
@@ -121,7 +128,7 @@ const HeroBookingInput = ({ inputType, labelText, inputId }) => {
                 {labelText}
             </label>
             <input
-                className="hero-booking-input"
+                className={classNames}
                 id={inputId}
                 type={inputType}
             ></input>
