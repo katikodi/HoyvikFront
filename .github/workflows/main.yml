@@ -30,7 +30,7 @@ jobs:
 
                   COMMIT_LIST=$(echo "$COMMITS" | jq -r '
                     .[]
-                    | "- `\(.id[0:7])` \(.message | split("\n")[0]) — \(.author.name)
+                    | "- `\(.id[0:7])` \(.message | split("\n")[0]) — \(.author.name)"
                   ')
 
                   jq -n \
