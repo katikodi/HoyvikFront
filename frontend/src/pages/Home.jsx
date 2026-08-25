@@ -88,37 +88,21 @@ const HeroBooking = () => {
     // TODO: this solution feels inelegant
     // i suspect grid would be cleaner
     const buttonHeight = "4rem";
+    const bookingInputs = [{ label: "Innsjekk" }, { label: "Utsjekk" }, { label: "Gjester" }, { label: "Rom" }];
+
     return (
         <div className="hero-booking-container">
             <div className="hero-booking">
-                <HeroBookingInput
-                    inputType={"date"}
-                    labelText={"Innsjekk"}
-                    icon={calendarIconUrl}
-                    inputId={crypto.randomUUID()}
-                    height={buttonHeight}
-                />
-                <HeroBookingInput
-                    inputType={"date"}
-                    labelText={"Innsjekk"}
-                    icon={calendarIconUrl}
-                    inputId={crypto.randomUUID()}
-                    height={buttonHeight}
-                />
-                <HeroBookingInput
-                    inputType={"date"}
-                    labelText={"Innsjekk"}
-                    icon={calendarIconUrl}
-                    inputId={crypto.randomUUID()}
-                    height={buttonHeight}
-                />
-                <HeroBookingInput
-                    inputType={"date"}
-                    labelText={"Innsjekk"}
-                    icon={calendarIconUrl}
-                    inputId={crypto.randomUUID()}
-                    height={buttonHeight}
-                />
+                {bookingInputs.map(e => (
+                    <HeroBookingInput
+                        key={e.label}
+                        inputType="date"
+                        labelText={e.label}
+                        icon={calendarIconUrl}
+                        inputId={crypto.randomUUID()}
+                        height={buttonHeight}
+                    />
+                ))}
                 <Button
                     height={buttonHeight}
                     className="booking-button"
