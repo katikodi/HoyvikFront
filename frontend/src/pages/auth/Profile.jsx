@@ -1,7 +1,6 @@
 import { useAuth } from "@/auth/AuthContext";
 import { Navigate, useNavigate, Link } from "react-router-dom";
-import Button from "@/components/Button";
-
+import Button from "@/components/NewButton";
 export default function Profile() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();

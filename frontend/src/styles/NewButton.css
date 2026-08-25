@@ -1,0 +1,43 @@
+.button {
+    padding: 0 1rem;
+    border: 3px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+
+    color: white;
+    background-color: var(--button-color);
+
+    transition:
+        background-color 0.15s ease,
+        transform 0.1s ease;
+}
+
+.button:hover {
+    filter: brightness(0.9);
+}
+
+.button:active {
+    transform: scale(0.98);
+}
+
+.button:focus-visible {
+    outline: 2px solid var(--button-color);
+    outline-offset: 2px;
+}
+
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Outline variant */
+.button--outline {
+    color: var(--button-color);
+    background-color: transparent;
+    border-color: var(--button-color);
+}
+
+.button--outline:hover {
+    background-color: var(--button-color);
+    color: white;
+}
