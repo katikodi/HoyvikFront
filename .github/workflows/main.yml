@@ -17,8 +17,6 @@ jobs:
                   SHA: ${{ github.sha }}
                   BRANCH: ${{ github.ref_name }}
                   AUTHOR: ${{ github.actor }}
-                  RUN_ID: ${{ github.run_id }}
-                  TIMESTAMP: ${{ github.event.head_commit.timestamp }}
                   COMMITS: ${{ toJson(github.event.commits) }}
               run: |
                   if [ -z "$DISCORD_WEBHOOK" ]; then
@@ -30,7 +28,7 @@ jobs:
 
                   COMMIT_LIST=$(echo "$COMMITS" | jq -r '
                     .[]
-                    | "- `\(.id[0:7])` \(.message | split("\n")[0]) — \(.author.name)"
+                    | "- [\(.id[0:7])](\(.url)) \(.message | split("\n")[0]) — \(.author.name)"
                   ')
 
                   jq -n \
@@ -40,8 +38,6 @@ jobs:
                     --arg author "$AUTHOR" \
                     --arg commit_count "$COMMIT_COUNT commits pushed" \
                     --arg commits "$COMMIT_LIST" \
-                    --arg workflow_url "https://github.com/$REPOSITORY/actions/runs/$RUN_ID" \
-                    --arg timestamp "$TIMESTAMP" \
                     '{
                       embeds: [{
                         title: $title,
@@ -67,14 +63,8 @@ jobs:
                             name: "Commits",
                             value: $commits,
                             inline: false
-                          },
-                          {
-                            name: "Workflow Run",
-                            value: $workflow_url,
-                            inline: false
                           }
-                        ],
-                        timestamp: $timestamp
+                        ]
                       }]
                     }' |
                   curl \
