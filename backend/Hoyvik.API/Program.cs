@@ -2,6 +2,7 @@ using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,16 +68,16 @@ if(app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();
 
-	using var scope = app.Services.CreateScope();
-	var db = scope.ServiceProvider.GetRequiredService<Database>();
+	//using var scope = app.Services.CreateScope();
+	//var db = scope.ServiceProvider.GetRequiredService<Database>();
 
-	db.Database.EnsureDeleted();
-	db.Database.EnsureCreated();
+	//db.Database.EnsureDeleted();
+	//db.Database.EnsureCreated();
 
-	if (!db.Database.GetMigrations().Any())
-		await db.Database.MigrateAsync();
+	//if (!db.Database.GetMigrations().Any())
+	//	await db.Database.MigrateAsync();
 
-	await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+	//await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
 if(app.Environment.IsProduction())
@@ -84,11 +85,16 @@ if(app.Environment.IsProduction())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapApiEndpoints();
+
+
+
 app.UseFileServer(new FileServerOptions {
-	RequestPath = "/content",
+	RequestPath = "/uploads",
 	EnableDirectoryBrowsing = true,
-	EnableDefaultFiles = true
+	EnableDefaultFiles = true,
+	FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "uploads"))
 });
 
 app.Run();
