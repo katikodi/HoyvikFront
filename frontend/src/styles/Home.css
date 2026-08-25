@@ -34,7 +34,8 @@ button {
         linear-gradient(93deg, rgba(62, 85, 70, 0.47) 1.68%, rgba(96, 141, 111, 0.08) 52.57%, rgba(125, 188, 146, 0) 97.9%),
         linear-gradient(106deg, rgba(0, 0, 0, 0.26) 13.4%, rgba(255, 255, 255, 0) 100%),
         linear-gradient(in srgb 180deg, rgba(26, 26, 27, 1) 0%, rgba(26, 26, 27, 0.15) 49.73%, rgba(26, 26, 27, 0) 100%),
-        url("@/images/heroImage.webp");
+        url("/api/uploads/heroImage.webp");
+    /* url("@/images/heroImage.webp"); */
 }
 
 .hero .blocker {

@@ -1,4 +1,8 @@
-﻿namespace Hoyvik.API.Endpoints.Upload;
+﻿using Hoyvik.API.Services;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Webp;
+
+namespace Hoyvik.API.Endpoints.Upload;
 
 public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
 {
@@ -9,26 +13,29 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
     }
 
 
-    async Task<IResult> UploadFile(IFormFile file, IWebHostEnvironment env)
+    async Task<IResult> UploadFile(IFormFile file, IWebHostEnvironment env, ImageUploaderService imageUploader)
     {
-        //TODO: VALIDATE FILE MIME TYPES
-        var uploadPath = Path.Combine(env.WebRootPath, "uploads");
+
+        if(file == null || file.Length == 0)
+        {
+            return Results.BadRequest();
+        }
+
+
 
         try
         {
-            Directory.CreateDirectory(uploadPath);
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(uploadPath, fileName);
-            await using var stream = new FileStream(filePath, FileMode.Create);
-            await file.CopyToAsync(stream);
-            return Results.Ok($"/uploads/{fileName}");
+            var result = await imageUploader.UploadImage(file);
+            return Results.Ok($"/uploads/{result.FileName}");
+
         }
-        catch(Exception ex)
+        catch(ImageUploaderException ex)
         {
-            logger.LogError("UploadFile {ex}", ex);
+            return Results.BadRequest("Failed to process the uploaded image.");
+
         }
 
-        return Results.BadRequest();
+
 
     }
 }

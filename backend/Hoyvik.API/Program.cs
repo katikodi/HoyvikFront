@@ -1,5 +1,6 @@
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
+using Hoyvik.API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -14,6 +15,8 @@ builder.Services.AddAuthorizationBuilder()
 	.AddPolicy("User", p => p.RequireRole("user"))
 	.AddPolicy("Admin", p => p.RequireRole("admin"));
 
+
+builder.Services.AddSingleton<ImageUploaderService>();
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 
