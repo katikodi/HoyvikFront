@@ -53,7 +53,8 @@ body {
 /* STRUCTURE HOME PAGE */
 /* ------------------- */
 header {
-    /* height: 100vh; // Why view height */
+    /* Why view height */
+    /* height: 100vh;  */
 }
 
 .nav-bar {

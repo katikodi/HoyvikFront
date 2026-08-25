@@ -9,7 +9,6 @@ import IconSection from "@/components/IconSection";
 
 // ------------------------------------------------------------
 // ICON AND IMAGE IMPORTS
-// TODO: is there a better way of importing these urls?
 import heroImageUrl from "@/images/heroImage.webp";
 import calendarIconUrl from "@/icons/calendarIcon.svg";
 import turstierIconUrl from "@/icons/manHiking.svg";
@@ -24,14 +23,10 @@ import rom3Url from "@/images/rom3.webp";
 // DADA IMPORTS
 
 import { icons } from "@/test-data/icons.json";
+import NewButton from "@/components/NewButton.jsx";
 // -------------------------------------------------------------
-// TODO: change divs to semantic elements
-// TODO: verify accessability
-// TODO: many of these components have pretty bad names tbh, i'm to lazy fix, if anyone cares feel free
 
 export default function Home() {
-    // TODO: there's probably a better place to have this data
-    // might not matter if we're moving this to the db
     return (
         <div className="flex-col bg-primary">
             <Hero />
@@ -91,53 +86,39 @@ const HeroCTAText = ({ text }) => {
 };
 
 const HeroBooking = () => {
-    // TODO: this solution feels inelegant
-    // i suspect grid would be cleaner
-    const buttonHeight = "4rem";
+    const bookingInputs = [
+        { label: "Innsjekk", inputType: "date" },
+        { label: "Utsjekk", inputType: "date" },
+        { label: "Gjester", inputType: "number" }
+    ];
+
     return (
         <div className="hero-booking-container">
             <div className="hero-booking">
-                <HeroBookingInput
-                    inputType={"date"}
-                    labelText={"Innsjekk"}
-                    icon={calendarIconUrl}
-                    inputId={crypto.randomUUID()}
-                    height={buttonHeight}
-                />
-                <HeroBookingInput
-                    inputType={"date"}
-                    labelText={"Innsjekk"}
-                    icon={calendarIconUrl}
-                    inputId={crypto.randomUUID()}
-                    height={buttonHeight}
-                />
-                <HeroBookingInput
-                    inputType={"date"}
-                    labelText={"Innsjekk"}
-                    icon={calendarIconUrl}
-                    inputId={crypto.randomUUID()}
-                    height={buttonHeight}
-                />
-                <HeroBookingInput
-                    inputType={"date"}
-                    labelText={"Innsjekk"}
-                    icon={calendarIconUrl}
-                    inputId={crypto.randomUUID()}
-                    height={buttonHeight}
-                />
-                <Button
-                    height={buttonHeight}
+                {bookingInputs.map(e => (
+                    <HeroBookingInput
+                        key={e.label}
+                        inputType={e.inputType}
+                        labelText={e.label}
+                        inputId={crypto.randomUUID()}
+                        additionalClassNames={e.additionalClassNames}
+                    />
+                ))}
+                <NewButton
+                    height=""
                     className="booking-button"
                     onClick={() => console.log("cluck")}
                 >
                     SJEKK TILGJENGELIGHET
-                </Button>
+                </NewButton>
             </div>
         </div>
     );
 };
 
-const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
+const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames = [] }) => {
+    const classNames = [...additionalClassNames, "hero-booking-input"].join(" ");
+
     return (
         <div className="hero-booking-input-container">
             <label
@@ -147,7 +128,7 @@ const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
                 {labelText}
             </label>
             <input
-                className="hero-booking-input"
+                className={classNames}
                 id={inputId}
                 type={inputType}
             ></input>

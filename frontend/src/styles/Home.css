@@ -1,4 +1,4 @@
-html {
+:root {
     --booking-input-height: 4rem;
     --booking-input-icon-size: 30px;
 }
@@ -41,6 +41,7 @@ button {
     backdrop-filter: blur(2px);
     z-index: 60;
 }
+
 .hero-text-container {
     padding-top: 200px;
     width: 22rem;
@@ -60,7 +61,7 @@ button {
 .hero-cta-text {
     text-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
     font-size: 1rem;
-    line-height: 150%; /* 1.875rem */
+    line-height: 150%;
     font-weight: 400;
 }
 
@@ -76,8 +77,8 @@ button {
 
 .hero-booking {
     box-shadow: 0 7px 4px 0 rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.15fr 0.5fr;
     padding-inline: 1.8rem;
     padding-block: 1rem;
     gap: 1rem;
@@ -87,7 +88,7 @@ button {
     background: var(--bg2);
 }
 
-.hero-booking > button {
+.hero-booking button {
     background-color: var(--brown);
     height: var(--booking-input-height);
 }
@@ -121,6 +122,7 @@ button {
     flex-grow: 1;
     gap: 0.3rem;
 }
+
 button {
     display: flex;
     padding: 0 1.0625rem;
@@ -140,9 +142,11 @@ button {
     display: flex;
     flex-direction: column;
 }
+
 .random-section .blocker {
     background-color: green;
 }
+
 .random-section-section {
     background: transparent;
     display: flex;
@@ -153,6 +157,7 @@ button {
     flex-grow: 1;
     display: flex;
 }
+
 .random-section-section-img-container > img {
     width: 80%;
     height: auto;
