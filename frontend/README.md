@@ -20,12 +20,12 @@ fetch("/api/example", {
 
 ## Available Endpoints
 
-| Method | Endpoint | Description | Authentication |
-|--------|----------|-------------|----------------|
-| POST | `/api/auth/register` | Create a new account | Not required |
-| POST | `/api/auth/login` | Login a user | Not required |
-| POST | `/api/auth/logout` | Logout current user | Required |
-| GET | `/api/auth/auth/me` | Get current user information | Optional |
+| Method | Endpoint             | Description                  | Authentication |
+| ------ | -------------------- | ---------------------------- | -------------- |
+| POST   | `/api/auth/register` | Create a new account         | Not required   |
+| POST   | `/api/auth/login`    | Login a user                 | Not required   |
+| POST   | `/api/auth/logout`   | Logout current user          | Required       |
+| GET    | `/api/auth/auth/me`  | Get current user information | Optional       |
 
 ---
 
@@ -124,9 +124,7 @@ Authentication is optional.
 {
     "id": "12345",
     "email": "user@example.com",
-    "roles": [
-        "User"
-    ]
+    "roles": ["User"]
 }
 ```
 
@@ -159,7 +157,6 @@ User is logged in but does not have the required role:
 ```
 
 ---
-
 
 # Frontend Authentication Flow
 

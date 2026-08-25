@@ -4,5 +4,6 @@
     "arrowParens": "avoid",
     "proseWrap": "never",
     "singleAttributePerLine": true,
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "endOfLine": "crlf"
 }

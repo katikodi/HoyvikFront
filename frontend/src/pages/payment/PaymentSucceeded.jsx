@@ -1,4 +1,3 @@
-export default function PaymentSucceeded(){
-
+export default function PaymentSucceeded() {
     return <p>Success!</p>;
 }
