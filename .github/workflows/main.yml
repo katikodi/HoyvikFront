@@ -17,24 +17,29 @@ jobs:
                   SHA: ${{ github.sha }}
                   BRANCH: ${{ github.ref_name }}
                   AUTHOR: ${{ github.actor }}
-                  MESSAGE: ${{ github.event.head_commit.message }}
-                  TIMESTAMP: ${{ github.event.head_commit.timestamp }}
                   RUN_ID: ${{ github.run_id }}
+                  TIMESTAMP: ${{ github.event.head_commit.timestamp }}
+                  COMMITS: ${{ toJson(github.event.commits) }}
               run: |
                   if [ -z "$DISCORD_WEBHOOK" ]; then
                     echo "DISCORD_WEBHOOK secret is not configured"
                     exit 1
                   fi
 
-                  SHORT_SHA="${SHA:0:7}"
+                  COMMIT_COUNT=$(echo "$COMMITS" | jq 'length')
+
+                  COMMIT_LIST=$(echo "$COMMITS" | jq -r '
+                    .[]
+                    | "- `\(.id[0:7])` \(.message | split("\n")[0]) — \(.author.name)
+                  ')
 
                   jq -n \
                     --arg title "🚀 New Push to $REPOSITORY" \
                     --arg commit_url "https://github.com/$REPOSITORY/commit/$SHA" \
                     --arg branch "$BRANCH" \
                     --arg author "$AUTHOR" \
-                    --arg commit "$SHORT_SHA" \
-                    --arg message "$MESSAGE" \
+                    --arg commit_count "$COMMIT_COUNT commits pushed" \
+                    --arg commits "$COMMIT_LIST" \
                     --arg workflow_url "https://github.com/$REPOSITORY/actions/runs/$RUN_ID" \
                     --arg timestamp "$TIMESTAMP" \
                     '{
@@ -49,18 +54,18 @@ jobs:
                             inline: true
                           },
                           {
-                            name: "Author",
+                            name: "Pushed by",
                             value: $author,
                             inline: true
                           },
                           {
-                            name: "Commit",
-                            value: $commit,
-                            inline: false
+                            name: "Changes",
+                            value: $commit_count,
+                            inline: true
                           },
                           {
-                            name: "Message",
-                            value: $message,
+                            name: "Commits",
+                            value: $commits,
                             inline: false
                           },
                           {
