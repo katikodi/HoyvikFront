@@ -1,4 +1,4 @@
-html {
+:root {
     --booking-input-height: 4rem;
     --booking-input-icon-size: 30px;
 }
@@ -88,7 +88,7 @@ button {
     background: var(--bg2);
 }
 
-.hero-booking > button {
+.hero-booking button {
     background-color: var(--brown);
     height: var(--booking-input-height);
 }

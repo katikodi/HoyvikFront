@@ -23,6 +23,7 @@ import rom3Url from "@/images/rom3.webp";
 // DADA IMPORTS
 
 import { icons } from "@/test-data/icons.json";
+import NewButton from "@/components/NewButton.jsx";
 // -------------------------------------------------------------
 
 export default function Home() {
@@ -85,9 +86,6 @@ const HeroCTAText = ({ text }) => {
 };
 
 const HeroBooking = () => {
-    // TODO: this solution feels inelegant
-    // i suspect grid would be cleaner
-    const buttonHeight = "4rem";
     const bookingInputs = [{ label: "Innsjekk" }, { label: "Utsjekk" }, { label: "Gjester" }, { label: "Rom" }];
 
     return (
@@ -98,24 +96,22 @@ const HeroBooking = () => {
                         key={e.label}
                         inputType="date"
                         labelText={e.label}
-                        icon={calendarIconUrl}
                         inputId={crypto.randomUUID()}
-                        height={buttonHeight}
                     />
                 ))}
-                <Button
-                    height={buttonHeight}
+                <NewButton
+                    height=""
                     className="booking-button"
                     onClick={() => console.log("cluck")}
                 >
                     SJEKK TILGJENGELIGHET
-                </Button>
+                </NewButton>
             </div>
         </div>
     );
 };
 
-const HeroBookingInput = ({ inputType, labelText, icon, inputId, height }) => {
+const HeroBookingInput = ({ inputType, labelText, inputId }) => {
     return (
         <div className="hero-booking-input-container">
             <label
