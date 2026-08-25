@@ -1,5 +1,5 @@
 {
-  "appHost": {
-    "path": "HoyvikProject.AppHost/HoyvikProject.AppHost.csproj"
-  }
+    "appHost": {
+        "path": "HoyvikProject.AppHost/HoyvikProject.AppHost.csproj"
+    }
 }

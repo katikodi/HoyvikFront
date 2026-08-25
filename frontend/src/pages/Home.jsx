@@ -21,9 +21,9 @@ import rom2Url from "@/images/rom2.webp";
 import rom3Url from "@/images/rom3.webp";
 // -------------------------------------------------------------
 // DADA IMPORTS
-
 import { icons } from "@/test-data/icons.json";
 import NewButton from "@/components/NewButton.jsx";
+
 // -------------------------------------------------------------
 
 export default function Home() {
