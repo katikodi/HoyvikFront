@@ -7,24 +7,27 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
     public void MapEndpoint(RouteGroupBuilder app)
     {
         app.MapPost("/upload", UploadFile)
-            .DisableAntiforgery();
+            .DisableAntiforgery()
+            .RequireAuthorization("admin", "Admin");
 
         app.MapPost("/upload/hero", UploadHero)
-            .DisableAntiforgery();
+            .DisableAntiforgery()
+            .RequireAuthorization("admin", "Admin");
     }
 
     async Task<IResult> UploadHero(IFormFile file,ImageUploaderService imageUploader)
     {
         if (file == null || file.Length == 0)
-        {
             return Results.BadRequest();
-        }
-
-
 
         try
         {
-            var result = await imageUploader.UploadImage(file, name: "image",folder: "hero");
+            var result = await imageUploader.UploadImage(
+                file,
+                name: "image",
+                folder: "hero"
+            );
+
             return Results.Ok(result.Path);
 
         }
@@ -32,23 +35,13 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
         {
             logger.LogError(ex, "Failed to process the uploaded image.");
             return Results.BadRequest("Failed to process the uploaded image.");
-
         }
-
-
-
     }
-
 
     async Task<IResult> UploadFile(IFormFile file,ImageUploaderService imageUploader)
     {
-
         if(file == null || file.Length == 0)
-        {
             return Results.BadRequest();
-        }
-
-
 
         try
         {
@@ -58,11 +51,8 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
         }
         catch(ImageUploaderException ex)
         {
+            logger.LogError(ex, "Failed to process the uploaded image.");
             return Results.BadRequest("Failed to process the uploaded image.");
-
         }
-
-
-
     }
 }
