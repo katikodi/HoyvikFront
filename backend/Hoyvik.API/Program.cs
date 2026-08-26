@@ -71,16 +71,16 @@ if(app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();
 
-	//using var scope = app.Services.CreateScope();
-	//var db = scope.ServiceProvider.GetRequiredService<Database>();
+    //using var scope = app.Services.CreateScope();
+    //var db = scope.ServiceProvider.GetRequiredService<Database>();
 
-	//db.Database.EnsureDeleted();
-	//db.Database.EnsureCreated();
+    //db.Database.EnsureDeleted();
+    //db.Database.EnsureCreated();
 
-	//if (!db.Database.GetMigrations().Any())
-	//	await db.Database.MigrateAsync();
+    //if (!db.Database.GetMigrations().Any())
+    //	await db.Database.MigrateAsync();
 
-	//await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+    //await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
 if(app.Environment.IsProduction())
@@ -92,13 +92,16 @@ app.UseAuthorization();
 app.MapApiEndpoints();
 
 
+Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath!, "uploads"));
 
 app.UseFileServer(new FileServerOptions {
 	RequestPath = "/content/uploads",
 	EnableDirectoryBrowsing = true,
 	EnableDefaultFiles = true,
-	FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "uploads"))
+	FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "uploads")),
+
 });
+
 
 app.Run();
 
