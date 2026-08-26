@@ -38,15 +38,18 @@ const Booking = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     {bookingStages[stage]}
                     {/* <BookingStageOne /> */}
+
                     {Object.keys(bookingStages).length - 1 > stage && (
                         <div className="flex-row gap-1">
-                            <input
-                                type="submit"
-                                value="Prev"
-                                onClick={() => {
-                                    setStage(prev => prev - 1);
-                                }}
-                            />
+                            {stage > 0 && (
+                                <input
+                                    type="submit"
+                                    value="Prev"
+                                    onClick={() => {
+                                        setStage(prev => prev - 1);
+                                    }}
+                                />
+                            )}
 
                             <input
                                 type="submit"
