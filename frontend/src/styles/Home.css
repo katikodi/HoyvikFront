@@ -13,13 +13,19 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     order: 0;
 }
 
-/* input[type="date"] {
-    display: none;
-} */
-
-.datetime-input-edit-wrapper {
+input[type="date"] {
+    color: transparent;
+}
+/* firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+/* chrome */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
     display: none;
 }
+
 button {
     border: 0;
 }

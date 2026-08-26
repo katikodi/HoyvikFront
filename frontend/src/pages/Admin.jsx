@@ -313,35 +313,20 @@ const Pages = () => {
     return (
         <div className="pages-element">
             <div className="pages-element-section-1">
-                <div className="last-changed">
-                    <p>Last Changed: Today</p>
+                <div className="last-changed pb-sm">
+                    <p className="text-brown text-base">Last Changed: Today</p>
                 </div>
-                <select
-                    className="user-select"
-                    id="select-user"
-                >
-                    <Button>
-                        <selectedcontent></selectedcontent>
-                    </Button>
-                    <Option
-                        value="admin"
-                        iconsrc={userIconUrl}
+                <label>
+                    <select
+                        name="selectedUser"
+                        defaultValue="admin"
+                        className="rounded-none pb-sm bg-transparent text-brown user-select"
                     >
-                        <span className="option-label">Admin</span>
-                    </Option>
-                    <Option
-                        value="user"
-                        iconsrc={userIconUrl}
-                    >
-                        <span className="option-label">User</span>
-                    </Option>
-                    <Option
-                        value="guest"
-                        iconsrc={userIconUrl}
-                    >
-                        <span className="option-label">Guest</span>
-                    </Option>
-                </select>
+                        <option value="admin">Admin</option>
+                        <option value="usre">User</option>
+                        <option value="guest">Guest</option>
+                    </select>
+                </label>
             </div>
             <div style={{ background: "#FEFEFE", height: "50vh", width: "100%", border: "1px solid  #696969" }}></div>
         </div>

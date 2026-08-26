@@ -219,8 +219,7 @@ select::picker-icon {
 }
 
 .user-select {
-    background: transparent;
-    border-radius: 0;
+    border: 1px solid black;
     padding-block: 0;
     flex: 1 1 auto;
 }

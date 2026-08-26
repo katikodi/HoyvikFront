@@ -2,7 +2,6 @@ import "@/styles/Home.css";
 
 // -------------------------------------------------------------
 // COMPONENT IMPORTS
-import Booking from "@/components/Booking";
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import IconSection from "@/components/IconSection";
@@ -23,9 +22,6 @@ import rom3Url from "@/images/rom3.webp";
 // DADA IMPORTS
 import { icons } from "@/test-data/icons.json";
 import NewButton from "@/components/NewButton.jsx";
-
-// -------------------------------------------------------------
-
 export default function Home() {
     return (
         <div className="flex-col bg-primary">
@@ -121,17 +117,6 @@ const HeroBooking = () => {
 
 const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames = [] }) => {
     const classNames = [...additionalClassNames, "hero-booking-input"].join(" ");
-
-    return (
-        <label>
-            <input
-                type="date"
-                name="innsjekk"
-            />
-            hello
-        </label>
-    );
-
     return (
         <div className="hero-booking-input-container">
             <label

@@ -53,3 +53,60 @@
 .bg-primary {
     background-color: var(--bg1);
 }
+
+.p-1 {
+    padding: 1rem;
+}
+
+.p-2 {
+    padding: 2rem;
+}
+.p-4 {
+    padding: 4rem;
+}
+.p-6 {
+    padding: 6rem;
+}
+.p-8 {
+    padding: 8rem;
+}
+.p-10 {
+    padding: 10rem;
+}
+.pb-1 {
+    padding-block: 1rem;
+}
+
+.pb-2 {
+    padding-block: 2rem;
+}
+.pb-4 {
+    padding-block: 4rem;
+}
+.pb-6 {
+    padding-block: 6rem;
+}
+.pb-8 {
+    padding-block: 8rem;
+}
+.pb-10 {
+    padding-block: 10rem;
+}
+.pb-sm {
+    padding-block: 5px;
+}
+.rounded-none {
+    border-radius: 0px;
+}
+
+.bg-transparent {
+    background-color: transparent;
+}
+
+.text-brown {
+    color: var(--textbrown);
+}
+
+.text-base {
+    font-size: 1rem;
+}
