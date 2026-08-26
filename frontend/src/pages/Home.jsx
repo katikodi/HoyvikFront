@@ -107,7 +107,10 @@ const HeroBooking = () => {
                 <NewButton
                     height=""
                     className="booking-button"
-                    onClick={() => console.log("cluck")}
+                    onClick={() => {
+                        let sound = new Audio("/sounds/order_sound.wav");
+                        sound.play();
+                    }}
                 >
                     SJEKK TILGJENGELIGHET
                 </NewButton>
@@ -118,6 +121,16 @@ const HeroBooking = () => {
 
 const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames = [] }) => {
     const classNames = [...additionalClassNames, "hero-booking-input"].join(" ");
+
+    return (
+        <label>
+            <input
+                type="date"
+                name="innsjekk"
+            />
+            hello
+        </label>
+    );
 
     return (
         <div className="hero-booking-input-container">
