@@ -40,7 +40,7 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
     }
 
 
-    async Task<IResult> UploadFile(IFormFile file, IWebHostEnvironment env, ImageUploaderService imageUploader)
+    async Task<IResult> UploadFile(IFormFile file,ImageUploaderService imageUploader)
     {
 
         if(file == null || file.Length == 0)
