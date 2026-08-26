@@ -17,6 +17,11 @@ export default defineConfig(({ mode }) => {
                     target: process.env.services__backend__https__0 || process.env.services__backend__http__0,
                     changeOrigin: false,
                     secure: false
+                },
+                "/content": {
+                    target: process.env.services__backend__https__0 || process.env.services__backend__http__0,
+                    changeOrigin: false,
+                    secure: false
                 }
             }
         },

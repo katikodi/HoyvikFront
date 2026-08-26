@@ -94,7 +94,7 @@ app.MapApiEndpoints();
 
 
 app.UseFileServer(new FileServerOptions {
-	RequestPath = "/uploads",
+	RequestPath = "/content/uploads",
 	EnableDirectoryBrowsing = true,
 	EnableDefaultFiles = true,
 	FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "uploads"))
