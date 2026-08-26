@@ -121,17 +121,6 @@ const HeroBooking = () => {
 
 const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames = [] }) => {
     const classNames = [...additionalClassNames, "hero-booking-input"].join(" ");
-
-    return (
-        <label>
-            <input
-                type="date"
-                name="innsjekk"
-            />
-            hello
-        </label>
-    );
-
     return (
         <div className="hero-booking-input-container">
             <label
