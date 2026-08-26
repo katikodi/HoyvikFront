@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1 1 0px;
+    flex: 0 1 8rem;
     overflow: clip;
     letter-spacing: normal;
 }
@@ -22,17 +22,13 @@
 .icon-text-container {
     width: 100%;
     max-width: 100%;
-    height: 20px;
+    height: max(20px, fit-content);
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: clip;
     border: 1px solid transparent;
-}
-
-.icon-text-container:hover {
-    border: 1px solid green;
 }
 
 .edit-icon input,

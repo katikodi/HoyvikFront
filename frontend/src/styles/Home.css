@@ -12,11 +12,13 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     background-size: cover;
     order: 0;
 }
-
-input[type="date"]::-webkit-datetime-edit {
+/* chrome */
+input[type="date"]::-webkit-datetime-edit,
+input[type="date"]::-internal-datetime-container {
     display: none;
     order: 1;
 }
+/* firefox */
 
 button {
     border: 0;

@@ -185,7 +185,39 @@ const EditSection = () => {
                         src={heroImgUrl}
                         alt="alt text"
                     />
-                    <Button>
+                    <Button
+                        onClick={async () => {
+                            await fetch("/api/upload/hero", {
+                                method: "POST",
+                                body: new FormData(),
+                                headers: {
+                                    "Content-Type": "application/json"
+                                }
+                                //                                 const send = document.querySelector("#send");
+
+                                // send.addEventListener("click", async () => {
+                                //   const formData = new FormData();
+                                //   formData.append("username", "Groucho");
+                                //   formData.append("accountNum", 123456);
+
+                                //   // A file <input> element
+                                //   const avatar = document.querySelector("#avatar");
+                                //   formData.append("avatar", avatar.files[0]);
+
+                                //   // JavaScript file-like object
+                                //   const content = '<q id="a"><span id="b">hey!</span></q>';
+                                //   const blob = new Blob([content], { type: "text/xml" });
+                                //   formData.append("webmasterFile", blob);
+
+                                //   const response = await fetch("http://example.org/post", {
+                                //     method: "POST",
+                                //     body: formData,
+                                //   });
+                                //   console.log(await response.json());
+                                // });
+                            });
+                        }}
+                    >
                         <div>
                             <img src={uploadIconUrl} />
                             Upload Image
