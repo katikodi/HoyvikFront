@@ -36,8 +36,8 @@ const Nav = () => {
     );
 };
 
-export default Nav;
-
 const NavLogo = () => {
     return <NavLink to={"/"}>HOME</NavLink>;
 };
+
+export default Nav;

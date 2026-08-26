@@ -153,7 +153,6 @@ const CalendarInput = ({ inputId, labelText }) => {
 };
 
 const Redirect = () => {
-    // TODO: does stripe redirect to a order reciept or something?
     useEffect(() => {
         const controller = new AbortController();
         let timeoutId;
@@ -169,7 +168,6 @@ const Redirect = () => {
             });
 
             const result = await response.json();
-
             if (!response.ok || !result.url) return;
 
             timeoutId = setTimeout(() => {

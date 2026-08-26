@@ -34,10 +34,12 @@ public class ImageUploaderService(IWebHostEnvironment env, ILogger<ImageUploader
                 await image.SaveAsWebpAsync(filePath, encoder);
             }
 
+            logger.LogInformation("Uploaded image: {path}", publicPath);
             return new UploadFileResult(publicPath);
         }   
         catch (Exception ex)
         {
+            logger.LogError(ex, "Error processing and converting upload file to WebP");
             throw new ImageUploaderException("Error processing and converting upload file to WebP", ex);
         }
     }

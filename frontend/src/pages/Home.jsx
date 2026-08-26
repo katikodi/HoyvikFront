@@ -138,7 +138,7 @@ const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames 
     );
 };
 
-// TODO: wtf is this section called?
+// TODO: find better name for this section
 const AboutSection = () => {
     return (
         <div className="about-section">
@@ -148,7 +148,7 @@ const AboutSection = () => {
     );
 };
 
-// TODO: i have no idea what to name these sections
+// TODO: find better name for this section
 const RandomSection = () => {
     const copyText = "Placeholder tekst. Kan vere about section f.eks som forklare meir om ka service som blir solgt";
     return (

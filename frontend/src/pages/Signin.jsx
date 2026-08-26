@@ -50,7 +50,6 @@ const SignIn = () => {
                         style={{
                             color: "var(--darkgreen)"
                         }}
-                        // TODO: set up password reset
                         // to={"/"}
                     >
                         Forgot your password?

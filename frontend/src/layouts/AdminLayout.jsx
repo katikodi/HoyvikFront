@@ -16,8 +16,8 @@ export default function AdminLayout() {
             }}
         >
             <header>
-                <Nav />
-                {/* <AdminBar /> */}
+                {/* <Nav /> */}
+                <AdminBar />
             </header>
 
             <main style={{ flex: 1, border: "1px solid white", width: "100%", height: "100%", overflow: "clip" }}>
