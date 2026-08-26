@@ -15,6 +15,7 @@ jobs:
                   DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
                   REPOSITORY: ${{ github.repository }}
                   SHA: ${{ github.sha }}
+                  BEFORE: ${{ github.event.before }}
                   BRANCH: ${{ github.ref_name }}
                   AUTHOR: ${{ github.actor }}
                   COMMITS: ${{ toJson(github.event.commits) }}
@@ -33,7 +34,7 @@ jobs:
 
                   jq -n \
                     --arg title "🚀 New Push to $REPOSITORY" \
-                    --arg commit_url "https://github.com/$REPOSITORY/commit/$SHA" \
+                    --arg compare_url "https://github.com/$REPOSITORY/compare/$BEFORE...$SHA" \
                     --arg branch "$BRANCH" \
                     --arg author "$AUTHOR" \
                     --arg commit_count "$COMMIT_COUNT commits pushed" \
@@ -41,7 +42,7 @@ jobs:
                     '{
                       embeds: [{
                         title: $title,
-                        url: $commit_url,
+                        url: $compare_url,
                         color: 3447003,
                         fields: [
                           {
