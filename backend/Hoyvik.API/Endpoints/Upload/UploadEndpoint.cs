@@ -4,6 +4,8 @@ namespace Hoyvik.API.Endpoints.Upload;
 
 public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
 {
+
+    //CURL: curl.exe -X POST "http://localhost:5200/api/upload/hero"  -F "file=@heroImage.webp" -b .\cookies.txt
     public void MapEndpoint(RouteGroupBuilder app)
     {
         app.MapPost("/upload", UploadFile)

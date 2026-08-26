@@ -1,22 +1,60 @@
+import "@/styles/Nav.css";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext";
+import Button from "@/components/NewButton";
 
-export default function AdminBar() {
+const AdminBar = () => {
+    const { isAdmin, user, logout } = useAuth();
     return (
-        <div
-            className="nav-bar"
-            style={{ border: "1px solid white" }}
-        >
-            <div>
-                <NavLink to="/">Home/logo</NavLink>
+        <nav className="nav">
+            <NavLogo />
+            <div className="flex-row center gap-6">
+                <NavLink to="/Booking">Booking</NavLink>
+                <NavLink to="/Aktiviteter">Aktiviteter</NavLink>
+
+                <NavLink to="/aboutUs">Om Oss</NavLink>
+
+                <NavLink to="/Kontakt">Kontakt</NavLink>
+                <NavLink to="/Nettbutikk">Nettbutikk</NavLink>
             </div>
-            <div>
-                <NavLink to="booking">Admin</NavLink>
-                <NavLink to="events">Admin</NavLink>
-                <NavLink to="aboutus">Om Admin</NavLink>
+            <div className="flex-row center gap-1 width-fit-content">
+                {isAdmin && (
+                    <>
+                        <Button onClick={resetDatabase}>Reset Database</Button>
+                    </>
+                )}
+                {user ? (
+                    <>
+                        <NavLink to="/profile">Profile</NavLink>
+                        {/* <NavLink
+                            to="/"
+                            onClick={logout}
+                        >
+                            Sign out
+                        </NavLink> */}
+                    </>
+                ) : (
+                    <NavLink to="/signin">Sign in</NavLink>
+                )}
             </div>
-            <div>
-                <p>Admin bar!!</p>
-            </div>
-        </div>
+        </nav>
     );
+};
+
+//THIS DOES NOT BELONG HERE. just put it here temporary for testing purposes
+async function resetDatabase() {
+    const response = await fetch("/api/admin/migrate", {
+        method: "POST",
+        credentials: "include"
+    });
+
+    if (!response.ok) {
+        console.error("something went wrong");
+    }
 }
+
+const NavLogo = () => {
+    return <NavLink to={"/"}>HOME</NavLink>;
+};
+
+export default AdminBar;
