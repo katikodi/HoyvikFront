@@ -6,15 +6,19 @@ namespace Hoyvik.API.Services;
 public class ImageUploaderService(IWebHostEnvironment env, ILogger<ImageUploaderService> logger)
 {
 
-    public async Task<UploadFileResult> UploadImage(IFormFile file)
+    public async Task<UploadFileResult> UploadImage(IFormFile file ,string? name = null, string? folder = null)
     {
-        var uploadPath = Path.Combine(env.WebRootPath, "uploads");
+        var uploadPath = Path.Combine(env.WebRootPath, "uploads", folder ?? string.Empty);
+
+
         try
         {
             Directory.CreateDirectory(uploadPath);
 
-            var fileName = $"{Guid.NewGuid()}.webp";
+            var fileName = $"{name ?? Guid.NewGuid().ToString("N")}.webp";
             var filePath = Path.Combine(uploadPath, fileName);
+            var relativePath = Path.GetRelativePath(env.WebRootPath, filePath);
+            var publicPath = "/" + relativePath.Replace(Path.DirectorySeparatorChar, '/');
 
 
             await using var fileStream = file.OpenReadStream();
@@ -30,7 +34,7 @@ public class ImageUploaderService(IWebHostEnvironment env, ILogger<ImageUploader
                 await image.SaveAsWebpAsync(filePath, encoder);
             }
 
-            return new UploadFileResult(fileName);
+            return new UploadFileResult(publicPath);
         }   
         catch (Exception ex)
         {
@@ -40,7 +44,7 @@ public class ImageUploaderService(IWebHostEnvironment env, ILogger<ImageUploader
 }
 
 
-public record UploadFileResult(string FileName);
+public record UploadFileResult(string Path);
 
 
 public class ImageUploaderException(string message, Exception innerException) : Exception(message,innerException);
