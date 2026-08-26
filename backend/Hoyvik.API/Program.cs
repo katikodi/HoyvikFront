@@ -42,10 +42,19 @@ builder.AddNpgsqlDbContext<Database>("database");
 builder.Services.ConfigureApplicationCookie(x =>
 {
 	x.Cookie.HttpOnly = true;
-	x.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 	x.Cookie.SameSite = SameSiteMode.Lax;
 
-	x.Events.OnRedirectToLogin = ctx =>
+	if (builder.Environment.IsDevelopment())
+	{
+		x.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+	}
+	else
+	{
+        x.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
+    }
+
+    x.Events.OnRedirectToLogin = ctx =>
 	{
 		ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
 		return Task.CompletedTask;
@@ -72,12 +81,20 @@ if(app.Environment.IsDevelopment())
 	app.MapOpenApi();
 
 	using var scope = app.Services.CreateScope();
+
+	var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 	var db = scope.ServiceProvider.GetRequiredService<Database>();
 
-	await db.Database.EnsureCreatedAsync();
+	if(await db.Database.EnsureCreatedAsync())
+	{
+		logger.LogInformation("Creating database....");
+	}
 
 	if (!db.Database.GetMigrations().Any())
+	{
+		logger.LogInformation("Pending migrations found. Database migrations are being ran");
 		await db.Database.MigrateAsync();
+	}
 
 	await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
