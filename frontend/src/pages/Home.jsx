@@ -107,7 +107,10 @@ const HeroBooking = () => {
                 <NewButton
                     height=""
                     className="booking-button"
-                    onClick={() => console.log("cluck")}
+                    onClick={() => {
+                        let sound = new Audio("/sounds/order_sound.wav");
+                        sound.play();
+                    }}
                 >
                     SJEKK TILGJENGELIGHET
                 </NewButton>
@@ -118,6 +121,16 @@ const HeroBooking = () => {
 
 const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames = [] }) => {
     const classNames = [...additionalClassNames, "hero-booking-input"].join(" ");
+
+    return (
+        <label>
+            <input
+                type="date"
+                name="innsjekk"
+            />
+            hello
+        </label>
+    );
 
     return (
         <div className="hero-booking-input-container">
@@ -136,7 +149,7 @@ const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames 
     );
 };
 
-// TODO: wtf is this section called?
+// TODO: find better name for this section
 const AboutSection = () => {
     return (
         <div className="about-section">
@@ -146,7 +159,7 @@ const AboutSection = () => {
     );
 };
 
-// TODO: i have no idea what to name these sections
+// TODO: find better name for this section
 const RandomSection = () => {
     const copyText = "Placeholder tekst. Kan vere about section f.eks som forklare meir om ka service som blir solgt";
     return (
