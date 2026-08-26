@@ -1,4 +1,4 @@
-/* TODO: nav links color have low contrast on bright backgrounds */
+/* TODO: fix nav links color - they have low contrast on bright backgrounds */
 html {
     --header-height: 60px;
 }
