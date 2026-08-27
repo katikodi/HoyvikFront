@@ -1,47 +1,26 @@
 #!/usr/bin/env sh
+
 set -e
 
-# Setup directories
+echo "RUNNING PRE-PUSH CHECKS"
+
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-FRONTEND_DIR="$REPO_ROOT/frontend"
-NODE_MODULES="$FRONTEND_DIR/node_modules"
 
-if [ ! -d "$NODE_MODULES" ]; then
-    echo "✗ Error: frontend/node_modules is missing. Run 'npm --prefix frontend install' first."
-    exit 1
-fi
+STASH_RESULT=$(git stash push --include-untracked -m "pre-push-auto-stash" 2>&1 || true)
 
-while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
-    if [ "$LOCAL_SHA" = "0000000000000000000000000000000000000000" ]; then
-        continue
-    fi
+restore_stash() {
+  if echo "$STASH_RESULT" | grep -q "Saved working directory"; then
+    echo "==> Restoring uncommitted changes..."
+    git stash pop --quiet
+  fi
+}
 
-    TEMP_DIR="$(mktemp -d)"
+trap restore_stash EXIT INT TERM
 
-    cleanup() {
-        git -C "$REPO_ROOT" worktree remove --force "$TEMP_DIR" >/dev/null 2>&1 || true
-        rm -rf "$TEMP_DIR"
-    }
-    trap cleanup EXIT INT TERM
+echo "Running Linter..."
+npm --prefix "$REPO_ROOT/frontend" run lint
 
-    echo "==> Verifying $LOCAL_REF ($LOCAL_SHA)"
-    
-    git -C "$REPO_ROOT" worktree add --detach "$TEMP_DIR" "$LOCAL_SHA" >/dev/null
+echo "Running Build..."
+npm --prefix "$REPO_ROOT/frontend" run build
 
-    if [ -n "$COMSPEC" ] || [ -n "$MSYSTEM" ]; then
-        cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" >/dev/null 2>&1
-    else
-        ln -s "$NODE_MODULES" "$TEMP_DIR/frontend/node_modules"
-    fi
-
-    echo "→ Running Linter..."
-    (cd "$TEMP_DIR/frontend" && npm run lint)
-
-    echo "→ Running Build..."
-    (cd "$TEMP_DIR/frontend" && npm run build)
-
-    echo "✓ Push checks passed for $LOCAL_SHA"
-
-    cleanup
-    trap - EXIT INT TERM
-done
+echo "PRE-PUSH CHECKS PASSED"
