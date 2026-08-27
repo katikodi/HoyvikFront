@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-
 echo "RUNNING POST MERGE"
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 npm --prefix "$REPO_ROOT" ci --ignore-scripts
 npm --prefix "$REPO_ROOT/frontend" ci --ignore-scripts
