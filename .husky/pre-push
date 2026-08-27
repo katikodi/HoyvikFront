@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+set -e
+
+echo "RUNNING PRE-PUSH CHECKS"
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+npm --prefix "$REPO_ROOT/frontend" run lint
+npm --prefix "$REPO_ROOT/frontend" run build
+
+echo "PRE-PUSH CHECKS PASSED"
