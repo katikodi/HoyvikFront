@@ -27,10 +27,26 @@ printf "${BLUE}        RUNNING PRE-PUSH CHECKS        ${RESET}\n"
 printf "${BLUE}========================================${RESET}\n"
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-NODE_MODULES="$REPO_ROOT/frontend/node_modules"
+FRONTEND_DIR="$REPO_ROOT/frontend"
+NODE_MODULES="$FRONTEND_DIR/node_modules"
+NODE_BIN="$NODE_MODULES/.bin"
 
 if [ ! -d "$NODE_MODULES" ]; then
     print_error "frontend/node_modules does not exist."
+    printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
+    exit 1
+fi
+
+if [ ! -f "$NODE_BIN/oxlint.cmd" ]; then
+    print_error "Oxlint executable was not found."
+    printf "${YELLOW}Expected: $NODE_BIN/oxlint.cmd${RESET}\n"
+    printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
+    exit 1
+fi
+
+if [ ! -f "$NODE_BIN/vite.cmd" ]; then
+    print_error "Vite executable was not found."
+    printf "${YELLOW}Expected: $NODE_BIN/vite.cmd${RESET}\n"
     printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
     exit 1
 fi
@@ -65,7 +81,10 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     print_step "Running Oxlint"
 
-    if ! npm --prefix "$TEMP_DIR/frontend" run lint; then
+    if ! (
+        cd "$TEMP_DIR/frontend"
+        PATH="$NODE_BIN:$PATH" npm run lint
+    ); then
         print_error "Oxlint failed."
         printf "${RED}Push rejected.${RESET}\n"
         exit 1
@@ -75,7 +94,10 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     print_step "Building frontend"
 
-    if ! npm --prefix "$TEMP_DIR/frontend" run build; then
+    if ! (
+        cd "$TEMP_DIR/frontend"
+        PATH="$NODE_BIN:$PATH" npm run build
+    ); then
         print_error "Vite build failed."
         printf "${RED}Push rejected.${RESET}\n"
         exit 1
