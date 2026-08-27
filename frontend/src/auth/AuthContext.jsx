@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import AuthContext from "@/hooks/authContext.js";
+import { getCurrentUser, login as loginUser, register as registerUser, logout as logoutUser } from "@/api/auth";
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
@@ -9,69 +10,39 @@ export function AuthProvider({ children }) {
 
     async function fetchUser() {
         try {
-            const response = await fetch("/api/auth/me", {
-                credentials: "include"
-            });
-
-            if (!response.ok) {
-                setUser(null);
-                return;
-            }
-
-            const data = await response.json();
-            setUser(data);
+            const user = await getCurrentUser();
+            setUser(user);
         } catch {
             setUser(null);
         }
     }
 
     async function login(email, password) {
-        const response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include",
-            body: JSON.stringify({ email, password })
-        });
-
-        if (!response.ok) {
-            console.log("login failed");
+        try {
+            await loginUser(email, password);
+            await fetchUser();
+            return true;
+        } catch {
             return false;
         }
-
-        await fetchUser();
-
-        return true;
     }
 
     async function register(email, password, confirmPassword) {
-        const response = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email,
-                password,
-                confirmPassword
-            })
-        });
-
-        if (!response.ok) return false;
-
-        await login(email, password);
-
-        return true;
+        try {
+            await registerUser(email, password, confirmPassword);
+            await login(email, password);
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     async function logout() {
-        await fetch("/api/auth/logout", {
-            method: "POST",
-            credentials: "include"
-        });
-
-        setUser(null);
+        try {
+            await logoutUser();
+        } finally {
+            setUser(null);
+        }
     }
 
     useEffect(() => {

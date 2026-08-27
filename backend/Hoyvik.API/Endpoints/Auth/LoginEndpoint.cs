@@ -17,19 +17,15 @@ public class LoginEndpoint : IEndpoint
     {
         var user = await userManager.FindByEmailAsync(request.Email);
 
+        if (user is null)
+            return Results.Unauthorized();
 
-        if (user is not null)
-        {
-            if (await userManager.CheckPasswordAsync(user, request.Password))
-            {
-                await signInManager.SignInAsync(user, true);
-                return Results.Ok();
-            }
-            return Results.BadRequest();
-        }
+        if (!await userManager.CheckPasswordAsync(user, request.Password))
+            return Results.Unauthorized();
 
+        await signInManager.SignInAsync(user, true);
 
-        return Results.BadRequest();
+        return Results.NoContent();
     }
 
     record LoginRequest(
