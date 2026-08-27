@@ -24,7 +24,7 @@ import userIconUrl from "@/icons/userIcon.svg";
 // DADA IMPORTS
 import { icons as iconData } from "@/test-data/icons.json";
 import IconSection from "@/components/IconSection";
-import { FileUpload } from "@/components/FileUpload";
+// import { FileUpload } from "@/components/FileUpload";
 // -----------------------------------
 
 const Admin = () => {
@@ -226,7 +226,7 @@ const EditSection = () => {
                     </Button>
                 </div>
 
-                <FileUpload />
+                {/* <FileUpload /> */}
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="edit-section-form"
