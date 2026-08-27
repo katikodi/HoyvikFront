@@ -84,10 +84,6 @@ header {
     grid-template-rows: repeat(2, 10px);
 }
 
-.booking:nth-child {
-    width: fit-content;
-}
-
 .booking:nth-child(even) {
     background-color: orange;
     order: 1;
