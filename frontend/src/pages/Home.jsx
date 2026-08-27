@@ -3,7 +3,6 @@ import "@/styles/Home.css";
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import IconSection from "@/components/IconSection";
-import NewButton from "@/components/NewButton.jsx";
 // ICON AND IMAGE IMPORTS
 import vikingStuffUrl from "@/images/randomVikingStuff.webp";
 import roomImageUrl from "@/images/rom1.webp";
@@ -93,9 +92,7 @@ const BookingForm = () => {
                         label={field.label}
                     />
                 ))}
-
-                <NewButton
-                    height=""
+                <Button
                     className="booking-button"
                     onClick={() => {
                         const sound = new Audio("/sounds/order_sound.wav");
@@ -103,7 +100,7 @@ const BookingForm = () => {
                     }}
                 >
                     SJEKK TILGJENGELIGHET
-                </NewButton>
+                </Button>
             </div>
         </form>
     );
@@ -175,7 +172,7 @@ const AboutText = ({ text, onClick, actionLabel }) => {
             <Button
                 onClick={onClick}
                 height="2rem"
-                filled={false}
+                variant="outline"
                 color="#44383E"
             >
                 {actionLabel || "CTA"}
@@ -219,7 +216,7 @@ const CarouselCard = ({ image, title }) => {
 
             <div className="carousel-card-header">
                 <Button
-                    filled={false}
+                    variant="filled"
                     height="2rem"
                     onClick={() => {
                         console.log("room click");

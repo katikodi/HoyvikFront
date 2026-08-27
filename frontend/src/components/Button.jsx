@@ -1,14 +1,13 @@
-const Button = ({ onClick, height = "2rem", color, filled = true, style = {}, className, children }) => {
+import "@/styles/Button.css";
+
+const Button = ({ onClick, height, color = "gray", variant = "filled", className = "", children, ...props }) => {
     return (
         <button
-            style={{
-                height: height,
-                backgroundColor: filled ? `${color}` : "transparent",
-                border: filled ? "0" : `3px solid ${color}`,
-                ...style
-            }}
+            type="button"
             onClick={onClick}
-            className={className}
+            className={`button button--${variant} ${className}`}
+            style={{ "--button-color": color, height }}
+            {...props}
         >
             {children}
         </button>

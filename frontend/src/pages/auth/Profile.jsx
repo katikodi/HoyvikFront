@@ -1,7 +1,6 @@
 import useAuth from "@/hooks/useAuth.js";
 import { Navigate, Link } from "react-router-dom";
-import Button from "@/components/NewButton";
-
+import Button from "@/components/Button";
 export default function Profile() {
     const { user, logout } = useAuth();
     if (!user) return <Navigate to="/signin" />;
