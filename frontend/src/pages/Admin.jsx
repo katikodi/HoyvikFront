@@ -13,6 +13,7 @@ import chevronDownUrl from "@/icons/chevronDown.svg";
 import Button from "@/components/Button";
 // DADA IMPORTS
 import { icons as iconData } from "@/test-data/icons.json";
+import { uploadHero } from "@/api/fileUpload";
 
 const Admin = () => {
     const [_users, setUsers] = useState(null);
@@ -156,12 +157,8 @@ const EditSection = () => {
 
         const file = new FormData(event.target);
 
-        const response = await fetch("/api/upload/hero", {
-            method: "POST",
-            body: file
-        });
-
-        return await response.json();
+        const result = await uploadHero(file);
+        console.log(result);
     };
 
     return (
