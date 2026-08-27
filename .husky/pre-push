@@ -1,38 +1,13 @@
 #!/usr/bin/env sh
-
 set -e
 
-# COLORS
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-RESET='\033[0m'
-
-print_step() {
-    printf "\n${BLUE}==> %s${RESET}\n" "$1"
-}
-
-print_success() {
-    printf "${GREEN}✓ %s${RESET}\n" "$1"
-}
-
-print_error() {
-    printf "${RED}✗ %s${RESET}\n" "$1"
-}
-
-echo ""
-printf "${BLUE}========================================${RESET}\n"
-printf "${BLUE}        RUNNING PRE-PUSH CHECKS        ${RESET}\n"
-printf "${BLUE}========================================${RESET}\n"
-
+# Setup directories
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 FRONTEND_DIR="$REPO_ROOT/frontend"
 NODE_MODULES="$FRONTEND_DIR/node_modules"
 
 if [ ! -d "$NODE_MODULES" ]; then
-    print_error "frontend/node_modules does not exist."
-    printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
+    echo "✗ Error: frontend/node_modules is missing. Run 'npm --prefix frontend install' first."
     exit 1
 fi
 
@@ -47,60 +22,26 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
         git -C "$REPO_ROOT" worktree remove --force "$TEMP_DIR" >/dev/null 2>&1 || true
         rm -rf "$TEMP_DIR"
     }
-
     trap cleanup EXIT INT TERM
 
-    print_step "Checking $LOCAL_REF @ ${LOCAL_SHA}"
-
-    printf "${BLUE}→ Creating temporary worktree...${RESET}\n"
-
+    echo "==> Verifying $LOCAL_REF ($LOCAL_SHA)"
+    
     git -C "$REPO_ROOT" worktree add --detach "$TEMP_DIR" "$LOCAL_SHA" >/dev/null
 
-    print_success "Temporary worktree created"
-
-    printf "${BLUE}→ Linking existing node_modules...${RESET}\n"
-
-    # Cross-platform symlink / junction handler
     if [ -n "$COMSPEC" ] || [ -n "$MSYSTEM" ]; then
-        cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" > /dev/null 2>&1
+        cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" >/dev/null 2>&1
     else
         ln -s "$NODE_MODULES" "$TEMP_DIR/frontend/node_modules"
     fi
 
-    print_success "node_modules linked"
+    echo "→ Running Linter..."
+    (cd "$TEMP_DIR/frontend" && npm run lint)
 
-    print_step "Running Oxlint"
+    echo "→ Running Build..."
+    (cd "$TEMP_DIR/frontend" && npm run build)
 
-    if ! (
-        cd "$TEMP_DIR/frontend"
-        npm run lint
-    ); then
-        print_error "Oxlint failed."
-        printf "${RED}Push rejected.${RESET}\n"
-        exit 1
-    fi
-
-    print_success "Oxlint passed"
-
-    print_step "Building frontend"
-
-    if ! (
-        cd "$TEMP_DIR/frontend"
-        npm run build
-    ); then
-        print_error "Vite build failed."
-        printf "${RED}Push rejected.${RESET}\n"
-        exit 1
-    fi
-
-    print_success "Vite build passed"
+    echo "✓ Push checks passed for $LOCAL_SHA"
 
     cleanup
     trap - EXIT INT TERM
 done
-
-echo ""
-printf "${GREEN}========================================${RESET}\n"
-printf "${GREEN}        PRE-PUSH CHECKS PASSED         ${RESET}\n"
-printf "${GREEN}========================================${RESET}\n"
-echo ""
