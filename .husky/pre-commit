@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -e
+
 echo "RUNNING PRE-COMMIT"
 
-npx lint-staged || exit 1
+npx lint-staged

@@ -8,11 +8,13 @@ public class GetUploadsEndpoint : IEndpoint
     {
         app.MapGet("/uploads", GetAll).CacheOutput();
         app.MapGet("/uploads/{fileName}", GetFile).CacheOutput();
+        // app.MapGet("/uploads/icons", GetAllIcons).CacheOutput();
     }
 
 
 
-    async Task<IResult> GetFile(string fileName,IWebHostEnvironment env)
+
+    async Task<IResult> GetFile(string fileName, IWebHostEnvironment env)
     {
         var uploadsPath = Path.GetFullPath(
             Path.Combine(env.WebRootPath, "uploads"));
@@ -43,7 +45,8 @@ public class GetUploadsEndpoint : IEndpoint
         }
 
         var files = Directory.EnumerateFiles(uploadsPath)
-        .Select(x => new {
+        .Select(x => new
+        {
 
             filename = Path.GetFileName(x),
             url = $"/uploads/{Path.GetFileName(x)}"

@@ -1,31 +1,20 @@
 import "@/styles/Home.css";
-
-// -------------------------------------------------------------
 // COMPONENT IMPORTS
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import IconSection from "@/components/IconSection";
-
-// ------------------------------------------------------------
+import NewButton from "@/components/NewButton.jsx";
 // ICON AND IMAGE IMPORTS
-import heroImageUrl from "@/images/heroImage.webp";
-import calendarIconUrl from "@/icons/calendarIcon.svg";
-import turstierIconUrl from "@/icons/manHiking.svg";
-import cabinUrl from "@/icons/cabinWithSmokingChimney.svg";
-import vikingUrl from "@/icons/vikingHelmet.svg";
-import boatUrl from "@/icons/boatOnTrailer.svg";
 import vikingStuffUrl from "@/images/randomVikingStuff.webp";
-import rom1Url from "@/images/rom1.webp";
-import rom2Url from "@/images/rom2.webp";
-import rom3Url from "@/images/rom3.webp";
-// -------------------------------------------------------------
-// DADA IMPORTS
+import roomImageUrl from "@/images/rom1.webp";
+// DATA IMPORTS
 import { icons } from "@/test-data/icons.json";
 
 export default function Home() {
     return (
         <div className="flex-col bg-primary">
             <Hero />
+
             <IconSection>
                 {icons.map(icon => (
                     <Icon
@@ -35,6 +24,7 @@ export default function Home() {
                     />
                 ))}
             </IconSection>
+
             <AboutSection />
         </div>
     );
@@ -42,21 +32,24 @@ export default function Home() {
 
 const Hero = () => {
     return (
-        <div className="hero">
+        <section className="hero">
             <div className="blocker"></div>
-            <HeroTextContent
-                largeText={"Høyvika Ferie og Fritid"}
-                CTAText={"CTA Tagline tekst, må vere fangande keywords som er SEO"}
+
+            <HeroContent
+                title="Høyvika Ferie og Fritid"
+                cta="CTA Tagline tekst, må vere fangande keywords som er SEO"
             />
-            <HeroBooking />
-        </div>
+
+            <BookingForm />
+        </section>
     );
 };
 
-const HeroTextContent = ({ largeText, CTAText }) => {
+const HeroContent = ({ title, cta }) => {
     return (
-        <div className="hero-text-container">
-            <HeroLargeText text={largeText} />
+        <header className="hero-text-container">
+            <HeroTitle text={title} />
+
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="350"
@@ -69,116 +62,121 @@ const HeroTextContent = ({ largeText, CTAText }) => {
                     fill="#BCE8EF"
                 />
             </svg>
-            <HeroCTAText text={CTAText} />
-        </div>
+
+            <HeroCTA text={cta} />
+        </header>
     );
 };
 
-const HeroLargeText = ({ text }) => {
+const HeroTitle = ({ text }) => {
     return <h1 className="hero-large-text cinzel">{text}</h1>;
 };
-const HeroCTAText = ({ text }) => {
+
+const HeroCTA = ({ text }) => {
     return <h2 className="monsterrat hero-cta-text">{text}</h2>;
 };
 
-const HeroBooking = () => {
-    const bookingInputs = [
-        { label: "Innsjekk", inputType: "date" },
-        { label: "Utsjekk", inputType: "date" },
-        { label: "Gjester", inputType: "number" }
+const BookingForm = () => {
+    const bookingFields = [
+        { label: "Innsjekk", type: "date" },
+        { label: "Utsjekk", type: "date" },
+        { label: "Gjester", type: "number" }
     ];
 
     return (
-        <div className="hero-booking-container">
+        <form className="hero-booking-container">
             <div className="hero-booking">
-                {bookingInputs.map(e => (
-                    <HeroBookingInput
-                        key={e.label}
-                        inputType={e.inputType}
-                        labelText={e.label}
-                        inputId={crypto.randomUUID()}
-                        additionalClassNames={e.additionalClassNames}
+                {bookingFields.map(field => (
+                    <BookingField
+                        key={field.label}
+                        type={field.type}
+                        label={field.label}
                     />
                 ))}
                 <Button
                     className="booking-button"
                     onClick={() => {
-                        let sound = new Audio("/sounds/order_sound.wav");
+                        const sound = new Audio("/sounds/order_sound.wav");
                         sound.play();
                     }}
                 >
                     SJEKK TILGJENGELIGHET
                 </Button>
             </div>
-        </div>
+        </form>
     );
 };
 
-const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames = [] }) => {
-    const classNames = [...additionalClassNames, "hero-booking-input"].join(" ");
+const BookingField = ({ type, label, classNames = [] }) => {
+    const fieldId = crypto.randomUUID();
+    const fieldClassNames = [...classNames, "hero-booking-input"].join(" ");
+
     return (
         <div className="hero-booking-input-container">
             <label
-                htmlFor={inputId}
+                htmlFor={fieldId}
                 className="monsterrat hero-booking-label"
             >
-                {labelText}
+                {label}
             </label>
+
             <input
-                className={classNames}
-                id={inputId}
-                type={inputType}
-            ></input>
+                className={fieldClassNames}
+                id={fieldId}
+                type={type}
+            />
         </div>
     );
 };
 
-// TODO: find better name for this section
 const AboutSection = () => {
     return (
-        <div className="about-section">
+        <section className="about-section">
             <div className="blocker"></div>
-            <RandomSection />
-        </div>
+            <AboutContent />
+        </section>
     );
 };
 
-// TODO: find better name for this section
-const RandomSection = () => {
-    const copyText = "Placeholder tekst. Kan vere about section f.eks som forklare meir om ka service som blir solgt";
+const AboutContent = () => {
+    const description = "Placeholder tekst. Kan vere about section f.eks som forklare meir om ka service som blir solgt";
+
     return (
-        <div className="random-section">
+        <article className="random-section">
             <div className="random-section-section">
-                <CopySection
-                    copy={copyText}
+                <AboutText
+                    text={description}
                     onClick={() => {
                         console.log("cta cluck");
                     }}
-                    buttonText={"CTA 2"}
+                    actionLabel="CTA 2"
                 />
-                <div className="random-section-section-img-container">
+
+                <figure className="random-section-section-img-container">
                     <img
                         src={vikingStuffUrl}
                         alt="image of random viking stuff"
                     />
-                </div>
+                </figure>
             </div>
+
             <ImageCarousel />
-        </div>
+        </article>
     );
 };
 
-const CopySection = ({ copy, onClick, buttonText }) => {
+const AboutText = ({ text, onClick, actionLabel }) => {
     return (
         <div className="copy-section">
-            <p className="monsterrat">{copy}</p>
+            <p className="monsterrat">{text}</p>
+
             <Button
                 onClick={onClick}
                 height="2rem"
                 variant="outline"
                 color="#44383E"
             >
-                {buttonText || "CTA"}
+                {actionLabel || "CTA"}
             </Button>
         </div>
     );
@@ -186,34 +184,37 @@ const CopySection = ({ copy, onClick, buttonText }) => {
 
 const ImageCarousel = () => {
     return (
-        <div className="image-carousel">
+        <section className="image-carousel">
             <CarouselCard
-                imageUrl={rom1Url}
-                imageText="ROM"
+                image={roomImageUrl}
+                title="ROM"
             />
+
             <CarouselCard
-                imageUrl={rom1Url}
-                imageText="ROM"
+                image={roomImageUrl}
+                title="ROM"
             />
+
             <CarouselCard
-                imageUrl={rom1Url}
-                imageText="ROM"
+                image={roomImageUrl}
+                title="ROM"
             />
-        </div>
+        </section>
     );
 };
 
-const CarouselCard = ({ imageUrl, imageText }) => {
+const CarouselCard = ({ image, title }) => {
     return (
-        <div className="carousel-card">
-            <div
+        <article className="carousel-card">
+            <figure
                 className="carousel-card-image thicc-monsterrat"
                 style={{
-                    backgroundImage: `url(${imageUrl})`
+                    backgroundImage: `url(${image})`
                 }}
             >
-                {imageText}
-            </div>
+                {title}
+            </figure>
+
             <div className="carousel-card-header">
                 <Button
                     variant="filled"
@@ -223,6 +224,6 @@ const CarouselCard = ({ imageUrl, imageText }) => {
                     }}
                 />
             </div>
-        </div>
+        </article>
     );
 };

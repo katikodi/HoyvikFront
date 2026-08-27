@@ -2,9 +2,8 @@ import { useForm } from "react-hook-form";
 import "@/style.css";
 import "@/styles/Form.css";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/auth/AuthContext";
+import useAuth from "@/hooks/useAuth.js";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 const SignIn = () => {
     const { login } = useAuth();
@@ -19,7 +18,6 @@ const SignIn = () => {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors }
     } = useForm();
 

@@ -16,9 +16,35 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
         app.MapPost("/upload/hero", UploadHero)
             .DisableAntiforgery()
             .RequireAuthorization("admin", "Admin");
+
+        app.MapPost("/upload/icons", UploadIcon)
+            .DisableAntiforgery()
+            .RequireAuthorization("Admin", "admin");
     }
 
-    async Task<IResult> UploadHero([FromForm]IFormFile file,ImageUploaderService imageUploader)
+
+    async Task<IResult> UploadIcon([FromForm] IFormFile file, ImageUploaderService imageUploader)
+    {
+        if (file == null || file.Length == 0)
+            return Results.BadRequest();
+
+        try
+        {
+            var result = await imageUploader.UploadImage(
+                file,
+                folder: "icons"
+            );
+
+            return Results.Ok(result.Path);
+
+        }
+        catch (ImageUploaderException ex)
+        {
+            logger.LogError(ex, "Failed to process the uploaded image.");
+            return Results.BadRequest("Failed to process the uploaded image.");
+        }
+    }
+    async Task<IResult> UploadHero([FromForm] IFormFile file, ImageUploaderService imageUploader)
     {
         if (file == null || file.Length == 0)
             return Results.BadRequest();
@@ -41,9 +67,9 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
         }
     }
 
-    async Task<IResult> UploadFile([FromForm]IFormFile file,ImageUploaderService imageUploader)
+    async Task<IResult> UploadFile([FromForm] IFormFile file, ImageUploaderService imageUploader)
     {
-        if(file == null || file.Length == 0)
+        if (file == null || file.Length == 0)
             return Results.BadRequest();
 
         try
@@ -52,7 +78,7 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
             return Results.Ok(result.Path);
 
         }
-        catch(ImageUploaderException ex)
+        catch (ImageUploaderException ex)
         {
             logger.LogError(ex, "Failed to process the uploaded image.");
             return Results.BadRequest("Failed to process the uploaded image.");

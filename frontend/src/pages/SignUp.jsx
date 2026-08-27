@@ -2,13 +2,12 @@ import { useForm } from "react-hook-form";
 import "@/style.css";
 import "@/styles/Form.css";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/auth/AuthContext";
+import useAuth from "@/hooks/useAuth.js";
 
 const SignUp = () => {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors }
     } = useForm();
 

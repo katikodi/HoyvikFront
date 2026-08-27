@@ -6,12 +6,7 @@ import "@/styles/Home.css";
 
 const Booking = () => {
     const [stage, setStage] = useState(0);
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { errors }
-    } = useForm();
+    const { register, handleSubmit } = useForm();
     const onSubmit = () => {
         console.log("submittted");
     };

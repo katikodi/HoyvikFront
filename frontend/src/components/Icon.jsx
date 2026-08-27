@@ -1,5 +1,5 @@
 import "@/styles/Icon.css";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 
 const Icon = ({ src, text }) => {
     return (

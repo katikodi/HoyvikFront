@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+set -e
+
+echo "RUNNING PRE-PUSH CHECKS"
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+STASH_RESULT=$(git stash push --include-untracked -m "pre-push-auto-stash" 2>&1 || true)
+
+restore_stash() {
+  if echo "$STASH_RESULT" | grep -q "Saved working directory"; then
+    echo "==> Restoring uncommitted changes..."
+    git stash pop --quiet
+  fi
+}
+
+trap restore_stash EXIT INT TERM
+
+echo "Running Linter..."
+npm --prefix "$REPO_ROOT/frontend" run lint
+
+echo "Running Build..."
+npm --prefix "$REPO_ROOT/frontend" run build
+
+echo "PRE-PUSH CHECKS PASSED"

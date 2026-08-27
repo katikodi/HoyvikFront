@@ -1,6 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
-
-const AuthContext = createContext(null);
+import { useEffect, useState } from "react";
+import AuthContext from "@/hooks/authContext.js";
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
@@ -33,10 +32,7 @@ export function AuthProvider({ children }) {
                 "Content-Type": "application/json"
             },
             credentials: "include",
-            body: JSON.stringify({
-                email,
-                password
-            })
+            body: JSON.stringify({ email, password })
         });
 
         if (!response.ok) {
@@ -62,11 +58,11 @@ export function AuthProvider({ children }) {
             })
         });
 
-        if (response.ok) {
-            await login(email, password);
-            return true;
-        }
-        return false;
+        if (!response.ok) return false;
+
+        await login(email, password);
+
+        return true;
     }
 
     async function logout() {
@@ -79,7 +75,6 @@ export function AuthProvider({ children }) {
     }
 
     useEffect(() => {
-        console.log("useeffect");
         fetchUser().finally(() => setLoading(false));
     }, []);
 
@@ -97,14 +92,4 @@ export function AuthProvider({ children }) {
             {children}
         </AuthContext.Provider>
     );
-}
-
-export function useAuth() {
-    const context = useContext(AuthContext);
-
-    if (!context) {
-        throw new Error("useAuth must be used inside AuthProvider");
-    }
-
-    return context;
 }
