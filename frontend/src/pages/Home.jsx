@@ -32,7 +32,7 @@ export default function Home() {
 
 const Hero = () => {
     return (
-        <div className="hero">
+        <section className="hero">
             <div className="blocker"></div>
 
             <HeroContent
@@ -41,13 +41,13 @@ const Hero = () => {
             />
 
             <BookingForm />
-        </div>
+        </section>
     );
 };
 
 const HeroContent = ({ title, cta }) => {
     return (
-        <div className="hero-text-container">
+        <header className="hero-text-container">
             <HeroTitle text={title} />
 
             <svg
@@ -64,7 +64,7 @@ const HeroContent = ({ title, cta }) => {
             </svg>
 
             <HeroCTA text={cta} />
-        </div>
+        </header>
     );
 };
 
@@ -84,7 +84,7 @@ const BookingForm = () => {
     ];
 
     return (
-        <div className="hero-booking-container">
+        <form className="hero-booking-container">
             <div className="hero-booking">
                 {bookingFields.map(field => (
                     <BookingField
@@ -105,7 +105,7 @@ const BookingForm = () => {
                     SJEKK TILGJENGELIGHET
                 </NewButton>
             </div>
-        </div>
+        </form>
     );
 };
 
@@ -133,10 +133,10 @@ const BookingField = ({ type, label, classNames = [] }) => {
 
 const AboutSection = () => {
     return (
-        <div className="about-section">
+        <section className="about-section">
             <div className="blocker"></div>
             <AboutContent />
-        </div>
+        </section>
     );
 };
 
@@ -144,7 +144,7 @@ const AboutContent = () => {
     const description = "Placeholder tekst. Kan vere about section f.eks som forklare meir om ka service som blir solgt";
 
     return (
-        <div className="random-section">
+        <article className="random-section">
             <div className="random-section-section">
                 <AboutText
                     text={description}
@@ -154,16 +154,16 @@ const AboutContent = () => {
                     actionLabel="CTA 2"
                 />
 
-                <div className="random-section-section-img-container">
+                <figure className="random-section-section-img-container">
                     <img
                         src={vikingStuffUrl}
                         alt="image of random viking stuff"
                     />
-                </div>
+                </figure>
             </div>
 
             <ImageCarousel />
-        </div>
+        </article>
     );
 };
 
@@ -171,6 +171,7 @@ const AboutText = ({ text, onClick, actionLabel }) => {
     return (
         <div className="copy-section">
             <p className="monsterrat">{text}</p>
+
             <Button
                 onClick={onClick}
                 height="2rem"
@@ -185,7 +186,7 @@ const AboutText = ({ text, onClick, actionLabel }) => {
 
 const ImageCarousel = () => {
     return (
-        <div className="image-carousel">
+        <section className="image-carousel">
             <CarouselCard
                 image={roomImageUrl}
                 title="ROM"
@@ -200,30 +201,31 @@ const ImageCarousel = () => {
                 image={roomImageUrl}
                 title="ROM"
             />
-        </div>
+        </section>
     );
 };
 
 const CarouselCard = ({ image, title }) => {
     return (
-        <div className="carousel-card">
-            <div
+        <article className="carousel-card">
+            <figure
                 className="carousel-card-image thicc-monsterrat"
                 style={{
                     backgroundImage: `url(${image})`
                 }}
             >
                 {title}
-            </div>
+            </figure>
+
             <div className="carousel-card-header">
                 <Button
                     filled={false}
-                    height={"2rem"}
+                    height="2rem"
                     onClick={() => {
                         console.log("room click");
                     }}
                 />
             </div>
-        </div>
+        </article>
     );
 };
