@@ -1,23 +1,20 @@
 import "@/styles/Home.css";
-
-// -------------------------------------------------------------
 // COMPONENT IMPORTS
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import IconSection from "@/components/IconSection";
-
-// ------------------------------------------------------------
+import NewButton from "@/components/NewButton.jsx";
 // ICON AND IMAGE IMPORTS
 import vikingStuffUrl from "@/images/randomVikingStuff.webp";
-import rom1Url from "@/images/rom1.webp";
-// -------------------------------------------------------------
-// DADA IMPORTS
+import roomImageUrl from "@/images/rom1.webp";
+// DATA IMPORTS
 import { icons } from "@/test-data/icons.json";
-import NewButton from "@/components/NewButton.jsx";
+
 export default function Home() {
     return (
         <div className="flex-col bg-primary">
             <Hero />
+
             <IconSection>
                 {icons.map(icon => (
                     <Icon
@@ -27,6 +24,7 @@ export default function Home() {
                     />
                 ))}
             </IconSection>
+
             <AboutSection />
         </div>
     );
@@ -36,19 +34,22 @@ const Hero = () => {
     return (
         <div className="hero">
             <div className="blocker"></div>
-            <HeroTextContent
-                largeText={"Høyvika Ferie og Fritid"}
-                CTAText={"CTA Tagline tekst, må vere fangande keywords som er SEO"}
+
+            <HeroContent
+                title="Høyvika Ferie og Fritid"
+                cta="CTA Tagline tekst, må vere fangande keywords som er SEO"
             />
-            <HeroBooking />
+
+            <BookingForm />
         </div>
     );
 };
 
-const HeroTextContent = ({ largeText, CTAText }) => {
+const HeroContent = ({ title, cta }) => {
     return (
         <div className="hero-text-container">
-            <HeroLargeText text={largeText} />
+            <HeroTitle text={title} />
+
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="350"
@@ -61,42 +62,43 @@ const HeroTextContent = ({ largeText, CTAText }) => {
                     fill="#BCE8EF"
                 />
             </svg>
-            <HeroCTAText text={CTAText} />
+
+            <HeroCTA text={cta} />
         </div>
     );
 };
 
-const HeroLargeText = ({ text }) => {
+const HeroTitle = ({ text }) => {
     return <h1 className="hero-large-text cinzel">{text}</h1>;
 };
-const HeroCTAText = ({ text }) => {
+
+const HeroCTA = ({ text }) => {
     return <h2 className="monsterrat hero-cta-text">{text}</h2>;
 };
 
-const HeroBooking = () => {
-    const bookingInputs = [
-        { label: "Innsjekk", inputType: "date" },
-        { label: "Utsjekk", inputType: "date" },
-        { label: "Gjester", inputType: "number" }
+const BookingForm = () => {
+    const bookingFields = [
+        { label: "Innsjekk", type: "date" },
+        { label: "Utsjekk", type: "date" },
+        { label: "Gjester", type: "number" }
     ];
 
     return (
         <div className="hero-booking-container">
             <div className="hero-booking">
-                {bookingInputs.map(e => (
-                    <HeroBookingInput
-                        key={e.label}
-                        inputType={e.inputType}
-                        labelText={e.label}
-                        inputId={crypto.randomUUID()}
-                        additionalClassNames={e.additionalClassNames}
+                {bookingFields.map(field => (
+                    <BookingField
+                        key={field.label}
+                        type={field.type}
+                        label={field.label}
                     />
                 ))}
+
                 <NewButton
                     height=""
                     className="booking-button"
                     onClick={() => {
-                        let sound = new Audio("/sounds/order_sound.wav");
+                        const sound = new Audio("/sounds/order_sound.wav");
                         sound.play();
                     }}
                 >
@@ -107,48 +109,51 @@ const HeroBooking = () => {
     );
 };
 
-const HeroBookingInput = ({ inputType, labelText, inputId, additionalClassNames = [] }) => {
-    const classNames = [...additionalClassNames, "hero-booking-input"].join(" ");
+const BookingField = ({ type, label, classNames = [] }) => {
+    const fieldId = crypto.randomUUID();
+    const fieldClassNames = [...classNames, "hero-booking-input"].join(" ");
+
     return (
         <div className="hero-booking-input-container">
             <label
-                htmlFor={inputId}
+                htmlFor={fieldId}
                 className="monsterrat hero-booking-label"
             >
-                {labelText}
+                {label}
             </label>
+
             <input
-                className={classNames}
-                id={inputId}
-                type={inputType}
-            ></input>
+                className={fieldClassNames}
+                id={fieldId}
+                type={type}
+            />
         </div>
     );
 };
 
-// TODO: find better name for this section
 const AboutSection = () => {
     return (
         <div className="about-section">
             <div className="blocker"></div>
-            <RandomSection />
+            <AboutContent />
         </div>
     );
 };
 
-// TODO: find better name for this section
-const RandomSection = () => {
-    const copyText = "Placeholder tekst. Kan vere about section f.eks som forklare meir om ka service som blir solgt";
+const AboutContent = () => {
+    const description = "Placeholder tekst. Kan vere about section f.eks som forklare meir om ka service som blir solgt";
+
     return (
         <div className="random-section">
             <div className="random-section-section">
-                <CopySection
-                    copy={copyText}
+                <AboutText
+                    text={description}
                     onClick={() => {
                         console.log("cta cluck");
                     }}
-                    buttonText={"CTA 2"}
+                    actionLabel="CTA 2"
                 />
+
                 <div className="random-section-section-img-container">
                     <img
                         src={vikingStuffUrl}
@@ -156,22 +161,23 @@ const RandomSection = () => {
                     />
                 </div>
             </div>
+
             <ImageCarousel />
         </div>
     );
 };
 
-const CopySection = ({ copy, onClick, buttonText }) => {
+const AboutText = ({ text, onClick, actionLabel }) => {
     return (
         <div className="copy-section">
-            <p className="monsterrat">{copy}</p>
+            <p className="monsterrat">{text}</p>
             <Button
                 onClick={onClick}
                 height="2rem"
                 filled={false}
                 color="#44383E"
             >
-                {buttonText || "CTA"}
+                {actionLabel || "CTA"}
             </Button>
         </div>
     );
@@ -181,31 +187,33 @@ const ImageCarousel = () => {
     return (
         <div className="image-carousel">
             <CarouselCard
-                imageUrl={rom1Url}
-                imageText="ROM"
+                image={roomImageUrl}
+                title="ROM"
             />
+
             <CarouselCard
-                imageUrl={rom1Url}
-                imageText="ROM"
+                image={roomImageUrl}
+                title="ROM"
             />
+
             <CarouselCard
-                imageUrl={rom1Url}
-                imageText="ROM"
+                image={roomImageUrl}
+                title="ROM"
             />
         </div>
     );
 };
 
-const CarouselCard = ({ imageUrl, imageText }) => {
+const CarouselCard = ({ image, title }) => {
     return (
         <div className="carousel-card">
             <div
                 className="carousel-card-image thicc-monsterrat"
                 style={{
-                    backgroundImage: `url(${imageUrl})`
+                    backgroundImage: `url(${image})`
                 }}
             >
-                {imageText}
+                {title}
             </div>
             <div className="carousel-card-header">
                 <Button
