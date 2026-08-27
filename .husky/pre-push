@@ -37,16 +37,17 @@ if [ ! -d "$NODE_MODULES" ]; then
     exit 1
 fi
 
-if [ ! -f "$NODE_BIN/oxlint.cmd" ]; then
+# Check for binaries cross-platform (handles both oxlint and oxlint.cmd)
+if [ ! -f "$NODE_BIN/oxlint" ] && [ ! -f "$NODE_BIN/oxlint.cmd" ]; then
     print_error "Oxlint executable was not found."
-    printf "${YELLOW}Expected: $NODE_BIN/oxlint.cmd${RESET}\n"
+    printf "${YELLOW}Expected oxlint inside: $NODE_BIN${RESET}\n"
     printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
     exit 1
 fi
 
-if [ ! -f "$NODE_BIN/vite.cmd" ]; then
+if [ ! -f "$NODE_BIN/vite" ] && [ ! -f "$NODE_BIN/vite.cmd" ]; then
     print_error "Vite executable was not found."
-    printf "${YELLOW}Expected: $NODE_BIN/vite.cmd${RESET}\n"
+    printf "${YELLOW}Expected vite inside: $NODE_BIN${RESET}\n"
     printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
     exit 1
 fi
@@ -75,7 +76,14 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     printf "${BLUE}→ Linking existing node_modules...${RESET}\n"
 
-    cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" > /dev/null 2>&1
+    # Cross-platform symlink / junction handler
+    if [ -n "$COMSPEC" ] || [ -n "$MSYSTEM" ]; then
+        # Windows environment
+        cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" > /dev/null 2>&1
+    else
+        # macOS / Linux environment
+        ln -s "$NODE_MODULES" "$TEMP_DIR/frontend/node_modules"
+    fi
 
     print_success "node_modules linked"
 
