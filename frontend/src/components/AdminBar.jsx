@@ -1,10 +1,10 @@
 import "@/styles/Nav.css";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import useAuth from "@/hooks/useAuth.js";
 import Button from "@/components/NewButton";
 
 const AdminBar = () => {
-    const { isAdmin, user, logout } = useAuth();
+    const { isAdmin, user } = useAuth();
     return (
         <nav className="nav">
             <NavLogo />

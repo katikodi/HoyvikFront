@@ -8,16 +8,8 @@ import IconSection from "@/components/IconSection";
 
 // ------------------------------------------------------------
 // ICON AND IMAGE IMPORTS
-import heroImageUrl from "@/images/heroImage.webp";
-import calendarIconUrl from "@/icons/calendarIcon.svg";
-import turstierIconUrl from "@/icons/manHiking.svg";
-import cabinUrl from "@/icons/cabinWithSmokingChimney.svg";
-import vikingUrl from "@/icons/vikingHelmet.svg";
-import boatUrl from "@/icons/boatOnTrailer.svg";
 import vikingStuffUrl from "@/images/randomVikingStuff.webp";
 import rom1Url from "@/images/rom1.webp";
-import rom2Url from "@/images/rom2.webp";
-import rom3Url from "@/images/rom3.webp";
 // -------------------------------------------------------------
 // DADA IMPORTS
 import { icons } from "@/test-data/icons.json";
