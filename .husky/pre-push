@@ -2,7 +2,29 @@
 
 set -e
 
-echo "RUNNING PRE-PUSH CHECKS"
+# COLORS
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+RESET='\033[0m'
+
+print_step() {
+    printf "\n${BLUE}==> %s${RESET}\n" "$1"
+}
+
+print_success() {
+    printf "${GREEN}✓ %s${RESET}\n" "$1"
+}
+
+print_error() {
+    printf "${RED}✗ %s${RESET}\n" "$1"
+}
+
+echo ""
+printf "${BLUE}========================================${RESET}\n"
+printf "${BLUE}        RUNNING PRE-PUSH CHECKS        ${RESET}\n"
+printf "${BLUE}========================================${RESET}\n"
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 NODE_MODULES="$REPO_ROOT/frontend/node_modules"
@@ -16,8 +38,8 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 if [ ! -d "$NODE_MODULES" ]; then
-    echo "ERROR: frontend/node_modules does not exist."
-    echo "Run 'npm --prefix frontend install' first."
+    print_error "frontend/node_modules does not exist."
+    printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
     exit 1
 fi
 
@@ -26,23 +48,46 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
         continue
     fi
 
-    echo "CHECKING $LOCAL_REF @ $LOCAL_SHA"
+    print_step "Checking $LOCAL_REF @ ${LOCAL_SHA}"
 
+    printf "${BLUE}→ Creating temporary worktree...${RESET}\n"
     git -C "$REPO_ROOT" worktree add --detach "$TEMP_DIR" "$LOCAL_SHA" >/dev/null
+    print_success "Temporary worktree created"
 
-    mkdir "$TEMP_DIR/frontend/node_modules"
+    printf "${BLUE}→ Linking existing node_modules...${RESET}\n"
 
     rmdir "$TEMP_DIR/frontend/node_modules"
 
-    cmd //c mklink //J \
-        "$TEMP_DIR/frontend/node_modules" \
-        "$NODE_MODULES" >/dev/null
+    cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" >nul
 
-    npm --prefix "$TEMP_DIR/frontend" run lint
-    npm --prefix "$TEMP_DIR/frontend" run build
+    print_success "node_modules linked"
+
+    print_step "Running Oxlint"
+
+    if ! npm --prefix "$TEMP_DIR/frontend" run lint; then
+        print_error "Oxlint failed."
+        printf "${RED}Push rejected.${RESET}\n"
+        exit 1
+    fi
+
+    print_success "Oxlint passed"
+
+    print_step "Building frontend"
+
+    if ! npm --prefix "$TEMP_DIR/frontend" run build; then
+        print_error "Vite build failed."
+        printf "${RED}Push rejected.${RESET}\n"
+        exit 1
+    fi
+
+    print_success "Vite build passed"
 
     git -C "$REPO_ROOT" worktree remove --force "$TEMP_DIR" >/dev/null
     mkdir "$TEMP_DIR"
 done
 
-echo "PRE-PUSH CHECKS PASSED"
+echo ""
+printf "${GREEN}========================================${RESET}\n"
+printf "${GREEN}        PRE-PUSH CHECKS PASSED         ${RESET}\n"
+printf "${GREEN}========================================${RESET}\n"
+echo ""
