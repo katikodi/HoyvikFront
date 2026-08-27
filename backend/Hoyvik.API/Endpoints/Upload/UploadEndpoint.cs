@@ -1,4 +1,5 @@
 ﻿using Hoyvik.API.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hoyvik.API.Endpoints.Upload;
 
@@ -17,7 +18,7 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
             .RequireAuthorization("admin", "Admin");
     }
 
-    async Task<IResult> UploadHero(IFormFile file,ImageUploaderService imageUploader)
+    async Task<IResult> UploadHero([FromForm]IFormFile file,ImageUploaderService imageUploader)
     {
         if (file == null || file.Length == 0)
             return Results.BadRequest();
@@ -40,7 +41,7 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
         }
     }
 
-    async Task<IResult> UploadFile(IFormFile file,ImageUploaderService imageUploader)
+    async Task<IResult> UploadFile([FromForm]IFormFile file,ImageUploaderService imageUploader)
     {
         if(file == null || file.Length == 0)
             return Results.BadRequest();

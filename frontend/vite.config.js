@@ -3,10 +3,8 @@ import babel from "@rolldown/plugin-babel";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig, loadEnv } from "vite";
 
-// https://vite.dev/config/
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), "");
-
     return {
         plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
         server: {
@@ -14,12 +12,12 @@ export default defineConfig(({ mode }) => {
             proxy: {
                 // Proxy API calls to the app service
                 "/api": {
-                    target: process.env.services__backend__https__0 || process.env.services__backend__http__0,
+                    target: env.services__backend__https__0 || process.env.services__backend__http__0,
                     changeOrigin: false,
                     secure: false
                 },
                 "/content": {
-                    target: process.env.services__backend__https__0 || process.env.services__backend__http__0,
+                    target: env.services__backend__https__0 || process.env.services__backend__http__0,
                     changeOrigin: false,
                     secure: false
                 }
