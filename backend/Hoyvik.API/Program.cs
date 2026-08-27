@@ -9,6 +9,7 @@ using Stripe;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddAuthorizationBuilder()
 	.AddDefaultPolicy("Guest", p => p.RequireRole("guest"))
@@ -50,11 +51,11 @@ builder.Services.ConfigureApplicationCookie(x =>
 	}
 	else
 	{
-        x.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+		x.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
-    }
+	}
 
-    x.Events.OnRedirectToLogin = ctx =>
+	x.Events.OnRedirectToLogin = ctx =>
 	{
 		ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
 		return Task.CompletedTask;
@@ -76,16 +77,20 @@ var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
-if(app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();
+
+
+	app.UseExceptionHandler("/error");
+	app.UseDeveloperExceptionPage();
 
 	using var scope = app.Services.CreateScope();
 
 	var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 	var db = scope.ServiceProvider.GetRequiredService<Database>();
 
-	if(await db.Database.EnsureCreatedAsync())
+	if (await db.Database.EnsureCreatedAsync())
 	{
 		logger.LogInformation("Creating database....");
 	}
@@ -104,13 +109,14 @@ if (app.Environment.IsProduction())
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseStatusCodePages();
 app.MapApiEndpoints();
 
 
 Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath!, "uploads"));
 
-app.UseFileServer(new FileServerOptions {
+app.UseFileServer(new FileServerOptions
+{
 	RequestPath = "/content/uploads",
 	EnableDirectoryBrowsing = true,
 	EnableDefaultFiles = true,

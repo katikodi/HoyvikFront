@@ -66,7 +66,6 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
             return Results.BadRequest("Failed to process the uploaded image.");
         }
     }
-
     async Task<IResult> UploadFile([FromForm] IFormFile file, ImageUploaderService imageUploader)
     {
         if (file == null || file.Length == 0)
