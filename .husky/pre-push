@@ -57,13 +57,13 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     printf "${BLUE}→ Linking existing node_modules...${RESET}\n"
 
-    cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" >nul
+    cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" > /dev/null 2>&1
 
     print_success "node_modules linked"
 
     print_step "Running Oxlint"
 
-    if ! npm --prefix "$TEMP_DIR/frontend" run lint; then
+    if ! "$NODE_MODULES/.bin/oxlint.cmd" "$TEMP_DIR/frontend"; then
         print_error "Oxlint failed."
         printf "${RED}Push rejected.${RESET}\n"
         exit 1
@@ -73,7 +73,10 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     print_step "Building frontend"
 
-    if ! npm --prefix "$TEMP_DIR/frontend" run build; then
+    if ! (
+        cd "$TEMP_DIR/frontend"
+        "$NODE_MODULES/.bin/vite.cmd" build
+    ); then
         print_error "Vite build failed."
         printf "${RED}Push rejected.${RESET}\n"
         exit 1
