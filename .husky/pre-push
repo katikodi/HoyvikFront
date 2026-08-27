@@ -28,14 +28,6 @@ printf "${BLUE}========================================${RESET}\n"
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 NODE_MODULES="$REPO_ROOT/frontend/node_modules"
-TEMP_DIR="$(mktemp -d)"
-
-cleanup() {
-    git -C "$REPO_ROOT" worktree remove --force "$TEMP_DIR" >/dev/null 2>&1 || true
-    rm -rf "$TEMP_DIR"
-}
-
-trap cleanup EXIT INT TERM
 
 if [ ! -d "$NODE_MODULES" ]; then
     print_error "frontend/node_modules does not exist."
@@ -48,6 +40,15 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
         continue
     fi
 
+    TEMP_DIR="$(mktemp -d)"
+
+    cleanup() {
+        git -C "$REPO_ROOT" worktree remove --force "$TEMP_DIR" >/dev/null 2>&1 || true
+        rm -rf "$TEMP_DIR"
+    }
+
+    trap cleanup EXIT INT TERM
+
     print_step "Checking $LOCAL_REF @ ${LOCAL_SHA}"
 
     printf "${BLUE}→ Creating temporary worktree...${RESET}\n"
@@ -55,8 +56,6 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
     print_success "Temporary worktree created"
 
     printf "${BLUE}→ Linking existing node_modules...${RESET}\n"
-
-    rmdir "$TEMP_DIR/frontend/node_modules"
 
     cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" >nul
 
@@ -82,8 +81,8 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     print_success "Vite build passed"
 
-    git -C "$REPO_ROOT" worktree remove --force "$TEMP_DIR" >/dev/null
-    mkdir "$TEMP_DIR"
+    cleanup
+    trap - EXIT INT TERM
 done
 
 echo ""
