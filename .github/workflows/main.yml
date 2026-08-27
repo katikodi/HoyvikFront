@@ -30,7 +30,7 @@ jobs:
                   COMMIT_LIST=$(echo "$COMMITS" | jq -r '
                     .[]
                     | "- [\(.id[0:7])](\(.url)) \(.message | split("\n")[0]) — \(.author.name)"
-                  ')
+                  ' | jq -Rs .)
 
                   jq -n \
                     --arg title "🚀 New Push to $REPOSITORY" \
