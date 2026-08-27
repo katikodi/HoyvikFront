@@ -1,9 +1,6 @@
 import "@/style.css";
 import { Outlet } from "react-router-dom";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
 import AdminBar from "@/components/AdminBar";
-import Nav from "@/components/Nav";
 
 export default function AdminLayout() {
     return (
