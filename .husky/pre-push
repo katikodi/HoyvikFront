@@ -5,8 +5,44 @@ set -e
 echo "RUNNING PRE-PUSH CHECKS"
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
+NODE_MODULES="$REPO_ROOT/frontend/node_modules"
+TEMP_DIR="$(mktemp -d)"
 
-npm --prefix "$REPO_ROOT/frontend" run lint
-npm --prefix "$REPO_ROOT/frontend" run build
+cleanup() {
+    git -C "$REPO_ROOT" worktree remove --force "$TEMP_DIR" >/dev/null 2>&1 || true
+    rm -rf "$TEMP_DIR"
+}
+
+trap cleanup EXIT INT TERM
+
+if [ ! -d "$NODE_MODULES" ]; then
+    echo "ERROR: frontend/node_modules does not exist."
+    echo "Run 'npm --prefix frontend install' first."
+    exit 1
+fi
+
+while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
+    if [ "$LOCAL_SHA" = "0000000000000000000000000000000000000000" ]; then
+        continue
+    fi
+
+    echo "CHECKING $LOCAL_REF @ $LOCAL_SHA"
+
+    git -C "$REPO_ROOT" worktree add --detach "$TEMP_DIR" "$LOCAL_SHA" >/dev/null
+
+    mkdir "$TEMP_DIR/frontend/node_modules"
+
+    rmdir "$TEMP_DIR/frontend/node_modules"
+
+    cmd //c mklink //J \
+        "$TEMP_DIR/frontend/node_modules" \
+        "$NODE_MODULES" >/dev/null
+
+    npm --prefix "$TEMP_DIR/frontend" run lint
+    npm --prefix "$TEMP_DIR/frontend" run build
+
+    git -C "$REPO_ROOT" worktree remove --force "$TEMP_DIR" >/dev/null
+    mkdir "$TEMP_DIR"
+done
 
 echo "PRE-PUSH CHECKS PASSED"
