@@ -37,7 +37,6 @@ if [ ! -d "$NODE_MODULES" ]; then
     exit 1
 fi
 
-# Check for binaries cross-platform (handles both oxlint and oxlint.cmd)
 if [ ! -f "$NODE_BIN/oxlint" ] && [ ! -f "$NODE_BIN/oxlint.cmd" ]; then
     print_error "Oxlint executable was not found."
     printf "${YELLOW}Expected oxlint inside: $NODE_BIN${RESET}\n"
@@ -76,12 +75,9 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     printf "${BLUE}→ Linking existing node_modules...${RESET}\n"
 
-    # Cross-platform symlink / junction handler
     if [ -n "$COMSPEC" ] || [ -n "$MSYSTEM" ]; then
-        # Windows environment
         cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" > /dev/null 2>&1
     else
-        # macOS / Linux environment
         ln -s "$NODE_MODULES" "$TEMP_DIR/frontend/node_modules"
     fi
 
@@ -91,7 +87,7 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     if ! (
         cd "$TEMP_DIR/frontend"
-        PATH="$NODE_BIN:$PATH" npm run lint
+        npx --no-install oxlint
     ); then
         print_error "Oxlint failed."
         printf "${RED}Push rejected.${RESET}\n"
@@ -104,7 +100,7 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     if ! (
         cd "$TEMP_DIR/frontend"
-        PATH="$NODE_BIN:$PATH" npm run build
+        npm run build
     ); then
         print_error "Vite build failed."
         printf "${RED}Push rejected.${RESET}\n"
