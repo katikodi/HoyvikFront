@@ -29,24 +29,9 @@ printf "${BLUE}========================================${RESET}\n"
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 FRONTEND_DIR="$REPO_ROOT/frontend"
 NODE_MODULES="$FRONTEND_DIR/node_modules"
-NODE_BIN="$NODE_MODULES/.bin"
 
 if [ ! -d "$NODE_MODULES" ]; then
     print_error "frontend/node_modules does not exist."
-    printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
-    exit 1
-fi
-
-if [ ! -f "$NODE_BIN/oxlint" ] && [ ! -f "$NODE_BIN/oxlint.cmd" ]; then
-    print_error "Oxlint executable was not found."
-    printf "${YELLOW}Expected oxlint inside: $NODE_BIN${RESET}\n"
-    printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
-    exit 1
-fi
-
-if [ ! -f "$NODE_BIN/vite" ] && [ ! -f "$NODE_BIN/vite.cmd" ]; then
-    print_error "Vite executable was not found."
-    printf "${YELLOW}Expected vite inside: $NODE_BIN${RESET}\n"
     printf "${YELLOW}Run: npm --prefix frontend install${RESET}\n"
     exit 1
 fi
@@ -75,6 +60,7 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     printf "${BLUE}→ Linking existing node_modules...${RESET}\n"
 
+    # Cross-platform symlink / junction handler
     if [ -n "$COMSPEC" ] || [ -n "$MSYSTEM" ]; then
         cmd.exe /c "mklink /J \"$TEMP_DIR\\frontend\\node_modules\" \"$NODE_MODULES\"" > /dev/null 2>&1
     else
@@ -87,7 +73,7 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
 
     if ! (
         cd "$TEMP_DIR/frontend"
-        npx --no-install oxlint
+        npm run lint
     ); then
         print_error "Oxlint failed."
         printf "${RED}Push rejected.${RESET}\n"
