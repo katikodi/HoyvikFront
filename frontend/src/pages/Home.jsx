@@ -21,7 +21,7 @@ import rom3Url from "@/images/rom3.webp";
 // -------------------------------------------------------------
 // DADA IMPORTS
 import { icons } from "@/test-data/icons.json";
-import NewButton from "@/components/NewButton.jsx";
+
 export default function Home() {
     return (
         <div className="flex-col bg-primary">
@@ -100,8 +100,7 @@ const HeroBooking = () => {
                         additionalClassNames={e.additionalClassNames}
                     />
                 ))}
-                <NewButton
-                    height=""
+                <Button
                     className="booking-button"
                     onClick={() => {
                         let sound = new Audio("/sounds/order_sound.wav");
@@ -109,7 +108,7 @@ const HeroBooking = () => {
                     }}
                 >
                     SJEKK TILGJENGELIGHET
-                </NewButton>
+                </Button>
             </div>
         </div>
     );
@@ -176,7 +175,7 @@ const CopySection = ({ copy, onClick, buttonText }) => {
             <Button
                 onClick={onClick}
                 height="2rem"
-                filled={false}
+                variant="outline"
                 color="#44383E"
             >
                 {buttonText || "CTA"}
@@ -217,8 +216,8 @@ const CarouselCard = ({ imageUrl, imageText }) => {
             </div>
             <div className="carousel-card-header">
                 <Button
-                    filled={false}
-                    height={"2rem"}
+                    variant="filled"
+                    height="2rem"
                     onClick={() => {
                         console.log("room click");
                     }}

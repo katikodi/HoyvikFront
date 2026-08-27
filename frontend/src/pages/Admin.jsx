@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 // -----------------------------------
 //COMPONENTS
 import Icon, { EditIcon } from "@/components/Icon";
+import IconSection from "@/components/IconSection";
+// import { FileUpload } from "@/components/FileUpload";
 
 // -----------------------------------
 // STYLES
@@ -23,8 +25,6 @@ import userIconUrl from "@/icons/userIcon.svg";
 // -----------------------------------
 // DADA IMPORTS
 import { icons as iconData } from "@/test-data/icons.json";
-import IconSection from "@/components/IconSection";
-import { FileUpload } from "@/components/FileUpload";
 // -----------------------------------
 
 const Admin = () => {
@@ -226,7 +226,7 @@ const EditSection = () => {
                     </Button>
                 </div>
 
-                <FileUpload />
+                {/* <FileUpload /> */}
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="edit-section-form"

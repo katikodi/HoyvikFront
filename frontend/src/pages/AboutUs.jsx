@@ -1,4 +1,5 @@
 import "@/styles/AboutUs.css";
+import Button from "@/components/Button";
 
 export default function AboutUs() {
     return (
@@ -14,7 +15,7 @@ export default function AboutUs() {
                         className="columnContent"
                     >
                         <p>{para}</p>
-                        <button>BUTTON BUTTON BUTTON</button>
+                        <Button>BUTTON BUTTON BUTTON</Button>
                     </div>
                     <img
                         src="/images/jhonny_hans_blisco.webp"

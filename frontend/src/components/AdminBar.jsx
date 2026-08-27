@@ -1,7 +1,7 @@
 import "@/styles/Nav.css";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import Button from "@/components/NewButton";
+import Button from "@/components/Button";
 
 const AdminBar = () => {
     const { isAdmin, user, logout } = useAuth();
