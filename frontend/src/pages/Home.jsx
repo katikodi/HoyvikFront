@@ -3,7 +3,6 @@ import "@/styles/Home.css";
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import IconSection from "@/components/IconSection";
-import NewButton from "@/components/NewButton.jsx";
 // ICON AND IMAGE IMPORTS
 import vikingStuffUrl from "@/images/randomVikingStuff.webp";
 import roomImageUrl from "@/images/rom1.webp";
