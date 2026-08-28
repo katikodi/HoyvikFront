@@ -11,6 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddProblemDetails();
 
+builder.Services.AddCors(options => {
+	options.AddPolicy("http://localhost:54131", p => {
+		p.WithOrigins("")
+		.AllowAnyHeader()
+		.AllowAnyMethod().AllowCredentials();
+	});
+});
 builder.Services.AddAuthorizationBuilder()
 	.AddDefaultPolicy("Guest", p => p.RequireRole("guest"))
 	.AddPolicy("User", p => p.RequireRole("user"))
@@ -45,7 +52,6 @@ builder.Services.ConfigureApplicationCookie(x =>
 	x.Cookie.HttpOnly = true;
 	x.Cookie.SameSite = SameSiteMode.Lax;
 	x.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-	x.Cookie.Domain = "localhost";
 
 	if (builder.Environment.IsDevelopment())
 	{
@@ -77,6 +83,7 @@ var app = builder.Build();
 
 
 
+app.UseCors("frontend");
 app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
