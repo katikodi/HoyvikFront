@@ -44,6 +44,8 @@ builder.Services.ConfigureApplicationCookie(x =>
 {
 	x.Cookie.HttpOnly = true;
 	x.Cookie.SameSite = SameSiteMode.Lax;
+	x.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+	x.Cookie.Domain = "localhost";
 
 	if (builder.Environment.IsDevelopment())
 	{
