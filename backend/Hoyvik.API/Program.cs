@@ -11,13 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddProblemDetails();
 
-builder.Services.AddCors(options => {
-	options.AddPolicy("http://localhost:54131", p => {
-		p.WithOrigins("")
+builder.Services.AddCors(options => options.AddPolicy("http://localhost:54131",
+	p => p.WithOrigins("")
 		.AllowAnyHeader()
-		.AllowAnyMethod().AllowCredentials();
-	});
-});
+		.AllowAnyMethod()
+		.AllowCredentials()));
+
 builder.Services.AddAuthorizationBuilder()
 	.AddDefaultPolicy("Guest", p => p.RequireRole("guest"))
 	.AddPolicy("User", p => p.RequireRole("user"))
