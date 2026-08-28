@@ -51,19 +51,12 @@ builder.Services.ConfigureApplicationCookie(x =>
 {
 	x.Cookie.HttpOnly = true;
 	x.Cookie.SameSite = SameSiteMode.Lax;
-	x.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    x.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+        ? CookieSecurePolicy.None
+        : CookieSecurePolicy.Always;
 
-	if (builder.Environment.IsDevelopment())
-	{
-		x.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-	}
-	else
-	{
-		x.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
-	}
-
-	x.Events.OnRedirectToLogin = ctx =>
+    x.Events.OnRedirectToLogin = ctx =>
 	{
 		ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
 		return Task.CompletedTask;
