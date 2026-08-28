@@ -16,20 +16,20 @@ public class ImageUploaderService(IWebHostEnvironment env, Database db ,ILogger<
         {
             Directory.CreateDirectory(uploadPath);
 
+
             var fileName = $"{name ?? Guid.NewGuid().ToString("N")}.webp";
             var filePath = Path.Combine(uploadPath, fileName);
             var relativePath = Path.GetRelativePath(env.WebRootPath, filePath);
             var publicPath = "/" + relativePath.Replace(Path.DirectorySeparatorChar, '/');
 
-
-
-            var img = new Models.Image { 
+            var trackedImage = await db.Images.AddAsync(new Models.Image
+            {
+                FileName = fileName,
                 FilePath = filePath,
-                RelativePath = relativePath,
-                Category  = Models.ImageCategory.None
-            };
+                RelativePath = publicPath,
+                UploadDate = DateTime.UtcNow
+            });
 
-            await db.Images.AddAsync(img);
 
             await using var fileStream = file.OpenReadStream();
 
