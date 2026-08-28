@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -14,9 +15,15 @@ var postgres = builder
 var db = postgres.AddDatabase("database", "hoyvika");
 
 
-var api = builder.AddProject<Projects.Hoyvik_API>("backend")
+var migrations = builder.AddProject<Hoyvik_MigrationService>("migrations")
+	.WithReference(db)
+	.WaitFor(db);
+
+var api = builder.AddProject<Hoyvik_API>("backend")
 	.WithReference(db)
 	.WaitFor(db)
+	.WithReference(migrations)
+	.WaitForCompletion(migrations)
 	.WithExternalHttpEndpoints();
 
 
@@ -25,5 +32,6 @@ var frontend = builder
 	.WithHttpEndpoint(port: 54131, name: "http")
 	.WithReference(api)
 	.WaitFor(api);
+
 
 builder.Build().Run();

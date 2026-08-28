@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hoyvik.API\Hoyvik.API.csproj" />
+    <ProjectReference Include="..\Hoyvik.MigrationService\Hoyvik.MigrationService.csproj" />
   </ItemGroup>
 
 </Project>

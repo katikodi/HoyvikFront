@@ -82,27 +82,9 @@ app.MapDefaultEndpoints();
 if (app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();
-
-
 	app.UseExceptionHandler("/error");
 	app.UseDeveloperExceptionPage();
-
 	using var scope = app.Services.CreateScope();
-
-	var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-	var db = scope.ServiceProvider.GetRequiredService<Database>();
-
-	if (await db.Database.EnsureCreatedAsync())
-	{
-		logger.LogInformation("Creating database....");
-	}
-
-	if (!db.Database.GetMigrations().Any())
-	{
-		logger.LogInformation("Pending migrations found. Database migrations are being ran");
-		await db.Database.MigrateAsync();
-	}
-
 	await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
