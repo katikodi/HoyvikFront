@@ -8,6 +8,7 @@ public class Database(DbContextOptions<Database> options) : IdentityDbContext<Ap
 {
 
 	public DbSet<Booking> Bookings { get; set; }
+	public DbSet<Image> Images { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{

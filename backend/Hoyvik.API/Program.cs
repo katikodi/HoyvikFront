@@ -17,7 +17,7 @@ builder.Services.AddAuthorizationBuilder()
 	.AddPolicy("Admin", p => p.RequireRole("admin"));
 
 
-builder.Services.AddSingleton<ImageUploaderService>();
+builder.Services.AddScoped<ImageUploaderService>();
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 

@@ -1,9 +1,10 @@
-﻿using SixLabors.ImageSharp;
+﻿using Hoyvik.API.Data;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Hoyvik.API.Services;
 
-public class ImageUploaderService(IWebHostEnvironment env, ILogger<ImageUploaderService> logger)
+public class ImageUploaderService(IWebHostEnvironment env, Database db ,ILogger<ImageUploaderService> logger)
 {
 
     public async Task<UploadFileResult> UploadImage(IFormFile file ,string? name = null, string? folder = null)
@@ -21,6 +22,15 @@ public class ImageUploaderService(IWebHostEnvironment env, ILogger<ImageUploader
             var publicPath = "/" + relativePath.Replace(Path.DirectorySeparatorChar, '/');
 
 
+
+            var img = new Models.Image { 
+                FilePath = filePath,
+                RelativePath = relativePath,
+                Category  = Models.ImageCategory.None
+            };
+
+            await db.Images.AddAsync(img);
+
             await using var fileStream = file.OpenReadStream();
 
             using (var image = await Image.LoadAsync(fileStream))
@@ -32,6 +42,8 @@ public class ImageUploaderService(IWebHostEnvironment env, ILogger<ImageUploader
                 };
 
                 await image.SaveAsWebpAsync(filePath, encoder);
+                await db.SaveChangesAsync();
+
             }
 
             logger.LogInformation("Uploaded image: {path}", publicPath);
