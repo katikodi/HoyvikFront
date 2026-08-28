@@ -1,7 +1,7 @@
 import { apiFetch } from "./client";
 
 export function uploadImage(image) {
-    if ((!image) instanceof FormData) {
+    if (!(image instanceof FormDat)) {
         throw new Error("'image' must be an instance of FormData");
     }
 
@@ -13,7 +13,7 @@ export function uploadImage(image) {
 }
 
 export function uploadHero(image) {
-    if ((!image) instanceof FormData) {
+    if (!(image instanceof FormData)) {
         throw new Error("'image' must be an instance of FormData");
     }
     console.log("Upload Image:", image);
