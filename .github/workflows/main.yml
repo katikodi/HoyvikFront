@@ -25,28 +25,24 @@ jobs:
                     exit 1
                   fi
 
-                  # 1. Fallback for comparison URL on initial branch pushes
                   if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
                     COMPARE_URL="https://github.com/$REPOSITORY/commit/$SHA"
                   else
                     COMPARE_URL="https://github.com/$REPOSITORY/compare/$BEFORE...$SHA"
                   fi
 
-                  # 2. Extract commit details directly as raw text
                   COMMIT_COUNT=$(echo "$COMMITS" | jq 'length')
 
                   RAW_COMMIT_LIST=$(echo "$COMMITS" | jq -r '
-                    .[]? | "- [\(.id[0:7])]\(.url) \(.message | split("\n")[0]) — \(.author.name)"
+                    .[]? | "- [\(.id[0:7])](\(.url)) \(.message | split("\n")[0]) — \(.author.name)"
                   ')
 
-                  # 3. Truncate to avoid exceeding Discord's 1024 character limit per field
                   if [ ${#RAW_COMMIT_LIST} -gt 1000 ]; then
                     COMMIT_LIST="${RAW_COMMIT_LIST:0:950}... (truncated)"
                   else
                     COMMIT_LIST="${RAW_COMMIT_LIST:-"No commit details available"}"
                   fi
 
-                  # 4. Construct JSON cleanly using --arg (jq handles escaping automatically)
                   jq -n \
                     --arg title "🚀 New Push to $REPOSITORY" \
                     --arg compare_url "$COMPARE_URL" \
@@ -66,7 +62,7 @@ jobs:
                           { name: "Commits", value: $commits, inline: false }
                         ]
                       }]
-                    }' | \
+                    }' |
                   curl \
                     --fail-with-body \
                     -H "Content-Type: application/json" \
