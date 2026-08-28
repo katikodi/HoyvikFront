@@ -9,15 +9,15 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
     //CURL: curl.exe -X POST "http://localhost:5200/api/upload/hero"  -F "file=@heroImage.webp" -b .\cookies.txt
     public void MapEndpoint(RouteGroupBuilder app)
     {
-        app.MapPost("/upload", UploadFile)
+        app.MapPost("/uploads", UploadFile)
             .DisableAntiforgery()
             .RequireAuthorization("admin", "Admin");
 
-        app.MapPost("/upload/hero", UploadHero)
+        app.MapPost("/uploads/hero", UploadHero)
             .DisableAntiforgery()
             .RequireAuthorization("admin", "Admin");
 
-        app.MapPost("/upload/icons", UploadIcon)
+        app.MapPost("/uploads/icons", UploadIcon)
             .DisableAntiforgery()
             .RequireAuthorization("Admin", "admin");
     }
