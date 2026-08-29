@@ -11,13 +11,23 @@ export default defineConfig(({ mode }) => {
             port: 54131,
             proxy: {
                 // Proxy API calls to the app service
+                // "/api": {
+                //     target: env.services__backend__https__0 || process.env.services__backend__http__0,
+                //     changeOrigin: false,
+                //     secure: false
+                // },
+                // "/content": {
+                //     target: env.services__backend__https__0 || process.env.services__backend__http__0,
+                //     changeOrigin: false,
+                //     secure: false
+                // },
                 "/api": {
-                    target: env.services__backend__https__0 || process.env.services__backend__http__0,
+                    target: env.VITE_API_URL, //|| env.VITE_API_URL,
                     changeOrigin: false,
                     secure: false
                 },
                 "/content": {
-                    target: env.services__backend__https__0 || process.env.services__backend__http__0,
+                    target: env.VITE_API_URL, // || env.VITE_API_URL,
                     changeOrigin: false,
                     secure: false
                 }

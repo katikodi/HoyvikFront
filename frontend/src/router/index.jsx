@@ -10,8 +10,8 @@ import AboutUs from "@/pages/AboutUs";
 import AuthRoute from "@/components/AuthRoute";
 import AdminRoute from "@/components/AdminRoute";
 import Profile from "@/pages/auth/Profile";
-import SignUp from "@/pages/Signup";
-import SignIn from "@/pages/Signin";
+import SignUp from "@/pages/SignUp";
+import SignIn from "@/pages/SignIn";
 import PaymentSucceeded from "@/pages/payment/PaymentSucceeded";
 import PaymentCancelled from "@/pages/payment/PaymentCancelled";
 

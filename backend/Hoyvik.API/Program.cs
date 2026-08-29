@@ -2,7 +2,6 @@ using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
 using Hoyvik.API.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Stripe;
 
@@ -28,6 +27,8 @@ builder.Services.AddScoped<ImageUploaderService>();
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 
 
+
+
 builder.Services
 	.AddIdentity<ApplicationUser, IdentityRole>(x =>
 	{
@@ -43,6 +44,8 @@ builder.Services
 
 builder.Services.RegisterEndpoints();
 
+
+Console.WriteLine("DB: " + builder.Configuration.GetConnectionString("database"));
 builder.AddNpgsqlDbContext<Database>("database");
 
 
@@ -50,12 +53,12 @@ builder.Services.ConfigureApplicationCookie(x =>
 {
 	x.Cookie.HttpOnly = true;
 	x.Cookie.SameSite = SameSiteMode.Lax;
-    x.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
-        ? CookieSecurePolicy.None
-        : CookieSecurePolicy.Always;
+	x.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+		? CookieSecurePolicy.None
+		: CookieSecurePolicy.Always;
 
 
-    x.Events.OnRedirectToLogin = ctx =>
+	x.Events.OnRedirectToLogin = ctx =>
 	{
 		ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
 		return Task.CompletedTask;
@@ -69,44 +72,52 @@ builder.Services.ConfigureApplicationCookie(x =>
 
 });
 
-
-
 var app = builder.Build();
 
+//app.UseCors("frontend");
 
-
-app.UseCors("frontend");
 app.MapDefaultEndpoints();
 
-if (app.Environment.IsDevelopment())
+if(app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();
 	app.UseExceptionHandler("/error");
 	app.UseDeveloperExceptionPage();
+
 	using var scope = app.Services.CreateScope();
 	await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
-if (app.Environment.IsProduction())
-	app.UseHttpsRedirection();
+if(app.Environment.IsProduction())
+{
+	//app.UseHttpsRedirection();
+}
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.UseStatusCodePages();
+
 app.MapApiEndpoints();
 
-
-Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath!, "uploads"));
+Directory.CreateDirectory(
+	Path.Combine(app.Environment.WebRootPath!, "uploads")
+);
 
 app.UseFileServer(new FileServerOptions
 {
 	RequestPath = "/content/uploads",
 	EnableDirectoryBrowsing = true,
 	EnableDefaultFiles = true,
-	FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "uploads")),
-
+	FileProvider = new PhysicalFileProvider(
+		Path.Combine(app.Environment.WebRootPath!, "uploads")
+	)
 });
 
+// React SPA fallback
+app.MapFallbackToFile("index.html");
 
 app.Run();
-
