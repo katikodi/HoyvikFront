@@ -12,7 +12,10 @@ dist
 dist-ssr
 *.local
 wwwroot/uploads/*
+!wwwroot/uploads/.gitkeep
 /backend/Hoyvik.API/wwwroot/uploads/*
+!backend/Hoyvik.API/wwwroot/uploads/.gitkeep
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
