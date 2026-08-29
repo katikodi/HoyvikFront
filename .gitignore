@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+wwwroot/uploads/*
 /backend/Hoyvik.API/wwwroot/uploads/*
 # Editor directories and files
 .vscode/*
