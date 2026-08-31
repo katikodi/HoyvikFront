@@ -23,4 +23,9 @@ npm --prefix "$REPO_ROOT/frontend" run lint
 echo "Running Build..."
 npm --prefix "$REPO_ROOT/frontend" run build
 
+echo "Running Frontend Unit Test..."
+npm --prefix "$REPO_ROOT/frontend" run test
+
+# TODO: add backend unit tests
+
 echo "PRE-PUSH CHECKS PASSED"
