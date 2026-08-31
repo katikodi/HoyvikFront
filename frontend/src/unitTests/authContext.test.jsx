@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { AuthProvider } from "@/auth/AuthContext";
+import { AuthProvider } from "@/auth/AuthProvider.jsx";
 import { getCurrentUser } from "@/api/auth";
 import useAuth from "@/hooks/useAuth";
 
