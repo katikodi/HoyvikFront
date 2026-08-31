@@ -5,7 +5,7 @@ namespace Hoyvik.API.Models;
 public class Booking
 {
 	public int Id { get; set; }
-	public string SessionId { get; set; } = string.Empty;
+	public string? StripeSessionId { get; set; } 
 	public DateTime CheckIn { get; set; }
 	public DateTime CheckOut { get; set; }
 	public string? UserId { get; set; } = string.Empty;

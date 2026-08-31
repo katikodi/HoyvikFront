@@ -8,6 +8,8 @@ public static class IdentitySeeder
 	{
 		var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 		var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var db = services.GetRequiredService<Database>();
+
 
 		const string adminRole = "admin";
         const string userRole = "user";
@@ -39,7 +41,17 @@ public static class IdentitySeeder
 
 			var result = await userManager.CreateAsync(admin, adminPassword);
 
-			if(!result.Succeeded)
+            db.Bookings.Add(new Models.Booking
+            {
+                CheckIn = DateTime.UtcNow.AddDays(1),
+                CheckOut = DateTime.UtcNow.AddDays(7),
+                NumberOfGuests = 1,
+                Status = Models.BookingStatus.Pending,
+				UserId = admin.Id
+
+            });
+
+            if (!result.Succeeded)
 			{
 				throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
 			}

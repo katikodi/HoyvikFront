@@ -17,5 +17,10 @@ public class Database(DbContextOptions<Database> options) : IdentityDbContext<Ap
 			.HasOne(booking => booking.User)
 			.WithMany(user => user.Bookings)
 			.HasForeignKey(booking => booking.UserId);
+
+
+		builder.Entity<Booking>()
+			.HasIndex(x => x.StripeSessionId)
+			.IsUnique();
 	}
 }
