@@ -41,15 +41,15 @@ public static class IdentitySeeder
 
 			var result = await userManager.CreateAsync(admin, adminPassword);
 
-            db.Bookings.Add(new Models.Booking
-            {
-                CheckIn = DateTime.UtcNow.AddDays(1),
-                CheckOut = DateTime.UtcNow.AddDays(7),
-                NumberOfGuests = 1,
-                Status = Models.BookingStatus.Pending,
-				UserId = admin.Id
+    //        db.Bookings.Add(new Models.Booking
+    //        {
+    //            CheckIn = DateOnly.FromDateTime().AddDays(1),
+    //            CheckOut = DateTime.UtcNow.AddDays(7),
+    //            NumberOfGuests = 1,
+    //            Status = Models.BookingStatus.Pending,
+				//UserId = admin.Id
 
-            });
+    //        });
 
             if (!result.Succeeded)
 			{

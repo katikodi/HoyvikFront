@@ -11,8 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddProblemDetails();
 
-builder.Services.AddCors(options => options.AddPolicy("http://localhost:54131",
-	p => p.WithOrigins("")
+builder.Services.AddCors(options => options.AddPolicy("frontend",
+	p => p.WithOrigins("http://localhost:54131")
 		.AllowAnyHeader()
 		.AllowAnyMethod()
 		.AllowCredentials()));
@@ -24,6 +24,7 @@ builder.Services.AddAuthorizationBuilder()
 
 
 builder.Services.AddScoped<ImageUploaderService>();
+builder.Services.AddScoped<BookingService>();
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 

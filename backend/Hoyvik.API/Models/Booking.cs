@@ -6,18 +6,20 @@ public class Booking
 {
 	public int Id { get; set; }
 	public string? StripeSessionId { get; set; } 
-	public DateTime CheckIn { get; set; }
-	public DateTime CheckOut { get; set; }
-	public string? UserId { get; set; } = string.Empty;
-	public ApplicationUser? User { get; set; } = default!;
+	public DateOnly CheckIn { get; set; }
+	public DateOnly CheckOut { get; set; }
+
+	public decimal Price { get; set; }
+
+	public string? UserId { get; set; }
+	public ApplicationUser? User { get; set; } 
 	public int NumberOfGuests { get; set; }
-	public BookingStatus Status { get; set; }
+	public BookingStatus Status { get; set; } = BookingStatus.Pending;
 }
 
 public enum BookingStatus
 {
 	Pending,
 	Confirmed,
-	Cancelled,
-	Completed
+	Cancelled
 }

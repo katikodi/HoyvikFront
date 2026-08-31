@@ -12,9 +12,12 @@ public class CreateBookingEndpoint : IEndpoint
 
     async Task<IResult> CreateBooking(CreateBookingRequest request, BookingService bookingService)
     {
-        //if(await bookingService.CheckAvailability())
+        if(await bookingService.CheckAvailability(request.BookingId, request.CheckIn, request.CheckOut))
+        {
+            Console.WriteLine();
+        }
         return Results.Ok();
     }
 }
 
-record CreateBookingRequest(string BookingId, DateTime CheckIn, DateTime CheckOut);
+record CreateBookingRequest(string BookingId, DateOnly CheckIn, DateOnly CheckOut);

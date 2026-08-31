@@ -14,6 +14,7 @@ import SignUp from "@/pages/Signup";
 import SignIn from "@/pages/Signin";
 import PaymentSucceeded from "@/pages/payment/PaymentSucceeded";
 import PaymentCancelled from "@/pages/payment/PaymentCancelled";
+import TestBooking from "@/pages/TestBooking";
 
 export const router = createBrowserRouter([
     //any user
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
             { path: "aboutus", element: <AboutUs /> },
             { path: "signup", element: <SignUp /> },
             { path: "signin", element: <SignIn /> },
+            { path: "test-booking", element: <TestBooking /> },
             { path: "payment/payment-success", element: <PaymentSucceeded /> },
             { path: "payment/payment-cancel", element: <PaymentCancelled /> }
         ]

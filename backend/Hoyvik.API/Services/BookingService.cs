@@ -5,7 +5,7 @@ namespace Hoyvik.API.Services;
 
 public class BookingService(Database db)
 {
-    public async Task<bool> CheckAvailability(string sessionId, DateTime start, DateTime end)
+    public async Task<bool> CheckAvailability(string sessionId, DateOnly start, DateOnly end)
     {
         return await db
         .Bookings

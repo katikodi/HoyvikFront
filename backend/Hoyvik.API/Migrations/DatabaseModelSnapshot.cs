@@ -94,26 +94,31 @@ namespace Hoyvik.API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CheckIn")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("CheckIn")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("CheckOut")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("CheckOut")
+                        .HasColumnType("date");
 
                     b.Property<int>("NumberOfGuests")
                         .HasColumnType("integer");
 
-                    b.Property<string>("SessionId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
+
+                    b.Property<string>("StripeSessionId")
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StripeSessionId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 

@@ -1,4 +1,5 @@
 ﻿using Hoyvik.API.Data;
+using Hoyvik.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Stripe.Checkout;
@@ -18,16 +19,31 @@ public class CheckoutEndpoint : IEndpoint
 	 */
 
 
-    async Task<IResult> CreateCheckoutSession(ILogger<CheckoutEndpoint> logger, Database db,CancellationToken ct)
+    async Task<IResult> CreateCheckoutSession(CreateSessionRequest request,ILogger<CheckoutEndpoint> logger,Database db,CancellationToken ct)
 	{
-		//calculate checkin -> checkout price
+        //calculate checkin -> checkout price
 
 
-		var orderIndex = await db.Bookings.CountAsync(ct);
+		if (request.Checkin >= request.Checkout) 
+			return Results.BadRequest("Checkout must be after check-in.");
+		
+
+		if (request.NumberOfGuests < 1)
+			return Results.BadRequest("There must be atleast one guest.");
 
 
-		var checkinDate = DateTime.UtcNow;
-		var checkoutDate = DateTime.UtcNow.AddDays(5);
+		var booking = new Models.Booking {
+			CheckIn = request.Checkin.Value,
+			CheckOut = request.Checkout.Value,
+			Price = 2500m,
+			Status = Models.BookingStatus.Pending,
+            UserId = "fa6aeae2-069d-44e5-80a2-93090be34e0e",
+            NumberOfGuests = 1,
+            
+        };
+
+		db.Bookings.Add(booking);
+		await db.SaveChangesAsync(ct);
 
 		var options = new SessionCreateOptions
 		{
@@ -36,9 +52,9 @@ public class CheckoutEndpoint : IEndpoint
 			CancelUrl = "http://localhost:54131/payment/payment-cancel",
 			Currency = "nok",
 			Metadata = new() {
-				{"BookingId", orderIndex.ToString()},
-				{"CheckIn", checkinDate.ToString() },
-				{"CheckOut", checkoutDate.ToString() },
+				{"BookingId", booking.Id.ToString()},
+				{"CheckIn", booking.CheckIn.ToString("O") },
+				{"CheckOut", booking.CheckOut.ToString("O") },
 
 			},
 			LineItems = [
@@ -46,10 +62,10 @@ public class CheckoutEndpoint : IEndpoint
 					PriceData = new(){
 						Currency = "nok",
 						ProductData = new (){
-							Name = "Hoyvika"
+							Name = $"Hoyvika - {request.NumberOfGuests} guests"
 						},
-						UnitAmount = 2500,
-					},
+						UnitAmount = 250000,
+                    },
 					Quantity = 1,
 				}
 			]
@@ -58,7 +74,9 @@ public class CheckoutEndpoint : IEndpoint
 		var service = new SessionService();
 
 
-		var session = await service.CreateAsync(options);
+		var session = await service.CreateAsync(options, cancellationToken: ct);
+
+		booking.StripeSessionId = session.Id;
 
 		return Results.Ok(new
 		{
@@ -67,51 +85,7 @@ public class CheckoutEndpoint : IEndpoint
 		});
 	}
 
-	record CreateSessionRequest(
-		DateTime? Checkin,
-		DateTime? Checkout
-		);
+	record CreateSessionRequest(DateOnly? Checkin,DateOnly? Checkout, int NumberOfGuests);
 }
 
 
-public class StripeWebhook : IEndpoint
-{
-	public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/payment/webhook", Webhook);
-
-	async Task<IResult> Webhook(HttpRequest request, IConfiguration config, Database db, ILogger<StripeWebhook> logger)
-	{
-		var json = await new StreamReader(request.Body).ReadToEndAsync();
-
-		var stripeSignature = request.Headers["Stripe-Signature"];
-
-		Event stripeEvent;
-
-		try
-		{
-			stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, config["Stripe:WebhookSecret"] ?? throw new Exception("Stripe:WebhookSecret is missing"));
-		}
-		catch(Exception ex)
-		{
-			logger.LogError(ex, "EventUtility.ConstructEvent");
-			return Results.BadRequest();
-		}
-
-		logger.LogInformation("StripEevent: {type}", stripeEvent.Type);
-
-		if(stripeEvent.Type == "checkout.session.completed")
-		{
-			var session = stripeEvent.Data.Object as Session;
-
-			if(session is not null)
-			{
-				logger.LogInformation("Stripe Payment completed: {id}", session.Id);
-
-				foreach(var md in session.Metadata)
-				{
-					logger.LogInformation("Metadata Key: {key} Value: {value}", md.Key, md.Value ?? "empty");
-				}
-			}
-		}
-		return Results.Ok();
-	}
-}

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hoyvik.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -180,9 +180,10 @@ namespace Hoyvik.API.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SessionId = table.Column<string>(type: "text", nullable: false),
-                    CheckIn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CheckOut = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    StripeSessionId = table.Column<string>(type: "text", nullable: true),
+                    CheckIn = table.Column<DateOnly>(type: "date", nullable: false),
+                    CheckOut = table.Column<DateOnly>(type: "date", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     NumberOfGuests = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false)
@@ -232,6 +233,12 @@ namespace Hoyvik.API.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_StripeSessionId",
+                table: "Bookings",
+                column: "StripeSessionId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
