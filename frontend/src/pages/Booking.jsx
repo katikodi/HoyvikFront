@@ -17,6 +17,7 @@ const Booking = () => {
         2: <BookingStageThree register={register} />,
         3: <Redirect />
     };
+
     return (
         <div className="signup-background">
             <div
@@ -60,7 +61,6 @@ const Booking = () => {
         </div>
     );
 };
-export default Booking;
 
 const BookingStageOne = () => {
     return (
@@ -76,6 +76,7 @@ const BookingStageOne = () => {
         </div>
     );
 };
+
 const BookingStageTwo = ({ register }) => {
     return (
         <div className="flex-col center gap-1">
@@ -183,3 +184,5 @@ const Redirect = () => {
     });
     return <div>You are being redirected....</div>;
 };
+
+export default Booking;
