@@ -1,14 +1,16 @@
-﻿using Hoyvik.API.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Claims;
+using FluentValidation;
+using Hoyvik.API.Exceptions;
+using Hoyvik.API.Models.Requests;
+using Hoyvik.API.Services;
 using Stripe;
-using Stripe.Checkout;
 
 namespace Hoyvik.API.Endpoints.Payment;
 
 public class CheckoutEndpoint : IEndpoint
 {
-	public void MapEndpoint(RouteGroupBuilder app) =>
-		app.MapPost("/payment/create-checkout-session", CreateCheckoutSession);
+    public void MapEndpoint(RouteGroupBuilder app) =>
+        app.MapPost("/payment/create-checkout-session", CreateCheckoutSession);
 
 
     /*Stripe test cards:
@@ -18,100 +20,45 @@ public class CheckoutEndpoint : IEndpoint
 	 */
 
 
-    async Task<IResult> CreateCheckoutSession(ILogger<CheckoutEndpoint> logger, Database db,CancellationToken ct)
-	{
-		//calculate checkin -> checkout price
+    async Task<IResult> CreateCheckoutSession(
+        HttpContext ctx,
+        CreateSessionRequest request,
+        IValidator<CreateSessionRequest> validator,
+        IBookingService bookingService,
+        ILogger<CheckoutEndpoint> logger,
+        CancellationToken ct)
+    {
+        var validationResult = await validator.ValidateAsync(request, ct);
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+        var userId = ctx.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 
-		var orderIndex = await db.Bookings.CountAsync(ct);
+        try
+        {
+            var checkoutUrl = await bookingService.CreateCheckoutSession(request, userId, ct);
 
+            return Results.Ok(new { 
+                url = checkoutUrl
+            });
+        }
+        catch (BookingNotAvailableException ex)
+        {
+            return Results.Conflict(new
+            {
+                message = ex.Message
+            });
+        }
+        catch(StripeException ex)
+        {
+            logger.LogError(ex, "Failed to create Stripe checkout session");
 
-		var checkinDate = DateTime.UtcNow;
-		var checkoutDate = DateTime.UtcNow.AddDays(5);
-
-		var options = new SessionCreateOptions
-		{
-			Mode = "payment",
-			SuccessUrl = $"http://localhost:54131/payment/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
-			CancelUrl = "http://localhost:54131/payment/payment-cancel",
-			Currency = "nok",
-			Metadata = new() {
-				{"BookingId", orderIndex.ToString()},
-				{"CheckIn", checkinDate.ToString() },
-				{"CheckOut", checkoutDate.ToString() },
-
-			},
-			LineItems = [
-				new SessionLineItemOptions(){
-					PriceData = new(){
-						Currency = "nok",
-						ProductData = new (){
-							Name = "Hoyvika"
-						},
-						UnitAmount = 2500,
-					},
-					Quantity = 1,
-				}
-			]
-		};
-
-		var service = new SessionService();
-
-
-		var session = await service.CreateAsync(options);
-
-		return Results.Ok(new
-		{
-			//send the frontend the url to visit to finalize the order
-			url = session.Url
-		});
-	}
-
-	record CreateSessionRequest(
-		DateTime? Checkin,
-		DateTime? Checkout
-		);
-}
-
-
-public class StripeWebhook : IEndpoint
-{
-	public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/payment/webhook", Webhook);
-
-	async Task<IResult> Webhook(HttpRequest request, IConfiguration config, Database db, ILogger<StripeWebhook> logger)
-	{
-		var json = await new StreamReader(request.Body).ReadToEndAsync();
-
-		var stripeSignature = request.Headers["Stripe-Signature"];
-
-		Event stripeEvent;
-
-		try
-		{
-			stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, config["Stripe:WebhookSecret"] ?? throw new Exception("Stripe:WebhookSecret is missing"));
-		}
-		catch(Exception ex)
-		{
-			logger.LogError(ex, "EventUtility.ConstructEvent");
-			return Results.BadRequest();
-		}
-
-		logger.LogInformation("StripEevent: {type}", stripeEvent.Type);
-
-		if(stripeEvent.Type == "checkout.session.completed")
-		{
-			var session = stripeEvent.Data.Object as Session;
-
-			if(session is not null)
-			{
-				logger.LogInformation("Stripe Payment completed: {id}", session.Id);
-
-				foreach(var md in session.Metadata)
-				{
-					logger.LogInformation("Metadata Key: {key} Value: {value}", md.Key, md.Value ?? "empty");
-				}
-			}
-		}
-		return Results.Ok();
-	}
+            return Results.Problem(
+                statusCode: StatusCodes.Status502BadGateway,
+                title: "Unable to create payment session.");
+        }
+    }
 }

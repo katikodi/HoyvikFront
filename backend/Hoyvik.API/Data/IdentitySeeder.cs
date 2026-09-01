@@ -8,6 +8,8 @@ public static class IdentitySeeder
 	{
 		var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 		var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var db = services.GetRequiredService<Database>();
+
 
 		const string adminRole = "admin";
         const string userRole = "user";
@@ -39,7 +41,7 @@ public static class IdentitySeeder
 
 			var result = await userManager.CreateAsync(admin, adminPassword);
 
-			if(!result.Succeeded)
+            if (!result.Succeeded)
 			{
 				throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
 			}

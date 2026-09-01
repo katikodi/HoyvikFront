@@ -164,6 +164,7 @@ const Redirect = () => {
             });
 
             const result = await response.json();
+
             if (!response.ok || !result.url) return;
 
             timeoutId = setTimeout(() => {
@@ -181,7 +182,8 @@ const Redirect = () => {
             clearTimeout(timeoutId);
             controller.abort();
         };
-    });
+    }, []); // <-- important
+
     return <div>You are being redirected....</div>;
 };
 

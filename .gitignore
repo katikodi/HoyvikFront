@@ -26,7 +26,7 @@ wwwroot/uploads/*
 *.njsproj
 *.sln
 *.sw?
-
+production.env
 
 #-----------------------------------
 
