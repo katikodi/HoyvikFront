@@ -27,6 +27,7 @@ builder.Services.AddAuthorizationBuilder()
 builder.Services.AddScoped<ImageUploaderService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
+builder.Services.AddHostedService<BookingExpirationService>();
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 

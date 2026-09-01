@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hoyvik.API.Migrations
 {
     [DbContext(typeof(Database))]
-    [Migration("20260901073522_Init")]
+    [Migration("20260901100949_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -102,6 +102,12 @@ namespace Hoyvik.API.Migrations
 
                     b.Property<DateOnly>("CheckOut")
                         .HasColumnType("date");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("NumberOfGuests")
                         .HasColumnType("integer");

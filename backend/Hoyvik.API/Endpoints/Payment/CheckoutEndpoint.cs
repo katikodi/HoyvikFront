@@ -1,14 +1,13 @@
 ﻿using System.Security.Claims;
 using FluentValidation;
-using Hoyvik.API.Data;
+using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models;
 using Hoyvik.API.Services;
 using Stripe;
-using Stripe.Checkout;
 
 namespace Hoyvik.API.Endpoints.Payment;
 
-public partial class CheckoutEndpoint : IEndpoint
+public class CheckoutEndpoint : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app) =>
         app.MapPost("/payment/create-checkout-session", CreateCheckoutSession);
@@ -26,6 +25,7 @@ public partial class CheckoutEndpoint : IEndpoint
         CreateSessionRequest request,
         IValidator<CreateSessionRequest> validator,
         IBookingService bookingService,
+        ILogger<CheckoutEndpoint> logger,
         CancellationToken ct)
     {
         var validationResult = await validator.ValidateAsync(request, ct);
@@ -45,8 +45,17 @@ public partial class CheckoutEndpoint : IEndpoint
                 url = checkoutUrl
             });
         }
-        catch(StripeException)
+        catch (BookingNotAvailableException ex)
         {
+            return Results.Conflict(new
+            {
+                message = ex.Message
+            });
+        }
+        catch(StripeException ex)
+        {
+            logger.LogError(ex, "Failed to create Stripe checkout session");
+
             return Results.Problem(
                 statusCode: StatusCodes.Status502BadGateway,
                 title: "Unable to create payment session.");

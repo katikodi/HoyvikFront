@@ -1,7 +1,8 @@
 ﻿using Hoyvik.API.Data;
-using Stripe;
 using Hoyvik.API.Models;
+using Hoyvik.API.Services;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using Stripe.Checkout;
 namespace Hoyvik.API.Endpoints.Stripe;
 
@@ -14,9 +15,9 @@ public class StripeWebhook : IEndpoint
 
     public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/payment/webhook", Webhook);
 
-    async Task<IResult> Webhook(HttpRequest request, IConfiguration config, Database db, ILogger<StripeWebhook> logger)
+    async Task<IResult> Webhook(HttpRequest request, IConfiguration config, IBookingService bookingService, ILogger<StripeWebhook> logger, CancellationToken ct)
     {
-        var json = await new StreamReader(request.Body).ReadToEndAsync();
+        var json = await new StreamReader(request.Body).ReadToEndAsync(ct);
 
         var stripeSignature = request.Headers["Stripe-Signature"];
 
@@ -33,64 +34,63 @@ public class StripeWebhook : IEndpoint
         catch (Exception ex)
         {
             logger.LogError(ex, "Invalid Stripe webhook");
-
             return Results.BadRequest();
         }
 
         logger.LogInformation("Stripe event: {Type}", stripeEvent.Type);
 
-        if (stripeEvent.Type == "checkout.session.completed")
+        if (stripeEvent.Type is not
+            ("checkout.session.completed" or "checkout.session.expired"))
         {
-            var session = stripeEvent.Data.Object as Session;
+            return Results.Ok();
+        }
 
-            if (session is null)
-                return Results.BadRequest();
+        if (stripeEvent.Data.Object is not Session session)
+            return Results.BadRequest();
 
-            if (!session.Metadata.TryGetValue("BookingId", out var bookingIdString))
-            {
-                logger.LogError(
-                    "Stripe session {SessionId} has no BookingId",
-                    session.Id);
+        if (!session.Metadata.TryGetValue("BookingId", out var bookingIdString))
+        {
+            logger.LogError("Stripe session {SessionId} has no BookingId", session.Id);
 
-                return Results.BadRequest();
-            }
+            return Results.BadRequest();
+        }
 
-            if (!int.TryParse(bookingIdString, out var bookingId))
-            {
-                logger.LogError(
-                    "Invalid BookingId {BookingId}",
-                    bookingIdString);
+        if (!int.TryParse(bookingIdString, out var bookingId))
+        {
+            logger.LogError("Invalid BookingId {BookingId}",bookingIdString);
 
-                return Results.BadRequest();
-            }
+            return Results.BadRequest();
+        }
 
-            var booking = await db.Bookings
-                .SingleOrDefaultAsync(x => x.Id == bookingId);
+        switch (stripeEvent.Type)
+        {
+            case "checkout.session.completed":
 
-            if (booking is null)
-            {
-                logger.LogError(
-                    "Booking {BookingId} not found",
-                    bookingId);
+                if (session.PaymentStatus != "paid")
+                {
+                    logger.LogWarning(
+                        "Session {SessionId} completed but payment status is {PaymentStatus}",
+                        session.Id,
+                        session.PaymentStatus);
 
-                return Results.BadRequest();
-            }
+                    return Results.Ok();
+                }
 
-            // Prevent processing the same event/session twice
-            if (booking.Status == BookingStatus.Confirmed)
-            {
-                return Results.Ok();
-            }
+                await bookingService.ConfirmBooking(
+                    bookingId,
+                    session.Id,
+                    ct);
 
-            booking.Status = BookingStatus.Confirmed;
-            booking.StripeSessionId = session.Id;
+                break;
 
-            await db.SaveChangesAsync();
+            case "checkout.session.expired":
 
-            logger.LogInformation(
-                "Booking {BookingId} confirmed. Stripe session {SessionId}",
-                booking.Id,
-                session.Id);
+                await bookingService.ExpireBooking(
+                    bookingId,
+                    session.Id,
+                    ct);
+
+                break;
         }
 
         return Results.Ok();

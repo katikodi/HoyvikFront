@@ -15,11 +15,15 @@ public class Booking
 	public ApplicationUser? User { get; set; } 
 	public int NumberOfGuests { get; set; }
 	public BookingStatus Status { get; set; } = BookingStatus.Pending;
+
+	public DateTime CreatedAt { get; set; }
+	public DateTime? ExpiresAt { get; set; }
 }
 
 public enum BookingStatus
 {
 	Pending,
 	Confirmed,
-	Cancelled
+	Cancelled,
+	Expired
 }
