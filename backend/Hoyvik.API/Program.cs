@@ -19,17 +19,17 @@ var app = builder.Build();
 app.UseCors("frontend");
 app.MapDefaultEndpoints();
 
-if (app.Environment.IsDevelopment())
+if(app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.UseExceptionHandler("/error");
-    app.UseDeveloperExceptionPage();
-    using var scope = app.Services.CreateScope();
-    await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+	app.MapOpenApi();
+	app.UseExceptionHandler("/error");
+	app.UseDeveloperExceptionPage();
+	using var scope = app.Services.CreateScope();
+	await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
-if (app.Environment.IsProduction())
-    app.UseHttpsRedirection();
+if(app.Environment.IsProduction())
+	app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -43,10 +43,10 @@ Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath!, "uploads"))
 
 app.UseFileServer(new FileServerOptions
 {
-    RequestPath = "/content/uploads",
-    EnableDirectoryBrowsing = true,
-    EnableDefaultFiles = true,
-    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "uploads")),
+	RequestPath = "/content/uploads",
+	EnableDirectoryBrowsing = true,
+	EnableDefaultFiles = true,
+	FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "uploads")),
 
 });
 
