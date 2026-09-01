@@ -1,5 +1,4 @@
-﻿
-using Hoyvik.API.Models;
+﻿using Hoyvik.API.Models.Requests;
 
 namespace Hoyvik.API.Services;
 

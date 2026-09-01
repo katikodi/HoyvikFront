@@ -17,7 +17,7 @@ public class GetBookingsEndpoint : IEndpoint
 
         return Results.Ok(new
         {
-            bookings = bookings
+            bookings
         });
     }
 }

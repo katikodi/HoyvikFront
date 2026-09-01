@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using FluentValidation;
 using Hoyvik.API.Exceptions;
-using Hoyvik.API.Models;
+using Hoyvik.API.Models.Requests;
 using Hoyvik.API.Services;
 using Stripe;
 
@@ -62,5 +62,3 @@ public class CheckoutEndpoint : IEndpoint
         }
     }
 }
-
-

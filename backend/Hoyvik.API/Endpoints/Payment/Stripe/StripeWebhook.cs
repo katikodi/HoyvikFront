@@ -4,7 +4,7 @@ using Hoyvik.API.Services;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Stripe.Checkout;
-namespace Hoyvik.API.Endpoints.Stripe;
+namespace Hoyvik.API.Endpoints.Payment.Stripe;
 
 public class StripeWebhook : IEndpoint
 {

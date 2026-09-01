@@ -2,6 +2,7 @@
 using Hoyvik.API.Data;
 using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models;
+using Hoyvik.API.Models.Requests;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Stripe;
