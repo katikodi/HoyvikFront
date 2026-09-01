@@ -6,15 +6,10 @@ using Microsoft.Extensions.FileProviders;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddApplication();
-
-
-
-
-
-
 var app = builder.Build();
 
 
+#region Middleware
 
 app.UseCors("frontend");
 app.MapDefaultEndpoints();
@@ -53,3 +48,4 @@ app.UseFileServer(new FileServerOptions
 
 app.Run();
 
+#endregion

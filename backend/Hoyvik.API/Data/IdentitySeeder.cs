@@ -6,15 +6,17 @@ public static class IdentitySeeder
 {
 	public static async Task SeedAsync(IServiceProvider services)
 	{
+		var config = services.GetRequiredService<IConfiguration>();
 		var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 		var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        var db = services.GetRequiredService<Database>();
+		var db = services.GetRequiredService<Database>();
 
 
 		const string adminRole = "admin";
-        const string userRole = "user";
-        const string adminEmail = "admin@admin.com";
+		const string userRole = "user";
+		const string adminEmail = "admin@admin.com";
 		const string adminPassword = "admin@admin.com";
+
 
 
 		if(!await roleManager.RoleExistsAsync(adminRole))
@@ -22,13 +24,13 @@ public static class IdentitySeeder
 			await roleManager.CreateAsync(new IdentityRole(adminRole));
 		}
 
-		if (!await roleManager.RoleExistsAsync(userRole))
+		if(!await roleManager.RoleExistsAsync(userRole))
 		{
-            await roleManager.CreateAsync(new IdentityRole(userRole));
+			await roleManager.CreateAsync(new IdentityRole(userRole));
 
-        }
+		}
 
-        var admin = await userManager.FindByEmailAsync(adminEmail);
+		var admin = await userManager.FindByEmailAsync(adminEmail);
 
 		if(admin == null)
 		{
@@ -38,18 +40,29 @@ public static class IdentitySeeder
 				Email = adminEmail,
 				EmailConfirmed = true
 			};
+			var appUser = new ApplicationUser
+			{
+				UserName = "test@test.com",
+				Email = "test@test.com",
+				EmailConfirmed = true
+			};
 
+			await userManager.CreateAsync(appUser, "test@test.com");
 			var result = await userManager.CreateAsync(admin, adminPassword);
 
-            if (!result.Succeeded)
+			if(!result.Succeeded)
 			{
 				throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
 			}
+
+
 		}
 
 		if(!await userManager.IsInRoleAsync(admin, adminRole))
 		{
 			await userManager.AddToRoleAsync(admin, adminRole);
 		}
+
+
 	}
 }

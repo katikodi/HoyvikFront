@@ -1,9 +1,6 @@
-using Microsoft.Extensions.Configuration;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
-
-
 
 var postgres = builder
 	.AddPostgres("postgres")
@@ -13,7 +10,6 @@ var postgres = builder
 	.WithLifetime(ContainerLifetime.Persistent);
 
 var db = postgres.AddDatabase("database", "hoyvika");
-
 
 var migrations = builder.AddProject<Hoyvik_MigrationService>("migrations")
 	.WithReference(db)
@@ -25,7 +21,6 @@ var api = builder.AddProject<Hoyvik_API>("backend")
 	.WithReference(migrations)
 	.WaitForCompletion(migrations)
 	.WithExternalHttpEndpoints();
-
 
 var frontend = builder
 	.AddViteApp("frontend", "../../frontend")
