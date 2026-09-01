@@ -1,4 +1,5 @@
 ﻿using Hoyvik.API.Data;
+using Hoyvik.API.Endpoints.Booking;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hoyvik.API.Endpoints.Admin;
@@ -6,18 +7,16 @@ namespace Hoyvik.API.Endpoints.Admin;
 public class GetBookingsEndpoint : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app)
-        => app.MapGet("/admin/users/{id}", GetBookings)
+        => app.MapGet("/admin/bookings/", GetBookings)
         .RequireAuthorization("admin", "Admin");
 
 
-    async Task<IResult> GetBookings(string id,Database db)
+    async Task<IResult> GetBookings(Database db)
     {
+        var bookings = await db
+            .Bookings
+            .ToListAsync();
 
-        var bookings = await db.Bookings.Where(x => x.UserId == id.ToString()).ToListAsync();
-
-        return Results.Ok(new
-        {
-            bookings
-        });
+        return Results.Ok(bookings.Select(x => new OccupiedResponse(x.CheckIn, x.CheckOut, x.Status)).ToList());
     }
 }
