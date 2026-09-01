@@ -1,15 +1,17 @@
-﻿using Hoyvik.API.Data;
+﻿using System.Security.Claims;
+using FluentValidation;
+using Hoyvik.API.Data;
 using Hoyvik.API.Models;
-using Microsoft.EntityFrameworkCore;
+using Hoyvik.API.Services;
 using Stripe;
 using Stripe.Checkout;
 
 namespace Hoyvik.API.Endpoints.Payment;
 
-public class CheckoutEndpoint : IEndpoint
+public partial class CheckoutEndpoint : IEndpoint
 {
-	public void MapEndpoint(RouteGroupBuilder app) =>
-		app.MapPost("/payment/create-checkout-session", CreateCheckoutSession);
+    public void MapEndpoint(RouteGroupBuilder app) =>
+        app.MapPost("/payment/create-checkout-session", CreateCheckoutSession);
 
 
     /*Stripe test cards:
@@ -19,73 +21,37 @@ public class CheckoutEndpoint : IEndpoint
 	 */
 
 
-    async Task<IResult> CreateCheckoutSession(CreateSessionRequest request,ILogger<CheckoutEndpoint> logger,Database db,CancellationToken ct)
-	{
-        //calculate checkin -> checkout price
+    async Task<IResult> CreateCheckoutSession(
+        HttpContext ctx,
+        CreateSessionRequest request,
+        IValidator<CreateSessionRequest> validator,
+        IBookingService bookingService,
+        CancellationToken ct)
+    {
+        var validationResult = await validator.ValidateAsync(request, ct);
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+        var userId = ctx.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 
-		if (request.Checkin >= request.Checkout) 
-			return Results.BadRequest("Checkout must be after check-in.");
-		
+        try
+        {
+            var checkoutUrl = await bookingService.CreateCheckoutSession(request, userId, ct);
 
-		if (request.NumberOfGuests < 1)
-			return Results.BadRequest("There must be atleast one guest.");
-
-
-		var booking = new Models.Booking {
-			CheckIn = request.Checkin.Value,
-			CheckOut = request.Checkout.Value,
-			Price = 2500m,
-			Status = Models.BookingStatus.Pending,
-            UserId = "fa6aeae2-069d-44e5-80a2-93090be34e0e",
-            NumberOfGuests = 1,
-            
-        };
-
-		db.Bookings.Add(booking);
-		await db.SaveChangesAsync(ct);
-
-		var options = new SessionCreateOptions
-		{
-			Mode = "payment",
-			SuccessUrl = $"http://localhost:54131/payment/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
-			CancelUrl = "http://localhost:54131/payment/payment-cancel",
-			Currency = "nok",
-			Metadata = new() {
-				{"BookingId", booking.Id.ToString()},
-				{"CheckIn", booking.CheckIn.ToString("O") },
-				{"CheckOut", booking.CheckOut.ToString("O") },
-
-			},
-			LineItems = [
-				new SessionLineItemOptions(){
-					PriceData = new(){
-						Currency = "nok",
-						ProductData = new (){
-							Name = $"Hoyvika - {request.NumberOfGuests} guests"
-						},
-						UnitAmount = 250000,
-                    },
-					Quantity = 1,
-				}
-			]
-		};
-
-		var service = new SessionService();
-
-
-		var session = await service.CreateAsync(options, cancellationToken: ct);
-
-		booking.StripeSessionId = session.Id;
-
-		return Results.Ok(new
-		{
-			//send the frontend the url to visit to finalize the order
-			url = session.Url
-		});
-	}
-
-	record CreateSessionRequest(DateOnly? Checkin,DateOnly? Checkout, int NumberOfGuests);
+            return Results.Ok(new { 
+                url = checkoutUrl
+            });
+        }
+        catch(StripeException)
+        {
+            return Results.Problem(
+                statusCode: StatusCodes.Status502BadGateway,
+                title: "Unable to create payment session.");
+        }
+    }
 }
 
 

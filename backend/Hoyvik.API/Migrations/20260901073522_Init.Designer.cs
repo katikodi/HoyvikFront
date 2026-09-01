@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hoyvik.API.Migrations
 {
     [DbContext(typeof(Database))]
-    [Migration("20260831124835_Init")]
+    [Migration("20260901073522_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -109,8 +109,9 @@ namespace Hoyvik.API.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("StripeSessionId")
                         .HasColumnType("text");

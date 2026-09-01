@@ -17,6 +17,15 @@ export default function TestBooking() {
             credentials: "include",
             body: JSON.stringify({ checkin: startDate, checkout: endDate, numberOfGuests: 1 })
         });
+
+        if (!response.ok) {
+            console.log(await response.json());
+        }
+
+        const result = await response.json();
+        setTimeout(() => {
+            window.location.href = result.url;
+        }, 1000);
     }
 
     // useEffect(() => {

@@ -7,6 +7,11 @@ namespace Hoyvik.API.Endpoints.Stripe;
 
 public class StripeWebhook : IEndpoint
 {
+
+    /*
+     *stripe listen --forward-to localhost:5200/api/payment/webhook
+     * */
+
     public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/payment/webhook", Webhook);
 
     async Task<IResult> Webhook(HttpRequest request, IConfiguration config, Database db, ILogger<StripeWebhook> logger)

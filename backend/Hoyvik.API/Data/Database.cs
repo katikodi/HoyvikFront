@@ -20,6 +20,10 @@ public class Database(DbContextOptions<Database> options) : IdentityDbContext<Ap
 
 
 		builder.Entity<Booking>()
+			.Property(x => x.Status)
+			.HasConversion<string>();
+
+		builder.Entity<Booking>()
 			.HasIndex(x => x.StripeSessionId)
 			.IsUnique();
 	}
