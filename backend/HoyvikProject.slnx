@@ -1,5 +1,9 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Project Path="Hoyvik.API/Hoyvik.API.csproj" />
   <Project Path="Hoyvik.MigrationService/Hoyvik.MigrationService.csproj" />
+  <Project Path="Hoyvik.Tests/Hoyvik.Tests.csproj" />
   <Project Path="HoyvikProject.AppHost/HoyvikProject.AppHost.csproj" Id="5c0aaed0-c153-4e9e-ae11-96ab6a6bedd0" />
 </Solution>

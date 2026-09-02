@@ -47,7 +47,7 @@ public class BookingExpirationService(IServiceScopeFactory scopeFactory, IOption
 
 			logger.LogInformation("Next cleanup is in {time} seconds", bookingConfig.CurrentValue.CleanupPollRate);
 
-			await Task.Delay(TimeSpan.FromSeconds(bookingConfig.CurrentValue.CleanupPollRate.Value), stoppingToken);
+			await Task.Delay(TimeSpan.FromSeconds(bookingConfig.CurrentValue.CleanupPollRate), stoppingToken);
 		}
 	}
 }

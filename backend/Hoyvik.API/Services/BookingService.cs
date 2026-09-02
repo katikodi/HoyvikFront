@@ -4,6 +4,7 @@ using Hoyvik.API.Data;
 using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models;
 using Hoyvik.API.Models.Requests;
+using Hoyvik.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;
@@ -12,7 +13,11 @@ using Stripe.Checkout;
 
 namespace Hoyvik.API.Services;
 
-public class BookingService(Database db, IConfiguration configuration, IOptionsMonitor<BookingConfiguration> bookingConfiguration, ILogger<BookingService> logger) : IBookingService
+public class BookingService(
+    Database db,
+    IOptionsMonitor<BookingConfiguration> bookingConfiguration,
+    IStripePaymentService stripePaymentService,
+    ILogger<BookingService> logger) : IBookingService
 {
 
 	/// <summary>
@@ -135,106 +140,78 @@ public class BookingService(Database db, IConfiguration configuration, IOptionsM
 		return true;
 	}
 
-	public async Task<string> CreateCheckoutSession(CreateSessionRequest request, string? userId, CancellationToken ct)
-	{
+    public async Task<string> CreateBookingPaymentSession(CreateSessionRequest request, string? userId, CancellationToken ct = default)
+    {
+        var booking = await CreatePendingBooking(request, userId, ct);
 
-		var available = await CheckAvailability(request.CheckIn, request.CheckOut, ct);
+        try
+        {
+            var stripeSession = await stripePaymentService.CreateCheckoutSession(booking, ct);
 
-		if(!available)
-			throw new BookingNotAvailableException();
+            booking.StripeSessionId = stripeSession.SessionId;
 
+            await db.SaveChangesAsync(ct);
 
-		var numberOfNights = request.CheckOut.DayNumber - request.CheckIn.DayNumber;
+            return stripeSession.Url;
+        }
+        catch
+        {
+            logger.LogError("Removing booking {BookingId} because checkout session creation failed", booking.Id);
 
+            db.Bookings.Remove(booking);
 
-		var pricePerNight = bookingConfiguration.CurrentValue.PricePerNight.Value; //configuration.GetValue<decimal?>("Settings:PricePerNight") ?? throw new Exception("PricePerNight is missing.");
+            await db.SaveChangesAsync(ct);
 
-		var totalPrice = numberOfNights * pricePerNight;
-
-
-		var booking = new Booking
-		{
-			CheckIn = request.CheckIn,
-			CheckOut = request.CheckOut,
-			Price = totalPrice, //1050kr
-			Status = BookingStatus.Pending,
-			UserId = userId,
-			NumberOfGuests = request.NumberOfGuests,
-			CreatedAt = DateTime.UtcNow,
-			ExpiresAt = DateTime.UtcNow.AddMinutes(bookingConfiguration.CurrentValue.ExpirationTime.Value)
-		};
+            throw;
+        }
+    }
 
 
-		try
-		{
-			db.Bookings.Add(booking);
-			await db.SaveChangesAsync(ct);
-		}
-		catch(PostgresException ex) when(ex.SqlState == PostgresErrorCodes.ExclusionViolation)
-		{
-			throw new BookingNotAvailableException();
-		}
+    private async Task<Booking> CreatePendingBooking(
+       CreateSessionRequest request,
+       string? userId,
+       CancellationToken ct)
+    {
+        var available = await CheckAvailability(request.CheckIn, request.CheckOut, ct);
 
-		var frontendUrl = configuration.GetConnectionString("FrontendUrl") ?? "http://localhost:54131";
+        if (!available)
+            throw new BookingNotAvailableException();
 
-		var options = new SessionCreateOptions
-		{
-			Mode = "payment",
-			SuccessUrl = $"{frontendUrl}/payment/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
-			CancelUrl = $"{frontendUrl}/payment/payment-cancel",
-			Currency = "nok",
-			Metadata = new() {
-				{"BookingId", booking.Id.ToString()}
-			},
-			LineItems =
-			[
-				new SessionLineItemOptions
-				{
-					PriceData = new()
-					{
-						Currency = "nok",
-						ProductData = new()
-						{
-							Name =
-								$"Hoyvika " +
-								$"{booking.CheckIn:dd MMM} to " +
-								$"{booking.CheckOut:dd MMM}",
+        var config = bookingConfiguration.CurrentValue;
 
-							Description =
-								$"{request.NumberOfGuests} guests • " +
-								"Check-in after 15:00"
-						},
-						UnitAmount = (long)(booking.Price * 100)
-					},
-					Quantity = 1
-				}
-			]
-		};
+        var numberOfNights =
+            request.CheckOut.DayNumber -
+            request.CheckIn.DayNumber;
 
-		var service = new SessionService();
+        var totalPrice =
+            numberOfNights * config.PricePerNight;
 
-		Session session;
+        var now = DateTime.UtcNow;
 
-		try
-		{
-			session = await service.CreateAsync(options, cancellationToken: ct);
-		}
-		catch(StripeException ex)
-		{
-			logger.LogError(
-				ex,
-				"Failed to create Stripe checkout session for booking {BookingId}",
-				booking.Id);
+        var booking = new Booking
+        {
+            CheckIn = request.CheckIn,
+            CheckOut = request.CheckOut,
+            Price = totalPrice,
+            Status = BookingStatus.Pending,
+            UserId = userId,
+            NumberOfGuests = request.NumberOfGuests,
+            CreatedAt = now,
+            ExpiresAt = now.AddMinutes(config.ExpirationTime)
+        };
 
-			db.Bookings.Remove(booking);
-			await db.SaveChangesAsync(ct);
-			throw;
-		}
+        try
+        {
+            db.Bookings.Add(booking);
 
-		booking.StripeSessionId = session.Id;
-		await db.SaveChangesAsync(ct);
-		return session.Url;
-	}
+            await db.SaveChangesAsync(ct);
 
-
+            return booking;
+        }
+        catch (PostgresException ex)
+            when (ex.SqlState == PostgresErrorCodes.ExclusionViolation)
+        {
+            throw new BookingNotAvailableException();
+        }
+    }
 }
