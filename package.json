@@ -9,7 +9,7 @@
     },
     "lint-staged": {
         "frontend/**/*.{js,jsx,css,html,json,md}": "prettier --write",
-        "backend/Hoyvik.API/**/*.cs": "dotnet format backend/Hoyvik.API/Hoyvik.API.csproj --no-restore --include",
+        "backend/Hoyvik.API/**/*.cs": "dotnet format backend/Hoyvik.API/Hoyvik.API.csproj --no-restore --include --exclude backend/Hoyvik.API/Migrations",
         "backend/Hoyvik.MigrationService/**/*.cs": "dotnet format backend/Hoyvik.MigrationService/Hoyvik.MigrationService.csproj --no-restore --include"
     }
 }
