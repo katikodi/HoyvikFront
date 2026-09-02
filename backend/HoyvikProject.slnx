@@ -3,6 +3,7 @@
     <File Path=".editorconfig" />
   </Folder>
   <Project Path="Hoyvik.API/Hoyvik.API.csproj" />
+  <Project Path="Hoyvik.IntegrationTests/Hoyvik.IntegrationTests.csproj" Id="00b64fa3-7ee6-40d2-82d2-9126470a7a84" />
   <Project Path="Hoyvik.MigrationService/Hoyvik.MigrationService.csproj" />
   <Project Path="Hoyvik.Tests/Hoyvik.Tests.csproj" />
   <Project Path="HoyvikProject.AppHost/HoyvikProject.AppHost.csproj" Id="5c0aaed0-c153-4e9e-ae11-96ab6a6bedd0" />
