@@ -5,11 +5,11 @@
         "prettier": "^3.9.6"
     },
     "scripts": {
-        "prepare": "husky",
-        "format:backend": "dotnet format backend/Hoyvik.API/Hoyvik.API.csproj --no-restore && dotnet format backend/Hoyvik.MigrationService/Hoyvik.MigrationService.csproj --no-restore"
+        "prepare": "husky"
     },
     "lint-staged": {
         "frontend/**/*.{js,jsx,css,html,json,md}": "prettier --write",
-        "backend/**/*.cs": "npm run format:backend"
+        "backend/Hoyvik.API/**/*.cs": "dotnet format backend/Hoyvik.API/Hoyvik.API.csproj --no-restore --include",
+        "backend/Hoyvik.MigrationService/**/*.cs": "dotnet format backend/Hoyvik.MigrationService/Hoyvik.MigrationService.csproj --no-restore --include"
     }
 }

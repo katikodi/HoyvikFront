@@ -6,3 +6,5 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 npm --prefix "$REPO_ROOT" ci --ignore-scripts
 npm --prefix "$REPO_ROOT/frontend" ci --ignore-scripts
+
+echo "POST-MERGE COMPLETE"

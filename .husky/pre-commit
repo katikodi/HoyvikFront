@@ -5,3 +5,5 @@ set -e
 echo "RUNNING PRE-COMMIT"
 
 npx lint-staged
+
+echo "PRE-COMMIT COMPLETE"
