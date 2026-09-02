@@ -1,4 +1,4 @@
-﻿using Hoyvik.API.Services;
+﻿using Hoyvik.API.Services.Abstractions;
 using Stripe;
 using Stripe.Checkout;
 namespace Hoyvik.API.Endpoints.Payment.Stripe;

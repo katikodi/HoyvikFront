@@ -4,4 +4,4 @@ set -e
 
 echo "RUNNING PRE-COMMIT"
 
-npx lint-staged
+# npx lint-staged

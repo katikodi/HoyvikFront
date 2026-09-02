@@ -2,7 +2,7 @@
 using FluentValidation;
 using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models.Requests;
-using Hoyvik.API.Services;
+using Hoyvik.API.Services.Abstractions;
 using Stripe;
 
 namespace Hoyvik.API.Endpoints.Payment;
@@ -39,7 +39,7 @@ public class CheckoutEndpoint : IEndpoint
 
         try
         {
-            var checkoutUrl = await bookingService.CreateCheckoutSession(request, userId, ct);
+            var checkoutUrl = await bookingService.CreateBookingPaymentSession(request, userId, ct);
 
             return Results.Ok(new { 
                 url = checkoutUrl

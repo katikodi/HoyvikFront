@@ -3,6 +3,7 @@ using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
 using Hoyvik.API.Services;
+using Hoyvik.API.Services.Abstractions;
 using Hoyvik.API.Validators;
 using Microsoft.AspNetCore.Identity;
 using Stripe;
@@ -32,6 +33,7 @@ public static class Startup
 
 		builder.Services.AddScoped<ImageUploaderService>();
 		builder.Services.AddScoped<IBookingService, BookingService>();
+        builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
 		builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
 		builder.Services.AddHostedService<BookingExpirationService>();
 
@@ -43,6 +45,10 @@ public static class Startup
 			.ValidateDataAnnotations()
 			.ValidateOnStart();
 
+        builder.Services.AddOptions<FrontendConfiguration>()
+            .BindConfiguration("Frontend")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
 		StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 
