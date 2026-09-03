@@ -3,11 +3,12 @@ name: Notify Discord on Push
 on:
     push:
         branches:
-            - "**"
+            - main
+            - css-fix
 
 jobs:
     notify-discord:
-        if: github.ref == 'refs/heads/main'
+        # if: github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
 
         steps:
