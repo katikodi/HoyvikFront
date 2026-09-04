@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import useAuth from "./hooks/useAuth";
-import { useEffect } from "react";
 
 export function App() {
     const { login, user } = useAuth();
