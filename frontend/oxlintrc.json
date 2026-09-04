@@ -4,7 +4,8 @@
     "rules": {
         "complexity": ["error", { "max": 10 }],
         "react/rules-of-hooks": "error",
-        "react/only-export-components": ["warn", { "allowConstantExport": true }]
+        "react/only-export-components": ["warn", { "allowConstantExport": true }],
+        "typescript/no-explicit-any": "warn"
     },
     "ignorePatterns": ["**/*.gen.*"]
 }
