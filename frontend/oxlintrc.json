@@ -1,0 +1,10 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["react", "oxc"],
+    "rules": {
+        "complexity": ["error", { "max": 10 }],
+        "react/rules-of-hooks": "error",
+        "react/only-export-components": ["warn", { "allowConstantExport": true }]
+    },
+    "ignorePatterns": ["**/*.gen.*"]
+}
