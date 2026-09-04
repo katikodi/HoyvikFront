@@ -10,6 +10,8 @@ public class Database(DbContextOptions<Database> options) : IdentityDbContext<Ap
 	public DbSet<Booking> Bookings { get; set; }
 	public DbSet<Image> Images { get; set; }
 
+    public DbSet<BlockedPeriod> BlockedPeriods { get; set; }
+
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
 		base.OnModelCreating(builder);

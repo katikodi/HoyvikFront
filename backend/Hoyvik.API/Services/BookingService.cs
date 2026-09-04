@@ -1,4 +1,5 @@
 ﻿
+using System.Threading.Tasks.Dataflow;
 using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
 using Hoyvik.API.Exceptions;
@@ -34,12 +35,19 @@ public class BookingService(
 	{
 		var now = DateTime.UtcNow;
 		logger.LogInformation("Checking availability: {CheckIn} -> {CheckOut}", checkIn, checkOut);
-		return !await db.Bookings.AnyAsync(x =>
-		(
-			x.Status == BookingStatus.Confirmed || (x.Status == BookingStatus.Pending && x.ExpiresAt > DateTime.UtcNow)
-		) &&
-		x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
-	}
+
+
+        var bookingExists = await db.Bookings.AnyAsync(x => 
+        (
+            x.Status == BookingStatus.Confirmed || (x.Status == BookingStatus.Pending && x.ExpiresAt > now)
+        ) && x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
+
+        if (bookingExists)
+            return false;
+
+        var blocked = await db.BlockedPeriods.AnyAsync(x => x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
+        return !blocked;
+    }
 
 	public async Task<bool> ConfirmBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
 	{
@@ -167,10 +175,7 @@ public class BookingService(
     }
 
 
-    private async Task<Booking> CreatePendingBooking(
-       CreateSessionRequest request,
-       string? userId,
-       CancellationToken ct)
+    private async Task<Booking> CreatePendingBooking(CreateSessionRequest request,string? userId, CancellationToken ct)
     {
         var available = await CheckAvailability(request.CheckIn, request.CheckOut, ct);
 
