@@ -535,5 +535,94 @@ public class BookingServiceTests
         result.Should().BeTrue();
     }
 
+    [Fact]
+    public async Task CreateBookingPaymentSession_CreatesBookingAndStripeSession()
+    {
+        await using var db = CreateDatabase();
+
+        var stripeMock = new Mock<IStripePaymentService>();
+
+        stripeMock
+            .Setup(x => x.CreateCheckoutSession(
+                It.IsAny<Booking>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new StripeCheckoutSession(
+                "cs_test_123",
+                "https://checkout.stripe.com/test"));
+
+        var service = CreateService(db, stripeMock);
+
+        var request = new CreateSessionRequest(
+            new DateOnly(2026, 9, 10),
+            new DateOnly(2026, 9, 15),
+            2);
+
+        var result = await service.CreateBookingPaymentSession(
+            request,
+            "user-123");
+
+        result.Should().Be("https://checkout.stripe.com/test");
+
+        var booking = await db.Bookings.SingleAsync();
+
+        booking.CheckIn.Should().Be(new DateOnly(2026, 9, 10));
+        booking.CheckOut.Should().Be(new DateOnly(2026, 9, 15));
+        booking.NumberOfGuests.Should().Be(2);
+        booking.UserId.Should().Be("user-123");
+        booking.Status.Should().Be(BookingStatus.Pending);
+        booking.Price.Should().Be(5250);
+        booking.StripeSessionId.Should().Be("cs_test_123");
+
+        stripeMock.Verify(
+            x => x.CreateCheckoutSession(
+                It.Is<Booking>(b =>
+                    b.Id == booking.Id &&
+                    b.Status == BookingStatus.Pending &&
+                    b.Price == 5250),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateBookingPaymentSession_Throws_WhenDatesAreBlocked()
+    {
+        await using var db = CreateDatabase();
+
+        db.BlockedPeriods.Add(new BlockedPeriod
+        {
+            CheckIn = new DateOnly(2026, 9, 10),
+            CheckOut = new DateOnly(2026, 9, 15),
+            Reason = "Private use",
+            CreatedAt = DateTime.UtcNow
+        });
+
+        await db.SaveChangesAsync();
+
+        var stripeMock = new Mock<IStripePaymentService>();
+        var service = CreateService(db, stripeMock);
+
+        var request = new CreateSessionRequest(
+            new DateOnly(2026, 9, 12),
+            new DateOnly(2026, 9, 14),
+            2);
+
+        var act = () => service.CreateBookingPaymentSession(
+            request,
+            "user-123");
+
+        await act.Should()
+            .ThrowAsync<BookingNotAvailableException>();
+
+        stripeMock.Verify(
+            x => x.CreateCheckoutSession(
+                It.IsAny<Booking>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
+
+        var bookingCount = await db.Bookings.CountAsync();
+
+        bookingCount.Should().Be(0);
+    }
+
 
 }
