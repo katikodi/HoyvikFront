@@ -1,5 +1,4 @@
-﻿
-using Hoyvik.API.Configuration;
+﻿using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
 using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models;
@@ -8,8 +7,6 @@ using Hoyvik.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using Stripe;
-using Stripe.Checkout;
 
 namespace Hoyvik.API.Services;
 
@@ -36,7 +33,7 @@ public class BookingService(
 		logger.LogInformation("Checking availability: {CheckIn} -> {CheckOut}", checkIn, checkOut);
 		return !await db.Bookings.AnyAsync(x =>
 		(
-			x.Status == BookingStatus.Confirmed || (x.Status == BookingStatus.Pending && x.ExpiresAt > DateTime.UtcNow)
+			x.Status == BookingStatus.Confirmed || (x.Status == BookingStatus.Pending && x.ExpiresAt > now)
 		) &&
 		x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
 	}
@@ -166,11 +163,7 @@ public class BookingService(
         }
     }
 
-
-    private async Task<Booking> CreatePendingBooking(
-       CreateSessionRequest request,
-       string? userId,
-       CancellationToken ct)
+    private async Task<Booking> CreatePendingBooking(CreateSessionRequest request, string? userId, CancellationToken ct)
     {
         var available = await CheckAvailability(request.CheckIn, request.CheckOut, ct);
 
@@ -208,8 +201,7 @@ public class BookingService(
 
             return booking;
         }
-        catch (PostgresException ex)
-            when (ex.SqlState == PostgresErrorCodes.ExclusionViolation)
+        catch (PostgresException ex)  when (ex.SqlState == PostgresErrorCodes.ExclusionViolation)
         {
             throw new BookingNotAvailableException();
         }
