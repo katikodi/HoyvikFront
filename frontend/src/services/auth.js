@@ -1,4 +1,4 @@
-import { apiFetch } from "./client.js";
+import { apiFetch } from "./client";
 
 export function getCurrentUser() {
     return apiFetch("/api/auth/me");
@@ -11,10 +11,11 @@ export function login(email, password) {
     });
 }
 
-export function register(email, password, confirmPassword) {
+export function register(fullName, email, password, confirmPassword) {
     return apiFetch("/api/auth/register", {
         method: "POST",
         body: JSON.stringify({
+            fullName,
             email,
             password,
             confirmPassword

@@ -6,6 +6,7 @@ export async function apiFetch(url, options = {}) {
     if (options.body && !(options.body instanceof FormData)) {
         headers["Content-Type"] ??= "application/json";
     }
+
     const response = await fetch(url, {
         credentials: "include",
         ...options,
@@ -20,5 +21,11 @@ export async function apiFetch(url, options = {}) {
         return null;
     }
 
-    return response.json();
+    const text = await response.text();
+
+    if (!text) {
+        return null;
+    }
+
+    return JSON.parse(text);
 }

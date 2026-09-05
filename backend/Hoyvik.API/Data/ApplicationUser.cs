@@ -5,5 +5,7 @@ namespace Hoyvik.API.Data;
 
 public class ApplicationUser : IdentityUser
 {
-	public ICollection<Booking> Bookings { get; set; } = [];
+
+    public string FullName { get; set; } = string.Empty;
+    public ICollection<Booking> Bookings { get; set; } = [];
 }

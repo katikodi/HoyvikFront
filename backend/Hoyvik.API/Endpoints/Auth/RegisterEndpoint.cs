@@ -9,7 +9,7 @@ public class RegisterEndpoint : IEndpoint
 
 
     async Task<IResult> Register(
-        RegisterRequest request, 
+        RegisterRequest request,
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager)
     {
@@ -21,6 +21,7 @@ public class RegisterEndpoint : IEndpoint
 
         var user = new ApplicationUser
         {
+            FullName = request.FullName,
             UserName = request.Email,
             Email = request.Email,
         };
@@ -44,7 +45,8 @@ public class RegisterEndpoint : IEndpoint
     }
 
     record RegisterRequest(
-		string Email,
-		string Password,
-		string ConfirmPassword);
+        string FullName,
+        string Email,
+        string Password,
+        string ConfirmPassword);
 }
