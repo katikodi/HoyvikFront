@@ -8,10 +8,7 @@ public class RegisterEndpoint : IEndpoint
     public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/auth/register", Register);
 
 
-    async Task<IResult> Register(
-        RegisterRequest request,
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+    async Task<IResult> Register(RegisterRequest request, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
     {
         if (request.Password != request.ConfirmPassword)
         {
@@ -26,21 +23,27 @@ public class RegisterEndpoint : IEndpoint
             Email = request.Email,
         };
 
-        var result = await userManager.CreateAsync(user, request.ConfirmPassword);
+        var result = await userManager.CreateAsync(
+            user,
+            request.Password);
 
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            var roleResult = await userManager.AddToRoleAsync(user, "user");
-
-            if (roleResult.Succeeded)
-            {
-                await signInManager.SignInAsync(user, true);
-                return Results.Ok();
-            }
-
-            Results.BadRequest(result.Errors.Select(x => x.Description));
+            return Results.BadRequest(
+                result.Errors.Select(x => x.Description));
         }
-        return Results.BadRequest(result.Errors.Select(x => x.Description));
+
+        var roleResult = await userManager.AddToRoleAsync(user, "user");
+
+        if (!roleResult.Succeeded)
+        {
+            return Results.BadRequest(
+                roleResult.Errors.Select(x => x.Description));
+        }
+
+        await signInManager.SignInAsync(user, true);
+
+        return Results.Ok();
 
     }
 

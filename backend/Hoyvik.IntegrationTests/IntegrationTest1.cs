@@ -1,41 +1,113 @@
-using Microsoft.Extensions.Logging;
-using Projects;
+using System.Net.Http.Json;
 
 namespace Hoyvik.IntegrationTests;
 
-public class IntegrationTest1
+public class IntegrationTest1(AspireAppFixture fixture) : IClassFixture<AspireAppFixture>
 {
-    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+    record RegisterRequest(
+        string FullName,
+        string Email,
+        string Password,
+        string ConfirmPassword);
+    record LoginRequest(
+        string Email,
+        string Password);
+
 
     [Fact]
     public async Task GetWebResourceRootReturnsOkStatusCode()
     {
         // Arrange
         var cancellationToken = TestContext.Current.CancellationToken;
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<HoyvikProject_AppHost>(cancellationToken);
-        appHost.Services.AddLogging(logging =>
-        {
-            logging.SetMinimumLevel(LogLevel.Debug);
-            // Override the logging filters from the app's configuration
-            logging.AddFilter(appHost.Environment.ApplicationName, LogLevel.Debug);
-            logging.AddFilter("Aspire.", LogLevel.Debug);
-            // To output logs to the xUnit.net ITestOutputHelper, consider adding a package from https://www.nuget.org/packages?q=xunit+logging
-        });
-        appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
-        {
-            clientBuilder.AddStandardResilienceHandler();
-        });
-
-        await using var app = await appHost.BuildAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
-        await app.StartAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
 
         // Act
-        using var httpClient = app.CreateHttpClient("frontend");
-        await app.ResourceNotifications.WaitForResourceHealthyAsync("frontend", cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
-        using var response = await httpClient.GetAsync("/api/", cancellationToken);
-        var o = await response.Content.ReadAsStringAsync(cancellationToken);
-        Console.WriteLine();
+        using var response = await fixture.FrontendClient.GetAsync(
+            "/",
+            cancellationToken);
+
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
+
+    [Fact]
+    public async Task BackendHealthCheckReturnsOkStatusCode()
+    {
+        //arrange
+        var cancellationToken = TestContext.Current.CancellationToken;
+
+        //act
+        using var response = await fixture.BackendClient.GetAsync("/health", cancellationToken);
+
+        //assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task BackendCreatingUserReturnsOK()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+
+        var email = $"elias-{Guid.NewGuid():N}@test.com";
+        var password = "Password1223!";
+
+        var request = new RegisterRequest(
+            "Elias",
+            email,
+            password,
+            password);
+
+        using var response = await fixture.BackendClient.PostAsJsonAsync(
+            "/api/auth/register",
+            request,
+            cancellationToken);
+
+        var responseBody = await response.Content.ReadAsStringAsync(
+            cancellationToken);
+
+        Assert.True(
+            response.IsSuccessStatusCode,
+            $"Registration failed with {response.StatusCode}: {responseBody}");
+    }
+
+
+    [Fact]
+    public async Task BackendLoginReturnsNoContent()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+
+        var email = $"elias-{Guid.NewGuid():N}@test.com";
+        var password = "Password1223!";
+
+        // Register user first
+        var registerRequest = new RegisterRequest(
+            "Elias",
+            email,
+            password,
+            password);
+
+        using var registerResponse = await fixture.BackendClient.PostAsJsonAsync(
+            "/api/auth/register",
+            registerRequest,
+            cancellationToken);
+
+        var registerBody = await registerResponse.Content.ReadAsStringAsync(
+            cancellationToken);
+
+        Assert.True(
+            registerResponse.IsSuccessStatusCode,
+            $"Registration failed with {registerResponse.StatusCode}: {registerBody}");
+
+        // Act - login
+        using var loginResponse = await fixture.BackendClient.PostAsJsonAsync(
+            "/api/auth/login",
+            new LoginRequest(email, password),
+            cancellationToken);
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.NoContent,
+            loginResponse.StatusCode);
+    }
+
+
 }

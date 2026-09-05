@@ -5,7 +5,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 var postgres = builder
     .AddPostgres("postgres")
     .WithDataVolume("hoyvik_data")
-    .WithPgAdmin()
+    //.WithPgAdmin()
     .WithHttpEndpoint(port: 5400, targetPort: 5400)
     .WithLifetime(ContainerLifetime.Persistent);
 
@@ -22,7 +22,7 @@ var api = builder.AddProject<Hoyvik_API>("backend")
     .WaitForCompletion(migrations)
     .WithExternalHttpEndpoints();
 
-var frontend = builder
+builder
     .AddViteApp("frontend", "../../frontend")
     .WithHttpEndpoint(port: 54131, name: "http")
     .WithReference(api)
