@@ -42,6 +42,7 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="Hoyvik.Tests" />
 		<InternalsVisibleTo Include="Hoyvik.IntegrationTests" />
+		<InternalsVisibleTo Include="Hoyvik.MigrationService" />
 	</ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\uploads\" />

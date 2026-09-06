@@ -12,7 +12,7 @@ internal static class EndpointDiscoveryExtensions
     internal static IServiceCollection RegisterEndpoints(this IServiceCollection services) => services
         .Scan(scan => scan
         .FromAssemblyOf<IEndpoint>()
-        .AddClasses(x => x.AssignableTo<IEndpoint>())
+        .AddClasses(x => x.AssignableTo<IEndpoint>(), publicOnly: false)
         .AsImplementedInterfaces()
         .WithSingletonLifetime());
 
