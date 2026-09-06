@@ -4,7 +4,7 @@ namespace Hoyvik.API.Configuration;
 
 
 //TODO: Change everything to seconds
-internal sealed class BookingConfiguration
+public sealed class BookingConfiguration
 {
     /// <summary>
     /// Expiration time in minutes

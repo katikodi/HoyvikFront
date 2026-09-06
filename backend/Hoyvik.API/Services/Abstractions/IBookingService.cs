@@ -2,7 +2,7 @@
 
 namespace Hoyvik.API.Services.Abstractions;
 
-internal interface IBookingService
+public interface IBookingService
 {
     Task<string> CreateBookingPaymentSession(CreateSessionRequest request, string? userId, CancellationToken ct = default);
     Task<bool> ConfirmBooking(int bookingId, string stripeSessionId, CancellationToken ct = default);

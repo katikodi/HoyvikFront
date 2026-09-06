@@ -2,7 +2,7 @@
 
 namespace Hoyvik.API.Models;
 
-internal sealed class Booking
+public sealed class Booking
 {
     public int Id { get; set; }
     public string? StripeSessionId { get; set; }
@@ -20,7 +20,7 @@ internal sealed class Booking
     public DateTime? ExpiresAt { get; set; }
 }
 
-internal enum BookingStatus
+public enum BookingStatus
 {
     Pending,
     Confirmed,
