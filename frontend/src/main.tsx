@@ -4,6 +4,7 @@ import { routeTree } from "./routeTree.gen";
 import "./index.css";
 import { AuthProvider } from "./auth/AuthProvider";
 import { useAuth } from "./hooks/authContext";
+import { Spinner } from "./components/ui/spinner";
 
 // Set up a Router instance
 const router = createRouter({
@@ -27,7 +28,9 @@ function App() {
     const auth = useAuth();
 
     if (auth.loading) {
-        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+        <div className="min-h-screen flex items-center justify-center">
+            <Spinner className="size-20" />
+        </div>;
     }
     return (
         <RouterProvider
