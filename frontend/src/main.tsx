@@ -28,15 +28,21 @@ function App() {
     const auth = useAuth();
 
     if (auth.loading) {
-        <div className="min-h-screen flex items-center justify-center">
-            <Spinner className="size-20" />
-        </div>;
+        <LoadingUser />;
     }
     return (
         <RouterProvider
             router={router}
             context={{ auth }}
         />
+    );
+}
+
+function LoadingUser() {
+    return (
+        <div className="min-h-screen flex items-center justify-center">
+            <Spinner className="size-20" />
+        </div>
     );
 }
 
