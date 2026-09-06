@@ -4,10 +4,10 @@ using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Hoyvik.API.Services;
 
-public class ImageUploaderService(IWebHostEnvironment env, Database db ,ILogger<ImageUploaderService> logger)
+internal sealed class ImageUploaderService(IWebHostEnvironment env, Database db, ILogger<ImageUploaderService> logger)
 {
 
-    public async Task<UploadFileResult> UploadImage(IFormFile file ,string? name = null, string? folder = null)
+    public async Task<UploadFileResult> UploadImage(IFormFile file, string? name = null, string? folder = null)
     {
         var uploadPath = Path.Combine(env.WebRootPath, "uploads", folder ?? string.Empty);
 
@@ -50,7 +50,7 @@ public class ImageUploaderService(IWebHostEnvironment env, Database db ,ILogger<
 
             logger.LogInformation("Uploaded image: {path}", publicPath);
             return new UploadFileResult(publicPath);
-        }   
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error processing and converting upload file to WebP");
@@ -63,4 +63,4 @@ public class ImageUploaderService(IWebHostEnvironment env, Database db ,ILogger<
 public record UploadFileResult(string Path);
 
 
-public class ImageUploaderException(string message, Exception innerException) : Exception(message,innerException);
+public class ImageUploaderException(string message, Exception innerException) : Exception(message, innerException);

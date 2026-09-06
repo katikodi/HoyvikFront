@@ -1,13 +1,9 @@
 ﻿using Hoyvik.API.Models;
+using Hoyvik.API.Models.Stripe;
 
 namespace Hoyvik.API.Services.Abstractions;
 
-public interface IStripePaymentService
+internal interface IStripePaymentService
 {
     Task<StripeCheckoutSession> CreateCheckoutSession(Booking booking, CancellationToken ct = default);
 }
-
-//TODO: move this somewhere else
-public record StripeCheckoutSession(
-    string SessionId,
-    string Url);

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hoyvik.API.Endpoints.Upload;
 
-public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
+internal sealed class UploadEndpoint : IEndpoint
 {
 
     //CURL: curl.exe -X POST "http://localhost:5200/api/upload/hero"  -F "file=@heroImage.webp" -b .\cookies.txt
@@ -23,7 +23,7 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
     }
 
 
-    async Task<IResult> UploadIcon([FromForm] IFormFile file, ImageUploaderService imageUploader)
+    static async Task<IResult> UploadIcon([FromForm] IFormFile file, ImageUploaderService imageUploader, ILogger<UploadEndpoint> logger)
     {
         if (file == null || file.Length == 0)
             return Results.BadRequest();
@@ -44,7 +44,7 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
             return Results.BadRequest("Failed to process the uploaded image.");
         }
     }
-    async Task<IResult> UploadHero([FromForm] IFormFile file, ImageUploaderService imageUploader)
+    static async Task<IResult> UploadHero([FromForm] IFormFile file, ImageUploaderService imageUploader, ILogger<UploadEndpoint> logger)
     {
         if (file == null || file.Length == 0)
             return Results.BadRequest();
@@ -66,7 +66,7 @@ public class UploadEndpoint(ILogger<UploadEndpoint> logger) : IEndpoint
             return Results.BadRequest("Failed to process the uploaded image.");
         }
     }
-    async Task<IResult> UploadFile([FromForm] IFormFile file, ImageUploaderService imageUploader)
+    static async Task<IResult> UploadFile([FromForm] IFormFile file, ImageUploaderService imageUploader, ILogger<UploadEndpoint> logger)
     {
         if (file == null || file.Length == 0)
             return Results.BadRequest();

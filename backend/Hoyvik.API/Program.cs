@@ -48,3 +48,6 @@ app.UseFileServer(new FileServerOptions
 
 app.Run();
 #endregion
+
+//assembly marker
+internal partial class Program;

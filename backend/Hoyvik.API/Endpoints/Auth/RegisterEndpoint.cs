@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Hoyvik.API.Endpoints.Auth;
 
-public class RegisterEndpoint : IEndpoint
+internal sealed class RegisterEndpoint : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/auth/register", Register);
 
 
-    async Task<IResult> Register(RegisterRequest request, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    static async Task<IResult> Register(RegisterRequest request, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
     {
         if (request.Password != request.ConfirmPassword)
         {
@@ -47,7 +47,7 @@ public class RegisterEndpoint : IEndpoint
 
     }
 
-    record RegisterRequest(
+    internal sealed record RegisterRequest(
         string FullName,
         string Email,
         string Password,

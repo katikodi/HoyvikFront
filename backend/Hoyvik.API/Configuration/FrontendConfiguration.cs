@@ -1,6 +1,7 @@
 ﻿namespace Hoyvik.API.Configuration;
 
-public class FrontendConfiguration
+
+internal sealed class FrontendConfiguration
 {
     public string Url { get; set; } = string.Empty;
 }

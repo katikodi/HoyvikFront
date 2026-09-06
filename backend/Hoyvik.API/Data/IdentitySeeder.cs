@@ -2,9 +2,9 @@
 
 namespace Hoyvik.API.Data;
 
-public static class IdentitySeeder
+internal static class IdentitySeeder
 {
-    public static async Task SeedAsync(IServiceProvider services)
+    internal static async Task SeedAsync(IServiceProvider services)
     {
         var config = services.GetRequiredService<IConfiguration>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();

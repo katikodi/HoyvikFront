@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hoyvik.API.Validators;
 
-public class CreateSessionValidator : AbstractValidator<CreateSessionRequest>
+internal sealed class CreateSessionValidator : AbstractValidator<CreateSessionRequest>
 {
     public CreateSessionValidator()
     {

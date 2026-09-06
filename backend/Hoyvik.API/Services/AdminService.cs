@@ -1,5 +1,5 @@
 ﻿namespace Hoyvik.API.Services;
 
-public class AdminService
+internal sealed class AdminService
 {
 }

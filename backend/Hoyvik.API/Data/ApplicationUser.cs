@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Hoyvik.API.Data;
 
-public class ApplicationUser : IdentityUser
+
+internal sealed class ApplicationUser : IdentityUser
 {
 
     public string FullName { get; set; } = string.Empty;
