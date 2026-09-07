@@ -12,10 +12,10 @@ export const Route = createFileRoute("/register")({
             });
         }
     },
-    component: RouteComponent
+    component: RegisterComponent
 });
 
-function RouteComponent() {
+function RegisterComponent() {
     const { register } = useAuth();
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -44,7 +44,7 @@ function RouteComponent() {
                         <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
                             <GalleryVerticalEnd className="size-4" />
                         </div>
-                        Acme Inc.
+                        Hoyvik
                     </a>
                 </div>
                 <div className="flex flex-1 items-center justify-center">
