@@ -15,7 +15,7 @@ public class BlockBookingEndpoint : IEndpoint
 
     async Task<IResult> Get(Database db, CancellationToken ct)
     {
-        var blocked = await db.BlockedPeriods.ToListAsync();
+        var blocked = await db.BlockedPeriods.ToListAsync(ct);
         return Results.Ok(blocked);
     }
 

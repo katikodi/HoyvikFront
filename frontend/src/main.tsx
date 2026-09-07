@@ -28,7 +28,7 @@ function App() {
     const auth = useAuth();
 
     if (auth.loading) {
-        <LoadingUser />;
+        return <LoadingUser />;
     }
     return (
         <RouterProvider
