@@ -1,0 +1,9 @@
+{
+    "tabWidth": 4,
+    "printWidth": 128,
+    "arrowParens": "avoid",
+    "proseWrap": "never",
+    "singleAttributePerLine": true,
+    "trailingComma": "none",
+    "endOfLine": "crlf"
+}
