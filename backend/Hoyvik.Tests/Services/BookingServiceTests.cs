@@ -4,6 +4,7 @@ using Hoyvik.API.Data;
 using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models;
 using Hoyvik.API.Models.Requests;
+using Hoyvik.API.Models.Stripe;
 using Hoyvik.API.Services;
 using Hoyvik.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;

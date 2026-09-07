@@ -140,9 +140,6 @@ internal sealed class BookingService(Database db, IOptionsMonitor<BookingConfigu
         return true;
     }
 
-        return true;
-    }
-
     /// <summary>
     /// when the customer has added everything to the basket and decide to pay, this will be called and they will be re-directed to stripe
     /// to finalize the purchase

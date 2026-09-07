@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/authContext";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_main/")({
+export const Route = createFileRoute("/_index/")({
     component: HomeComponent
 });
 

@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/authContext";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_main/profile")({
+export const Route = createFileRoute("/_index/profile")({
     component: ProfileComponent,
     beforeLoad: ({ context }) => {
         if (!context.auth.user) {
