@@ -5,8 +5,9 @@ var builder = DistributedApplication.CreateBuilder(args);
 var postgres = builder
     .AddPostgres("postgres")
     .WithDataVolume("hoyvik_data")
-    //.WithPgAdmin()
-    .WithHttpEndpoint(port: 5400, targetPort: 5400)
+    .WithPgWeb(x => x.WithLifetime(ContainerLifetime.Persistent))
+    .WithEndpoint(targetPort: 5432, port: 5432, name: "postgres")
+    //.WithHttpEndpoint(port: 5400, targetPort: 5400)
     .WithLifetime(ContainerLifetime.Persistent);
 
 var db = postgres.AddDatabase("database", "hoyvika");

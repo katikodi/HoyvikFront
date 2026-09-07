@@ -38,8 +38,6 @@ internal static class Startup
         builder.Services.AddHostedService<BookingExpirationService>();
 
 
-
-
         builder.Services.AddOptions<BookingConfiguration>()
             .BindConfiguration("BookingSettings")
             .ValidateDataAnnotations()

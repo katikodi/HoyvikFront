@@ -9,16 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MainRouteRouteImport } from './routes/_main/route'
+import { Route as IndexRouteRouteImport } from './routes/_index/route'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
-import { Route as MainIndexRouteImport } from './routes/_main/index'
-import { Route as MainAboutRouteImport } from './routes/_main/about'
-import { Route as MainProfileRouteImport } from './routes/_main/profile'
+import { Route as IndexIndexRouteImport } from './routes/_index/index'
+import { Route as IndexAboutRouteImport } from './routes/_index/about'
+import { Route as IndexProfileRouteImport } from './routes/_index/profile'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 
-const MainRouteRoute = MainRouteRouteImport.update({
-  id: '/_main',
+const IndexRouteRoute = IndexRouteRouteImport.update({
+  id: '/_index',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -31,20 +31,20 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MainIndexRoute = MainIndexRouteImport.update({
+const IndexIndexRoute = IndexIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => MainRouteRoute,
+  getParentRoute: () => IndexRouteRoute,
 } as any)
-const MainAboutRoute = MainAboutRouteImport.update({
+const IndexAboutRoute = IndexAboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => MainRouteRoute,
+  getParentRoute: () => IndexRouteRoute,
 } as any)
-const MainProfileRoute = MainProfileRouteImport.update({
+const IndexProfileRoute = IndexProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => MainRouteRoute,
+  getParentRoute: () => IndexRouteRoute,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/dashboard/',
@@ -53,29 +53,29 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof MainIndexRoute
+  '/': typeof IndexIndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/about': typeof MainAboutRoute
-  '/profile': typeof MainProfileRoute
+  '/about': typeof IndexAboutRoute
+  '/profile': typeof IndexProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/about': typeof MainAboutRoute
-  '/profile': typeof MainProfileRoute
-  '/': typeof MainIndexRoute
+  '/about': typeof IndexAboutRoute
+  '/profile': typeof IndexProfileRoute
+  '/': typeof IndexIndexRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_main': typeof MainRouteRouteWithChildren
+  '/_index': typeof IndexRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/_main/about': typeof MainAboutRoute
-  '/_main/profile': typeof MainProfileRoute
-  '/_main/': typeof MainIndexRoute
+  '/_index/about': typeof IndexAboutRoute
+  '/_index/profile': typeof IndexProfileRoute
+  '/_index/': typeof IndexIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -86,17 +86,17 @@ export interface FileRouteTypes {
   to: '/login' | '/register' | '/about' | '/profile' | '/' | '/dashboard'
   id:
     | '__root__'
-    | '/_main'
+    | '/_index'
     | '/login'
     | '/register'
-    | '/_main/about'
-    | '/_main/profile'
-    | '/_main/'
+    | '/_index/about'
+    | '/_index/profile'
+    | '/_index/'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  MainRouteRoute: typeof MainRouteRouteWithChildren
+  IndexRouteRoute: typeof IndexRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -104,11 +104,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_main': {
-      id: '/_main'
+    '/_index': {
+      id: '/_index'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof MainRouteRouteImport
+      preLoaderRoute: typeof IndexRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -125,26 +125,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_main/': {
-      id: '/_main/'
+    '/_index/': {
+      id: '/_index/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof MainIndexRouteImport
-      parentRoute: typeof MainRouteRoute
+      preLoaderRoute: typeof IndexIndexRouteImport
+      parentRoute: typeof IndexRouteRoute
     }
-    '/_main/about': {
-      id: '/_main/about'
+    '/_index/about': {
+      id: '/_index/about'
       path: '/about'
       fullPath: '/about'
-      preLoaderRoute: typeof MainAboutRouteImport
-      parentRoute: typeof MainRouteRoute
+      preLoaderRoute: typeof IndexAboutRouteImport
+      parentRoute: typeof IndexRouteRoute
     }
-    '/_main/profile': {
-      id: '/_main/profile'
+    '/_index/profile': {
+      id: '/_index/profile'
       path: '/profile'
       fullPath: '/profile'
-      preLoaderRoute: typeof MainProfileRouteImport
-      parentRoute: typeof MainRouteRoute
+      preLoaderRoute: typeof IndexProfileRouteImport
+      parentRoute: typeof IndexRouteRoute
     }
     '/dashboard/': {
       id: '/dashboard/'
@@ -156,24 +156,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface MainRouteRouteChildren {
-  MainAboutRoute: typeof MainAboutRoute
-  MainProfileRoute: typeof MainProfileRoute
-  MainIndexRoute: typeof MainIndexRoute
+interface IndexRouteRouteChildren {
+  IndexAboutRoute: typeof IndexAboutRoute
+  IndexProfileRoute: typeof IndexProfileRoute
+  IndexIndexRoute: typeof IndexIndexRoute
 }
 
-const MainRouteRouteChildren: MainRouteRouteChildren = {
-  MainAboutRoute: MainAboutRoute,
-  MainProfileRoute: MainProfileRoute,
-  MainIndexRoute: MainIndexRoute,
+const IndexRouteRouteChildren: IndexRouteRouteChildren = {
+  IndexAboutRoute: IndexAboutRoute,
+  IndexProfileRoute: IndexProfileRoute,
+  IndexIndexRoute: IndexIndexRoute,
 }
 
-const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(
-  MainRouteRouteChildren,
+const IndexRouteRouteWithChildren = IndexRouteRoute._addFileChildren(
+  IndexRouteRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  MainRouteRoute: MainRouteRouteWithChildren,
+  IndexRouteRoute: IndexRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   DashboardIndexRoute: DashboardIndexRoute,

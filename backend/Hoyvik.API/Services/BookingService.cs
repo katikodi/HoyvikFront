@@ -27,21 +27,20 @@ internal sealed class BookingService(Database db, IOptionsMonitor<BookingConfigu
     {
         var now = DateTime.UtcNow;
         logger.LogInformation("Checking availability: {CheckIn} -> {CheckOut}", checkIn, checkOut);
-        return !await db.Bookings.AnyAsync(x =>
+
+
+        var bookingExists = await db.Bookings.AnyAsync(x =>
         (
             x.Status == BookingStatus.Confirmed || (x.Status == BookingStatus.Pending && x.ExpiresAt > now)
-        ) &&
-        x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
+        ) && x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
+
+        if (bookingExists)
+            return false;
+
+        var blocked = await db.BlockedPeriods.AnyAsync(x => x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
+        return !blocked;
     }
 
-
-    /// <summary>
-    /// Stripe webhook will call this method when a stripe purchase is complete and confirmed
-    /// </summary>
-    /// <param name="bookingId"></param>
-    /// <param name="stripeSessionId"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
     public async Task<bool> ConfirmBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
     {
         var booking = await db.Bookings
@@ -49,12 +48,16 @@ internal sealed class BookingService(Database db, IOptionsMonitor<BookingConfigu
 
         if (booking is null)
         {
-            logger.LogWarning("Booking {BookingId} not found", bookingId);
+            logger.LogWarning(
+                "Booking {BookingId} not found",
+                bookingId);
+
             return false;
         }
 
         // Make sure this Stripe session belongs to this booking
-        if (booking.StripeSessionId != null && booking.StripeSessionId != stripeSessionId)
+        if (booking.StripeSessionId != null &&
+            booking.StripeSessionId != stripeSessionId)
         {
             logger.LogError(
                 "Booking {BookingId} has Stripe session {ExistingSessionId}, " +
@@ -93,14 +96,6 @@ internal sealed class BookingService(Database db, IOptionsMonitor<BookingConfigu
         return true;
     }
 
-
-    /// <summary>
-    /// When a stripe purchase has been cancelled or expired due to time, remove it from the database to free up the dates
-    /// </summary>
-    /// <param name="bookingId"></param>
-    /// <param name="stripeSessionId"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
     public async Task<bool> ExpireBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
     {
         var booking = await db.Bookings
@@ -180,7 +175,6 @@ internal sealed class BookingService(Database db, IOptionsMonitor<BookingConfigu
             throw;
         }
     }
-
     private async Task<Booking> CreatePendingBooking(CreateSessionRequest request, string? userId, CancellationToken ct)
     {
         var available = await CheckAvailability(request.CheckIn, request.CheckOut, ct);

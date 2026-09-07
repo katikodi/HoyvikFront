@@ -1,11 +1,11 @@
 import { useAuth } from "@/hooks/authContext";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_main/")({
-    component: MainLayout
+export const Route = createFileRoute("/_index/")({
+    component: HomeComponent
 });
 
-function MainLayout() {
+function HomeComponent() {
     const { user } = useAuth();
 
     if (user) {

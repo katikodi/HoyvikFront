@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/authContext";
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_main")({
+export const Route = createFileRoute("/_index")({
     component: MainLayout
 });
 
