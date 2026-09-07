@@ -15,10 +15,13 @@ export function SignupForm({ onRegister, className, ...props }: RegisterFormProp
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
 
         console.log("SUBMIT");
+
+        console.log(confirmPassword);
 
         await onRegister(fullName, email, password, confirmPassword);
     }
