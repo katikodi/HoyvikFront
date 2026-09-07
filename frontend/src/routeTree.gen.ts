@@ -9,18 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MainRouteRouteImport } from './routes/_main/route'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
-import { Route as MainIndexRouteImport } from './routes/_main/index'
-import { Route as MainAboutRouteImport } from './routes/_main/about'
-import { Route as MainProfileRouteImport } from './routes/_main/profile'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 
-const MainRouteRoute = MainRouteRouteImport.update({
-  id: '/_main',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -31,21 +23,6 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MainIndexRoute = MainIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => MainRouteRoute,
-} as any)
-const MainAboutRoute = MainAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => MainRouteRoute,
-} as any)
-const MainProfileRoute = MainProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => MainRouteRoute,
-} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
@@ -53,50 +30,30 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof MainIndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/about': typeof MainAboutRoute
-  '/profile': typeof MainProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/about': typeof MainAboutRoute
-  '/profile': typeof MainProfileRoute
-  '/': typeof MainIndexRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_main': typeof MainRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/_main/about': typeof MainAboutRoute
-  '/_main/profile': typeof MainProfileRoute
-  '/_main/': typeof MainIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    '/' | '/login' | '/register' | '/about' | '/profile' | '/dashboard/'
+  fullPaths: '/login' | '/register' | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/register' | '/about' | '/profile' | '/' | '/dashboard'
-  id:
-    | '__root__'
-    | '/_main'
-    | '/login'
-    | '/register'
-    | '/_main/about'
-    | '/_main/profile'
-    | '/_main/'
-    | '/dashboard/'
+  to: '/login' | '/register' | '/dashboard'
+  id: '__root__' | '/login' | '/register' | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  MainRouteRoute: typeof MainRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -104,13 +61,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_main': {
-      id: '/_main'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof MainRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -125,27 +75,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_main/': {
-      id: '/_main/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof MainIndexRouteImport
-      parentRoute: typeof MainRouteRoute
-    }
-    '/_main/about': {
-      id: '/_main/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof MainAboutRouteImport
-      parentRoute: typeof MainRouteRoute
-    }
-    '/_main/profile': {
-      id: '/_main/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof MainProfileRouteImport
-      parentRoute: typeof MainRouteRoute
-    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/dashboard'
@@ -156,24 +85,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface MainRouteRouteChildren {
-  MainAboutRoute: typeof MainAboutRoute
-  MainProfileRoute: typeof MainProfileRoute
-  MainIndexRoute: typeof MainIndexRoute
-}
-
-const MainRouteRouteChildren: MainRouteRouteChildren = {
-  MainAboutRoute: MainAboutRoute,
-  MainProfileRoute: MainProfileRoute,
-  MainIndexRoute: MainIndexRoute,
-}
-
-const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(
-  MainRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
-  MainRouteRoute: MainRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   DashboardIndexRoute: DashboardIndexRoute,
