@@ -34,9 +34,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
     }
 
-    async function register(email: string, password: string, confirmPassword: string) {
+    async function register(fullName: string, email: string, password: string, confirmPassword: string) {
         try {
-            await registerUser(email, password, confirmPassword);
+            await registerUser(fullName, email, password, confirmPassword);
             await fetchUser();
             return true;
         } catch {
