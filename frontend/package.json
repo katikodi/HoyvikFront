@@ -7,7 +7,7 @@
         "start": "vite",
         "dev": "vite",
         "build": "tsc -b && vite build",
-        "lint": "oxlint",
+        "lint": "oxlint -c ./oxlintrc.json",
         "format": "prettier --write \"**/*.{ts,tsx}\"",
         "typecheck": "tsc --noEmit",
         "prepare": "husky",
