@@ -1,5 +1,15 @@
 import { BookingCalendar } from "@/components/BookingCalendar";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 export function BookingPage() {
-    return <BookingCalendar onDateChange={e => console.log(e)} />;
+    const [selectedDates, setSelectedDates] = useState(null);
+
+    return (
+        <>
+            <BookingCalendar onDateChange={setSelectedDates} />
+
+            {selectedDates && <Button>Book</Button>}
+        </>
+    );
 }

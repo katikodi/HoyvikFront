@@ -68,22 +68,10 @@ export function BookingCalendar({ onDateChange }) {
     }
 
     function handleSelect(range) {
-        if (!range?.from) {
-            setDateRange({
-                from: undefined,
-                to: undefined
-            });
+        setDateRange(range);
 
-            return;
-        }
-
-        // User has only selected the first date
-        if (!range.to || range.from.getTime() === range.to.getTime()) {
-            setDateRange({
-                from: range.from,
-                to: undefined
-            });
-
+        if (!range?.from || !range?.to) {
+            onDateChange?.(null);
             return;
         }
 
@@ -103,6 +91,7 @@ export function BookingCalendar({ onDateChange }) {
                 to: undefined
             });
 
+            onDateChange?.(null);
             return;
         }
 
@@ -112,8 +101,6 @@ export function BookingCalendar({ onDateChange }) {
         };
 
         setDateRange(newRange);
-
-        // Only notify parent once the range is complete
         onDateChange?.(newRange);
     }
 
