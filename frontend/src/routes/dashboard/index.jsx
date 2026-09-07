@@ -1,28 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { apiFetch } from "@/services/client";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { api } from "@/services/client";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard/")({
-    beforeLoad: ({ context }) => {
-        if (!context.auth.user) {
-            console.log(context.auth.user);
-            throw redirect({
-                to: "/login"
-            });
-        }
-
-        if (!context.auth.isAdmin) {
-            console.log("not admin");
-            throw redirect("/");
-        }
-    },
-
     component: Dashboard
 });
 
 function Dashboard() {
+    const navigate = useNavigate();
+
     async function resetDatabase() {
-        await apiFetch("/api/admin/database/reset", {
+        const result = await api("/admin/database/reset", {
             method: "post"
         });
     }

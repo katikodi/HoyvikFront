@@ -16,6 +16,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     async function fetchUser(): Promise<User | null> {
         try {
             const user: User = await getCurrentUser();
+            console.log(user);
             setUser(user);
             return user;
         } catch {

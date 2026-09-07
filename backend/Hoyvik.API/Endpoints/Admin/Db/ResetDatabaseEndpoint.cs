@@ -14,15 +14,8 @@ public class ResetDatabaseEndpoint : IEndpoint
 
     static async Task<IResult> ResetDatabase(Database db, CancellationToken ct = default)
     {
-        try
-        {
-            await db.Database.EnsureDeletedAsync(ct);
-            await db.Database.MigrateAsync(ct);
-            return Results.Ok("database has been reset");
-        }
-        catch(Exception ex)
-        {
-            return Results.InternalServerError(ex);
-        }
+        await db.Database.EnsureDeletedAsync(ct);
+        await db.Database.MigrateAsync(ct);
+        return Results.Ok("database has been reset");
     }
 }
