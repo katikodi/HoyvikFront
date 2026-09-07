@@ -1,13 +1,13 @@
 ﻿namespace Hoyvik.API.Endpoints.Upload;
 
-public class DeleteUploadEndpoint : IEndpoint
+internal sealed class DeleteUploadEndpoint : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app)
     {
         app.MapDelete("/uploads/{fileName}", DeleteFile);
     }
 
-    async Task<IResult> DeleteFile(string fileName, IWebHostEnvironment env)
+    static async Task<IResult> DeleteFile(string fileName, IWebHostEnvironment env)
     {
         var filePath = Path.Combine(env.WebRootPath, "uploads", fileName);
         if (!File.Exists(filePath))

@@ -1,5 +1,6 @@
 ﻿using Hoyvik.API.Configuration;
 using Hoyvik.API.Models;
+using Hoyvik.API.Models.Stripe;
 using Hoyvik.API.Services.Abstractions;
 using Microsoft.Extensions.Options;
 using Stripe;
@@ -7,7 +8,7 @@ using Stripe.Checkout;
 
 namespace Hoyvik.API.Services;
 
-public class StripePaymentService(IOptions<FrontendConfiguration> frontendConfig, ILogger<StripePaymentService> logger) : IStripePaymentService
+internal sealed class StripePaymentService(IOptions<FrontendConfiguration> frontendConfig, ILogger<StripePaymentService> logger) : IStripePaymentService
 {
     public async Task<StripeCheckoutSession> CreateCheckoutSession(Booking booking, CancellationToken ct = default)
     {
@@ -23,7 +24,7 @@ public class StripePaymentService(IOptions<FrontendConfiguration> frontendConfig
         {
             Mode = "payment",
             SuccessUrl = $"{frontendUrl}/payment/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
-            CancelUrl = $"{frontendUrl}/payment/payment-cancel", 
+            CancelUrl = $"{frontendUrl}/payment/payment-cancel",
             Currency = "nok",
             Metadata = new()
             {
@@ -43,7 +44,7 @@ public class StripePaymentService(IOptions<FrontendConfiguration> frontendConfig
                             Description = $"{booking.NumberOfGuests} guests • " + "Check-in after 15:00"
                         },
                         UnitAmount = (long)(booking.Price * 100)
-                    }, 
+                    },
                     Quantity = 1
                 }
             ]

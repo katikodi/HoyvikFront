@@ -1,17 +1,15 @@
-﻿using Hoyvik.API.Data;
+﻿using System.Security.Claims;
+using Hoyvik.API.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using System.Security.Principal;
 
 namespace Hoyvik.API.Endpoints.Auth;
 
-public class MeEndpoint : IEndpoint
+internal sealed class MeEndpoint : IEndpoint
 {
-    public void MapEndpoint(RouteGroupBuilder app) => app.MapGet("/auth/me", Me);
+    public void MapEndpoint(RouteGroupBuilder app) => app.MapGet("/auth/me", Get);
 
-    async Task<IResult> Me(ClaimsPrincipal principal, UserManager<ApplicationUser> userManager)
-	{
-
+    static async Task<IResult> Get(ClaimsPrincipal principal, UserManager<ApplicationUser> userManager)
+    {
         var user = await userManager.GetUserAsync(principal);
 
         if (user is null)
@@ -20,12 +18,14 @@ public class MeEndpoint : IEndpoint
         }
 
         var roles = await userManager.GetRolesAsync(user);
+
         return Results.Ok(new
         {
+            user.FullName,
             user.Id,
             user.UserName,
             user.Email,
             roles
         });
-	}
+    }
 }

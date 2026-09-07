@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Hoyvik.API.Endpoints.Auth;
 
-public class LogoutEndpoint : IEndpoint
+internal sealed class LogoutEndpoint : IEndpoint
 {
-    public void MapEndpoint(RouteGroupBuilder app) => 
+    public void MapEndpoint(RouteGroupBuilder app) =>
         app.MapPost("/auth/logout", Logout);
 
 

@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Hoyvik.API.Data;
 
-public class ApplicationUser : IdentityUser
+
+public sealed class ApplicationUser : IdentityUser
 {
-	public ICollection<Booking> Bookings { get; set; } = [];
+
+    public string FullName { get; set; } = string.Empty;
+    public ICollection<Booking> Bookings { get; set; } = [];
 }

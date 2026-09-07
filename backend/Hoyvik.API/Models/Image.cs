@@ -1,6 +1,6 @@
 namespace Hoyvik.API.Models;
 
-public class Image
+public sealed class Image
 {
     public Guid Id { get; set; }
     public string FileName { get; set; } = string.Empty;

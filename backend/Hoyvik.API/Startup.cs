@@ -10,88 +10,88 @@ using Stripe;
 
 namespace Hoyvik.API;
 
-public static class Startup
+internal static class Startup
 {
 
-	public static void AddApplication(this WebApplicationBuilder builder)
-	{
+    internal static void AddApplication(this WebApplicationBuilder builder)
+    {
 
-		builder.AddServiceDefaults();
-		builder.Services.AddProblemDetails();
+        builder.AddServiceDefaults();
+        builder.Services.AddProblemDetails();
 
-		builder.Services.AddCors(options => options.AddPolicy("frontend",
-			p => p.WithOrigins("http://localhost:54131")
-				.AllowAnyHeader()
-				.AllowAnyMethod()
-				.AllowCredentials()));
+        builder.Services.AddCors(options => options.AddPolicy("frontend",
+            p => p.WithOrigins("http://localhost:54131")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()));
 
-		builder.Services.AddAuthorizationBuilder()
-			.AddDefaultPolicy("Guest", p => p.RequireRole("guest"))
-			.AddPolicy("User", p => p.RequireRole("user"))
-			.AddPolicy("Admin", p => p.RequireRole("admin"));
+        builder.Services.AddAuthorizationBuilder()
+            .AddDefaultPolicy("Guest", p => p.RequireRole("guest"))
+            .AddPolicy("User", p => p.RequireRole("user"))
+            .AddPolicy("Admin", p => p.RequireRole("admin"));
 
 
-		builder.Services.AddScoped<ImageUploaderService>();
-		builder.Services.AddScoped<IBookingService, BookingService>();
+        builder.Services.AddScoped<ImageUploaderService>();
+        builder.Services.AddScoped<IBookingService, BookingService>();
         builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
-		builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
-		builder.Services.AddHostedService<BookingExpirationService>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
+        builder.Services.AddHostedService<BookingExpirationService>();
 
 
 
 
-		builder.Services.AddOptions<BookingConfiguration>()
-			.BindConfiguration("BookingSettings")
-			.ValidateDataAnnotations()
-			.ValidateOnStart();
+        builder.Services.AddOptions<BookingConfiguration>()
+            .BindConfiguration("BookingSettings")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         builder.Services.AddOptions<FrontendConfiguration>()
             .BindConfiguration("Frontend")
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-		StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
+        StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 
 
-		builder.Services
-			.AddIdentity<ApplicationUser, IdentityRole>(x =>
-			{
-				x.Password.RequireDigit = false;
-				x.Password.RequireUppercase = false;
-				//x.Password.RequiredLength = 0;
-				x.Password.RequireLowercase = false;
-				x.Password.RequireNonAlphanumeric = false;
-			})
-			.AddDefaultTokenProviders()
-			.AddEntityFrameworkStores<Database>();
+        builder.Services
+            .AddIdentity<ApplicationUser, IdentityRole>(x =>
+            {
+                x.Password.RequireDigit = false;
+                x.Password.RequireUppercase = false;
+                //x.Password.RequiredLength = 0;
+                x.Password.RequireLowercase = false;
+                x.Password.RequireNonAlphanumeric = false;
+            })
+            .AddDefaultTokenProviders()
+            .AddEntityFrameworkStores<Database>();
 
 
-		builder.Services.RegisterEndpoints();
+        builder.Services.RegisterEndpoints();
 
-		builder.AddNpgsqlDbContext<Database>("database");
-
-
-		builder.Services.ConfigureApplicationCookie(x =>
-		{
-			x.Cookie.HttpOnly = true;
-			x.Cookie.SameSite = SameSiteMode.Lax;
-			x.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
-				? CookieSecurePolicy.None
-				: CookieSecurePolicy.Always;
+        builder.AddNpgsqlDbContext<Database>("database");
 
 
-			x.Events.OnRedirectToLogin = ctx =>
-			{
-				ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
-				return Task.CompletedTask;
-			};
+        builder.Services.ConfigureApplicationCookie(x =>
+        {
+            x.Cookie.HttpOnly = true;
+            x.Cookie.SameSite = SameSiteMode.Lax;
+            x.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+                ? CookieSecurePolicy.None
+                : CookieSecurePolicy.Always;
 
-			x.Events.OnRedirectToAccessDenied = ctx =>
-			{
-				ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
-				return Task.CompletedTask;
-			};
 
-		});
-	}
+            x.Events.OnRedirectToLogin = ctx =>
+            {
+                ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Task.CompletedTask;
+            };
+
+            x.Events.OnRedirectToAccessDenied = ctx =>
+            {
+                ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+                return Task.CompletedTask;
+            };
+
+        });
+    }
 }

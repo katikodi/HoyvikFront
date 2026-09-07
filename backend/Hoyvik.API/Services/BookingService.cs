@@ -1,5 +1,4 @@
-﻿
-using Hoyvik.API.Configuration;
+﻿using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
 using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models;
@@ -8,138 +7,153 @@ using Hoyvik.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using Stripe;
-using Stripe.Checkout;
 
 namespace Hoyvik.API.Services;
 
-public class BookingService(
-    Database db,
-    IOptionsMonitor<BookingConfiguration> bookingConfiguration,
-    IStripePaymentService stripePaymentService,
-    ILogger<BookingService> logger) : IBookingService
+internal sealed class BookingService(Database db, IOptionsMonitor<BookingConfiguration> bookingConfiguration, IStripePaymentService stripePaymentService, ILogger<BookingService> logger) : IBookingService
 {
 
-	/// <summary>
-	/// Status: Confirmed blocks availability
-	/// Status: Pending + not expired blocks availability
-	/// Status: Pending + expired does not block
-	/// Status: Cancelled Does not block
-	/// </summary>
-	/// <param name="checkIn"></param>
-	/// <param name="checkOut"></param>
-	/// <param name="ct"></param>
-	/// <returns></returns>
-	public async Task<bool> CheckAvailability(DateOnly checkIn, DateOnly checkOut, CancellationToken ct = default)
-	{
-		var now = DateTime.UtcNow;
-		logger.LogInformation("Checking availability: {CheckIn} -> {CheckOut}", checkIn, checkOut);
-		return !await db.Bookings.AnyAsync(x =>
-		(
-			x.Status == BookingStatus.Confirmed || (x.Status == BookingStatus.Pending && x.ExpiresAt > DateTime.UtcNow)
-		) &&
-		x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
-	}
+    /// <summary>
+    /// Status: Confirmed blocks availability
+    /// Status: Pending + not expired blocks availability
+    /// Status: Pending + expired does not block
+    /// Status: Cancelled Does not block
+    /// </summary>
+    /// <param name="checkIn"></param>
+    /// <param name="checkOut"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    public async Task<bool> CheckAvailability(DateOnly checkIn, DateOnly checkOut, CancellationToken ct = default)
+    {
+        var now = DateTime.UtcNow;
+        logger.LogInformation("Checking availability: {CheckIn} -> {CheckOut}", checkIn, checkOut);
+        return !await db.Bookings.AnyAsync(x =>
+        (
+            x.Status == BookingStatus.Confirmed || (x.Status == BookingStatus.Pending && x.ExpiresAt > now)
+        ) &&
+        x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
+    }
 
-	public async Task<bool> ConfirmBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
-	{
-		var booking = await db.Bookings
-		   .SingleOrDefaultAsync(x => x.Id == bookingId, ct);
 
-		if(booking is null)
-		{
-			logger.LogWarning(
-				"Booking {BookingId} not found",
-				bookingId);
+    /// <summary>
+    /// Stripe webhook will call this method when a stripe purchase is complete and confirmed
+    /// </summary>
+    /// <param name="bookingId"></param>
+    /// <param name="stripeSessionId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    public async Task<bool> ConfirmBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
+    {
+        var booking = await db.Bookings
+           .SingleOrDefaultAsync(x => x.Id == bookingId, ct);
 
-			return false;
-		}
+        if (booking is null)
+        {
+            logger.LogWarning("Booking {BookingId} not found", bookingId);
+            return false;
+        }
 
-		// Make sure this Stripe session belongs to this booking
-		if(booking.StripeSessionId != null &&
-			booking.StripeSessionId != stripeSessionId)
-		{
-			logger.LogError(
-				"Booking {BookingId} has Stripe session {ExistingSessionId}, " +
-				"but webhook contains {WebhookSessionId}",
-				booking.Id,
-				booking.StripeSessionId,
-				stripeSessionId);
+        // Make sure this Stripe session belongs to this booking
+        if (booking.StripeSessionId != null && booking.StripeSessionId != stripeSessionId)
+        {
+            logger.LogError(
+                "Booking {BookingId} has Stripe session {ExistingSessionId}, " +
+                "but webhook contains {WebhookSessionId}",
+                booking.Id,
+                booking.StripeSessionId,
+                stripeSessionId);
 
-			return false;
-		}
+            return false;
+        }
 
-		// Already confirmed
-		if(booking.Status == BookingStatus.Confirmed)
-		{
-			return true;
-		}
+        // Already confirmed
+        if (booking.Status == BookingStatus.Confirmed)
+        {
+            return true;
+        }
 
-		// Don't confirm cancelled/expired bookings
-		if(booking.Status != BookingStatus.Pending)
-		{
-			logger.LogWarning(
-				"Booking {BookingId} has status {Status}, cannot confirm",
-				booking.Id,
-				booking.Status);
+        // Don't confirm cancelled/expired bookings
+        if (booking.Status != BookingStatus.Pending)
+        {
+            logger.LogWarning(
+                "Booking {BookingId} has status {Status}, cannot confirm",
+                booking.Id,
+                booking.Status);
 
-			return false;
-		}
+            return false;
+        }
 
-		booking.Status = BookingStatus.Confirmed;
-		booking.StripeSessionId = stripeSessionId;
+        booking.Status = BookingStatus.Confirmed;
+        booking.StripeSessionId = stripeSessionId;
 
-		await db.SaveChangesAsync(ct);
+        await db.SaveChangesAsync(ct);
 
-		logger.LogInformation("Booking {BookingId} confirmed", booking.Id);
+        logger.LogInformation("Booking {BookingId} confirmed", booking.Id);
 
-		return true;
-	}
+        return true;
+    }
 
-	public async Task<bool> ExpireBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
-	{
-		var booking = await db.Bookings
-			.SingleOrDefaultAsync(x => x.Id == bookingId, ct);
 
-		if(booking is null)
-		{
-			logger.LogWarning(
-				"Booking {BookingId} not found",
-				bookingId);
+    /// <summary>
+    /// When a stripe purchase has been cancelled or expired due to time, remove it from the database to free up the dates
+    /// </summary>
+    /// <param name="bookingId"></param>
+    /// <param name="stripeSessionId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    public async Task<bool> ExpireBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
+    {
+        var booking = await db.Bookings
+            .SingleOrDefaultAsync(x => x.Id == bookingId, ct);
 
-			return false;
-		}
+        if (booking is null)
+        {
+            logger.LogWarning(
+                "Booking {BookingId} not found",
+                bookingId);
 
-		// Make sure this Stripe session belongs to this booking
-		if(booking.StripeSessionId != null &&
-			booking.StripeSessionId != stripeSessionId)
-		{
-			logger.LogError(
-				"Booking {BookingId} has Stripe session {ExistingSessionId}, " +
-				"but webhook contains {WebhookSessionId}",
-				booking.Id,
-				booking.StripeSessionId,
-				stripeSessionId);
+            return false;
+        }
 
-			return false;
-		}
+        // Make sure this Stripe session belongs to this booking
+        if (booking.StripeSessionId != null &&
+            booking.StripeSessionId != stripeSessionId)
+        {
+            logger.LogError(
+                "Booking {BookingId} has Stripe session {ExistingSessionId}, " +
+                "but webhook contains {WebhookSessionId}",
+                booking.Id,
+                booking.StripeSessionId,
+                stripeSessionId);
 
-		if(booking.Status != BookingStatus.Pending)
-		{
-			return false;
-		}
+            return false;
+        }
 
-		booking.Status = BookingStatus.Expired;
+        if (booking.Status != BookingStatus.Pending)
+        {
+            return false;
+        }
 
-		await db.SaveChangesAsync(ct);
+        booking.Status = BookingStatus.Expired;
 
-		logger.LogInformation(
-			"Booking {BookingId} expired",
-			booking.Id);
+        await db.SaveChangesAsync(ct);
 
-		return true;
-	}
+        logger.LogInformation(
+            "Booking {BookingId} expired",
+            booking.Id);
 
+        return true;
+    }
+
+    /// <summary>
+    /// when the customer has added everything to the basket and decide to pay, this will be called and they will be re-directed to stripe
+    /// to finalize the purchase
+    /// this will also reserve the dates for X amount of time
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="userId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     public async Task<string> CreateBookingPaymentSession(CreateSessionRequest request, string? userId, CancellationToken ct = default)
     {
         var booking = await CreatePendingBooking(request, userId, ct);
@@ -152,6 +166,7 @@ public class BookingService(
 
             await db.SaveChangesAsync(ct);
 
+            //send the checkout url to the customer
             return stripeSession.Url;
         }
         catch
@@ -166,25 +181,17 @@ public class BookingService(
         }
     }
 
-
-    private async Task<Booking> CreatePendingBooking(
-       CreateSessionRequest request,
-       string? userId,
-       CancellationToken ct)
+    private async Task<Booking> CreatePendingBooking(CreateSessionRequest request, string? userId, CancellationToken ct)
     {
         var available = await CheckAvailability(request.CheckIn, request.CheckOut, ct);
 
-        if (!available)
-            throw new BookingNotAvailableException();
+        if (!available) throw new BookingNotAvailableException();
 
         var config = bookingConfiguration.CurrentValue;
 
-        var numberOfNights =
-            request.CheckOut.DayNumber -
-            request.CheckIn.DayNumber;
+        var numberOfNights = request.CheckOut.DayNumber - request.CheckIn.DayNumber;
 
-        var totalPrice =
-            numberOfNights * config.PricePerNight;
+        var totalPrice = numberOfNights * config.PricePerNight;
 
         var now = DateTime.UtcNow;
 
@@ -208,8 +215,7 @@ public class BookingService(
 
             return booking;
         }
-        catch (PostgresException ex)
-            when (ex.SqlState == PostgresErrorCodes.ExclusionViolation)
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.ExclusionViolation)
         {
             throw new BookingNotAvailableException();
         }

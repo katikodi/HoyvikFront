@@ -7,7 +7,7 @@ using Stripe;
 
 namespace Hoyvik.API.Endpoints.Payment;
 
-public class CheckoutEndpoint : IEndpoint
+internal sealed class CheckoutEndpoint : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app) =>
         app.MapPost("/payment/create-checkout-session", CreateCheckoutSession);
@@ -20,7 +20,7 @@ public class CheckoutEndpoint : IEndpoint
 	 */
 
 
-    async Task<IResult> CreateCheckoutSession(
+    static async Task<IResult> CreateCheckoutSession(
         HttpContext ctx,
         CreateSessionRequest request,
         IValidator<CreateSessionRequest> validator,
@@ -41,7 +41,8 @@ public class CheckoutEndpoint : IEndpoint
         {
             var checkoutUrl = await bookingService.CreateBookingPaymentSession(request, userId, ct);
 
-            return Results.Ok(new { 
+            return Results.Ok(new
+            {
                 url = checkoutUrl
             });
         }
@@ -52,7 +53,7 @@ public class CheckoutEndpoint : IEndpoint
                 message = ex.Message
             });
         }
-        catch(StripeException ex)
+        catch (StripeException ex)
         {
             logger.LogError(ex, "Failed to create Stripe checkout session");
 

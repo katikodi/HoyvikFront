@@ -1,36 +1,43 @@
-import { useEffect, useState } from "react";
-import AuthContext from "@/hooks/authContext.js";
-import { getCurrentUser, login as loginUser, register as registerUser, logout as logoutUser } from "@/api/auth";
+import { useEffect, useState, type ReactNode } from "react";
+import AuthContext, { type User } from "@/hooks/authContext";
 
-export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
+import { getCurrentUser, login as loginUser, register as registerUser, logout as logoutUser } from "@/services/auth";
+
+type AuthProviderProps = {
+    children: ReactNode;
+};
+
+export function AuthProvider({ children }: AuthProviderProps) {
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     const isAdmin = user?.roles?.includes("admin") ?? false;
 
-    async function fetchUser() {
+    async function fetchUser(): Promise<User | null> {
         try {
-            const user = await getCurrentUser();
+            const user: User = await getCurrentUser();
             setUser(user);
+            return user;
         } catch {
             setUser(null);
+            return null;
         }
     }
 
-    async function login(email, password) {
+    async function login(email: string, password: string): Promise<boolean> {
         try {
             await loginUser(email, password);
-            await fetchUser();
-            return true;
+            const user = await fetchUser();
+            return user !== null;
         } catch {
             return false;
         }
     }
 
-    async function register(email, password, confirmPassword) {
+    async function register(email: string, password: string, confirmPassword: string) {
         try {
             await registerUser(email, password, confirmPassword);
-            await login(email, password);
+            await fetchUser();
             return true;
         } catch {
             return false;

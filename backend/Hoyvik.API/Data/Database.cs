@@ -4,34 +4,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hoyvik.API.Data;
 
-public class Database(DbContextOptions<Database> options) : IdentityDbContext<ApplicationUser>(options)
+
+internal sealed class Database(DbContextOptions<Database> options) : IdentityDbContext<ApplicationUser>(options)
 {
 
-	public DbSet<Booking> Bookings { get; set; }
-	public DbSet<Image> Images { get; set; }
+    public DbSet<Booking> Bookings { get; set; }
+    public DbSet<Image> Images { get; set; }
 
-	protected override void OnModelCreating(ModelBuilder builder)
-	{
-		base.OnModelCreating(builder);
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
 
-		builder.Entity<Booking>()
-			.HasOne(booking => booking.User)
-			.WithMany(user => user.Bookings)
-			.HasForeignKey(booking => booking.UserId);
+        builder.Entity<Booking>()
+            .HasOne(booking => booking.User)
+            .WithMany(user => user.Bookings)
+            .HasForeignKey(booking => booking.UserId);
 
 
-		builder.Entity<Booking>()
-			.Property(x => x.Status)
-			.HasConversion<string>();
+        builder.Entity<Booking>()
+            .Property(x => x.Status)
+            .HasConversion<string>();
 
-		builder.Entity<Booking>()
-			.HasIndex(x => x.StripeSessionId)
-			.IsUnique();
-	}
+        builder.Entity<Booking>()
+            .HasIndex(x => x.StripeSessionId)
+            .IsUnique();
+    }
 }
 
 
-
+//KEEP THIS HERE INCASE OF MIGRATIONS RESET
 //public partial class AddBookingAvailabilityConstraint : Migration
 //{
 //    /// <inheritdoc />

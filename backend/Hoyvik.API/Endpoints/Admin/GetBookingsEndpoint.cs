@@ -1,22 +1,22 @@
 ﻿using Hoyvik.API.Data;
-using Hoyvik.API.Endpoints.Booking;
+using Hoyvik.API.Models.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hoyvik.API.Endpoints.Admin;
 
-public class GetBookingsEndpoint : IEndpoint
+internal sealed class GetBookingsEndpoint : IEndpoint
 {
-	public void MapEndpoint(RouteGroupBuilder app)
-		=> app.MapGet("/admin/bookings/", GetBookings)
-		.RequireAuthorization("admin", "Admin");
+    public void MapEndpoint(RouteGroupBuilder app)
+        => app.MapGet("/admin/bookings/", GetBookings)
+        .RequireAuthorization("admin", "Admin");
 
 
-	async Task<IResult> GetBookings(Database db)
-	{
-		var bookings = await db
-			.Bookings
-			.ToListAsync();
+    async Task<IResult> GetBookings(Database db)
+    {
+        var bookings = await db
+            .Bookings
+            .ToListAsync();
 
-		return Results.Ok(bookings.Select(x => new OccupiedResponse(x.CheckIn, x.CheckOut, x.Status)).ToList());
-	}
+        return Results.Ok(bookings.Select(x => new OccupiedResponse(x.CheckIn, x.CheckOut, x.Status)).ToList());
+    }
 }
