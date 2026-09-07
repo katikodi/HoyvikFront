@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { apiFetch } from "@/services/client";
+import { api } from "@/services/client";
 
-export default function AdminDashboard() {
+export function Dashboard() {
+    const navigate = useNavigate();
+
     async function resetDatabase() {
-        await apiFetch("/api/admin/database/reset", {
+        const result = await api("/admin/database/reset", {
             method: "post"
         });
     }

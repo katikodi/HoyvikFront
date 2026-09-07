@@ -1,3 +1,4 @@
+import { AdminLayout } from "@/layouts/AdminLayout";
 import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard")({
@@ -14,17 +15,3 @@ export const Route = createFileRoute("/dashboard")({
     },
     component: AdminLayout
 });
-
-function AdminLayout() {
-    return (
-        <div>
-            <header>
-                <h1>ADMIN LAYOUT</h1>
-            </header>
-
-            <main>
-                <Outlet />
-            </main>
-        </div>
-    );
-}
