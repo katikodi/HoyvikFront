@@ -1,5 +1,5 @@
 import { AdminLayout } from "@/layouts/AdminLayout";
-import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard")({
     beforeLoad: ({ context }) => {
