@@ -1,6 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
 import AuthContext, { type User } from "@/hooks/authContext";
-
 import { getCurrentUser, login as loginUser, register as registerUser, logout as logoutUser } from "@/services/auth";
 
 type AuthProviderProps = {
@@ -10,8 +9,12 @@ type AuthProviderProps = {
 export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-
     const isAdmin = user?.roles?.includes("admin") ?? false;
+
+    // TODO: look into useSyncExternalStore
+    useEffect(() => {
+        fetchUser().finally(() => setLoading(false));
+    }, []);
 
     async function fetchUser(): Promise<User | null> {
         try {
@@ -51,10 +54,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setUser(null);
         }
     }
-
-    useEffect(() => {
-        fetchUser().finally(() => setLoading(false));
-    }, []);
 
     return (
         <AuthContext.Provider
