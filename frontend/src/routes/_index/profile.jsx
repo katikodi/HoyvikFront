@@ -1,8 +1,8 @@
-import { useAuth } from "@/hooks/authContext";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import ProfilePage from "@/pages/ProfilePage.jsx";
 
 export const Route = createFileRoute("/_index/profile")({
-    component: ProfileComponent,
+    component: ProfilePage,
     beforeLoad: ({ context }) => {
         if (!context.auth.user) {
             throw redirect({
@@ -11,9 +11,3 @@ export const Route = createFileRoute("/_index/profile")({
         }
     }
 });
-
-function ProfileComponent() {
-    const { user } = useAuth();
-
-    return <h1>hello {user.email}</h1>;
-}
