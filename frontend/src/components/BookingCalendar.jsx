@@ -10,16 +10,15 @@ export function BookingCalendar({ onDateChange }) {
     });
 
     useEffect(() => {
+        async function getOccupiedDates() {
+            const { data } = await api("/bookings/occupied", {
+                method: "GET"
+            });
+
+            setOccupiedPeriods(data);
+        }
         getOccupiedDates();
     }, []);
-
-    async function getOccupiedDates() {
-        const { data } = await api("/bookings/occupied", {
-            method: "GET"
-        });
-
-        setOccupiedPeriods(data);
-    }
 
     function startOfDay(date) {
         return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -68,10 +67,29 @@ export function BookingCalendar({ onDateChange }) {
     }
 
     function handleSelect(range) {
-        setDateRange(range);
+        // Nothing selected / selection cleared
+        if (!range?.from) {
+            setDateRange({
+                from: undefined,
+                to: undefined
+            });
 
-        if (!range?.from || !range?.to) {
             onDateChange?.(null);
+
+            return;
+        }
+
+        // Only the start date has been selected.
+        // DayPicker may represent this as from === to.
+        if (!range.to || startOfDay(range.from).getTime() === startOfDay(range.to).getTime()) {
+            setDateRange({
+                from: range.from,
+                to: undefined
+            });
+
+            // Tell the parent that there isn't a complete booking yet.
+            onDateChange?.(null);
+
             return;
         }
 
@@ -92,6 +110,7 @@ export function BookingCalendar({ onDateChange }) {
             });
 
             onDateChange?.(null);
+
             return;
         }
 

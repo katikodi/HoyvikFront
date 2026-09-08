@@ -2,6 +2,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { AuthProvider } from "./auth/AuthProvider";
 import App from "./app.tsx";
+import { ThemeProvider } from "./components/theme-provider.tsx";
 
 const rootElement = document.getElementById("app")!;
 
@@ -10,7 +11,9 @@ if (!rootElement.innerHTML) {
 
     root.render(
         <AuthProvider>
-            <App />
+            <ThemeProvider>
+                <App />
+            </ThemeProvider>
         </AuthProvider>
     );
 }
