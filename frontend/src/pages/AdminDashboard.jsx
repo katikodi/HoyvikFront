@@ -2,13 +2,12 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/services/client";
 
 export function Dashboard() {
-    const navigate = useNavigate();
-
     async function resetDatabase() {
-        const result = await api("/admin/database/reset", {
+        await api("/admin/database/reset", {
             method: "post"
         });
     }
+
     return (
         <div className="p-2">
             <h1>Dashboard</h1>

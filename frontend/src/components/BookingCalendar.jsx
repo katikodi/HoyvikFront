@@ -10,16 +10,15 @@ export function BookingCalendar({ onDateChange }) {
     });
 
     useEffect(() => {
+        async function getOccupiedDates() {
+            const { data } = await api("/bookings/occupied", {
+                method: "GET"
+            });
+
+            setOccupiedPeriods(data);
+        }
         getOccupiedDates();
     }, []);
-
-    async function getOccupiedDates() {
-        const { data } = await api("/bookings/occupied", {
-            method: "GET"
-        });
-
-        setOccupiedPeriods(data);
-    }
 
     function startOfDay(date) {
         return new Date(date.getFullYear(), date.getMonth(), date.getDate());
