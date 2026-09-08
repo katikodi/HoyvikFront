@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 type RegisterFormProps = {
     onRegister: (fullName: string, email: string, password: string, confirmPassword: string) => Promise<void>;
@@ -108,7 +109,7 @@ export function SignupForm({ onRegister, className, ...props }: RegisterFormProp
                         Sign up with GitHub
                     </Button>
                     <FieldDescription className="px-6 text-center">
-                        Already have an account? <a href="#">Sign in</a>
+                        Already have an account? <Link to="/login">Sign in</Link>
                     </FieldDescription>
                 </Field>
             </FieldGroup>

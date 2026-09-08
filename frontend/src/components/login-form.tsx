@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 type LoginFormProps = {
     onLogin: (email: string, password: string) => Promise<void>;
@@ -15,7 +16,7 @@ export function LoginForm({ onLogin, error, className, ...props }: LoginFormProp
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
 
         console.log("SUBMIT");
@@ -84,7 +85,7 @@ export function LoginForm({ onLogin, error, className, ...props }: LoginFormProp
                                 </Button>
 
                                 <FieldDescription className="text-center">
-                                    Don&apos;t have an account? <a href="#">Sign up</a>
+                                    Don&apos;t have an account? <Link to="/register">Sign up</Link>
                                 </FieldDescription>
                             </Field>
                         </FieldGroup>
