@@ -11,7 +11,7 @@ export default function MainLayout() {
     }
 
     return (
-        <div>
+        <>
             <header>
                 <nav className="flex gap-4 p-4">
                     <Link
@@ -45,9 +45,9 @@ export default function MainLayout() {
                 </nav>
             </header>
 
-            <main>
+            <main className="h-dvh">
                 <Outlet />
             </main>
-        </div>
+        </>
     );
 }

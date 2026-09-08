@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/authContext";
 import { api } from "@/services/client";
 import { useEffect, useState } from "react";
@@ -26,13 +27,30 @@ export default function ProfileComponent() {
     }
 
     return (
-        <div className="h-dvh">
+        <div className="w-3/5 p-3 flex flex-col">
+            <h2>Your bookings</h2>
             {bookings.map(booking => (
                 <Booking
                     key={booking.id}
                     booking={booking}
                 />
             ))}
+
+            <Button>Logout</Button>
+        </div>
+    );
+}
+
+function Booking({ booking }) {
+    return (
+        <div className="h-fit border rounded p-2 m-2 hover:bg-gray-800">
+            <p>Booking #{booking.id}</p>
+            <p>Check-in: {formatDate(booking.checkIn)}</p>
+            <p>Check-out: {formatDate(booking.checkOut)}</p>
+            <div className="flex justify-between">
+                <Button>View Details</Button>
+                <Button>Cancel</Button>
+            </div>
         </div>
     );
 }
@@ -41,14 +59,4 @@ function formatDate(date) {
     return new Intl.DateTimeFormat(undefined, {
         dateStyle: "medium"
     }).format(new Date(date));
-}
-
-function Booking({ booking }) {
-    return (
-        <div className="mx-auto  flex max-w-sm items-center gap-x-4 rounded-xl p-6 shadow-lg outline outline-black/5 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-            <p>Booking #{booking.id}</p>
-            <p>Check-in: {formatDate(booking.checkIn)}</p>
-            <p>Check-out: {formatDate(booking.checkOut)}</p>
-        </div>
-    );
 }
