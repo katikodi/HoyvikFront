@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AuthContext from "@/hooks/authContext";
 import { login as loginUser, logout as logoutUser, register as registerUser } from "@/services/auth";
 
-import { currentUserQuery } from "../queries/auth.queries";
+import { currentUserQuery } from "@/queries/auth.queries";
 
 type AuthProviderProps = {
     children: ReactNode;
