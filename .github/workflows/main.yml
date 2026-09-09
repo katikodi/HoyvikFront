@@ -4,7 +4,7 @@ on:
     push:
         branches:
             - main
-            - css-fix
+            - newFront
 
 jobs:
     notify-discord:
