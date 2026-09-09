@@ -2,7 +2,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { useAuth } from "./hooks/authContext";
 import { Spinner } from "./components/ui/spinner";
-import { queryClient } from "./lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 
 // Set up a Router instance
 const router = createRouter({
