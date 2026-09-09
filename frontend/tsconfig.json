@@ -6,6 +6,7 @@
             "@/*": ["./src/*"]
         },
         "allowJs": true,
-        "checkJs": false
+        "checkJs": false,
+        "strict": true
     }
 }

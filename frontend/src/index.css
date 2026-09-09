@@ -3,8 +3,19 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/montserrat";
 @import "@fontsource-variable/merriweather";
-
-@custom-variant dark (&:is(.dark *));
+@import "@fontsource-variable/cinzel";
+@custom-variant dark (&: is(.dark *));
+/* 
+--bg1: #678a73;
+    --bg2: #b8cbbe;
+    --darkgreen: #2a3430;
+    --brown: #44383e;
+    --brownhover: #52454b;
+    --brightgreen: #9bb678;
+    --textbrown: #271c22;
+    --textsky: #bce8ef;
+    --icons: #111815;
+    --Text-text-opacity-down: rgba(39, 28, 34, 0.7); */
 
 :root {
     --background: oklch(1 0 0);
@@ -77,7 +88,8 @@
 
 @theme inline {
     --font-sans: "Montserrat Variable", sans-serif;
-    --font-heading: "Merriweather Variable", serif;
+    --font-heading: "Cinzel Variable", serif;
+    --font-serif: "Cinzel Variable", serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
