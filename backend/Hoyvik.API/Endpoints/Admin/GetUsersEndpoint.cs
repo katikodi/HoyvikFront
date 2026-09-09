@@ -7,7 +7,7 @@ public class GetUsersEndpoint : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app) 
         => app.MapGet("/admin/users", GetUsers)
-        .RequireAuthorization("admin", "Admin");
+        .RequireAuthorization(Roles.ADMIN);
 
 
     async Task<IResult> GetUsers(Database db)

@@ -10,7 +10,13 @@ using Npgsql;
 
 namespace Hoyvik.API.Services;
 
-internal sealed class BookingService(Database db, IOptionsMonitor<BookingConfiguration> bookingConfiguration, IStripePaymentService stripePaymentService, ILogger<BookingService> logger) : IBookingService
+internal sealed class BookingService(
+    Database db,
+    IOptionsMonitor<BookingConfiguration> bookingConfiguration, 
+    IStripePaymentService stripePaymentService,
+    IEmailService emailService,
+    ILogger<BookingService> logger
+    ) : IBookingService
 {
 
     /// <summary>
@@ -44,7 +50,8 @@ internal sealed class BookingService(Database db, IOptionsMonitor<BookingConfigu
     public async Task<bool> ConfirmBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
     {
         var booking = await db.Bookings
-           .SingleOrDefaultAsync(x => x.Id == bookingId, ct);
+            .Include(x => x.User)
+            .FirstAsync(x => x.Id == bookingId, ct);
 
         if (booking is null)
         {
@@ -91,6 +98,7 @@ internal sealed class BookingService(Database db, IOptionsMonitor<BookingConfigu
 
         await db.SaveChangesAsync(ct);
 
+        await emailService.SendBookingConfirmation(booking!.User!.Email!, booking.Id.ToString(), booking.CheckIn, booking.CheckOut);
         logger.LogInformation("Booking {BookingId} confirmed", booking.Id);
 
         return true;

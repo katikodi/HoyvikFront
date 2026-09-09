@@ -33,7 +33,7 @@ internal sealed class RegisterEndpoint : IEndpoint
                 result.Errors.Select(x => x.Description));
         }
 
-        var roleResult = await userManager.AddToRoleAsync(user, "user");
+        var roleResult = await userManager.AddToRoleAsync(user, Roles.USER);
 
         if (!roleResult.Succeeded)
         {

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Hoyvik.API;
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;

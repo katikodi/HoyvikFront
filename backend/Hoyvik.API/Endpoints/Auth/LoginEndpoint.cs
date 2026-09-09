@@ -23,6 +23,9 @@ internal sealed class LoginEndpoint : IEndpoint
         if (!await userManager.CheckPasswordAsync(user, request.Password))
             return Results.Unauthorized();
 
+
+
+        await userManager.AddToRoleAsync(user, Roles.USER);
         await signInManager.SignInAsync(user, true);
 
         return Results.NoContent();

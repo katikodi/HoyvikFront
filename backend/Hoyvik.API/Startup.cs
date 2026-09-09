@@ -19,6 +19,8 @@ internal static class Startup
         builder.AddServiceDefaults();
         builder.Services.AddProblemDetails();
 
+        builder.Services.AddMemoryCache();
+
         builder.Services.AddCors(options => options.AddPolicy("frontend",
             p => p.WithOrigins("http://localhost:54131")
                 .AllowAnyHeader()
@@ -26,9 +28,9 @@ internal static class Startup
                 .AllowCredentials()));
 
         builder.Services.AddAuthorizationBuilder()
-            .AddDefaultPolicy("Guest", p => p.RequireRole("guest"))
-            .AddPolicy("User", p => p.RequireRole("user"))
-            .AddPolicy("Admin", p => p.RequireRole("admin"));
+            .AddDefaultPolicy(Roles.GUEST, p => p.RequireRole(Roles.GUEST))
+            .AddPolicy(Roles.USER, p => p.RequireRole(Roles.ADMIN, Roles.USER))
+            .AddPolicy(Roles.ADMIN, p => p.RequireRole(Roles.ADMIN));
 
 
         builder.Services.AddScoped<ImageUploaderService>();
@@ -36,7 +38,7 @@ internal static class Startup
         builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
         builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
         builder.Services.AddHostedService<BookingExpirationService>();
-
+        builder.Services.AddScoped<IEmailService, FakeEmailService>();
 
         builder.Services.AddOptions<BookingConfiguration>()
             .BindConfiguration("BookingSettings")
