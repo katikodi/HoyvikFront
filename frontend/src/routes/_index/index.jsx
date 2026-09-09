@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DatePickerDemo } from "@/components/DatePicker";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import HeroBooking from "@/components/HeroBooking";
+import { HeroBooking } from "@/components/HeroBooking";
 
 export const Route = createFileRoute("/_index/")({
     component: Home
