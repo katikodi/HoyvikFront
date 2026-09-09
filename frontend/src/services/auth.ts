@@ -6,7 +6,7 @@ export async function getCurrentUser(): Promise<User> {
     return data;
 }
 
-export async function login(email: string, password: String): Promise<void> {
+export async function login(email: string, password: string): Promise<void> {
     await api.post("/auth/login", {
         email,
         password

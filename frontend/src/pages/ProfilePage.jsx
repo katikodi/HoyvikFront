@@ -1,34 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/authContext";
+import { myBookingsQuery } from "@/queries/booking.queries";
 import { api } from "@/services/client";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 export default function ProfileComponent() {
-    const { user } = useAuth();
-    const [bookings, setBookings] = useState([]);
+    const { data: bookings = [], isPending, isError, error, isFetching, refetch } = useQuery(myBookingsQuery);
 
-    useEffect(() => {
-        async function fetchBookings() {
-            try {
-                const result = await api.get("/me/bookings");
-
-                console.log(result.data);
-                setBookings(result.data);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        fetchBookings();
-    }, []);
-
-    if (!user) {
-        return <h1>Loading...</h1>;
+    if (isPending || isFetching) {
+        return <h1>Loading bookings...</h1>;
     }
 
     return (
         <div className="w-3/5 p-3 flex flex-col">
-            <h2>Your bookings</h2>
+            <div className="flex flex-row justify-between">
+                <h2>Your bookings</h2>
+                <Button
+                    onClick={() => refetch()}
+                    disabled={isFetching}
+                >
+                    {isFetching ? "Refreshing..." : "Refresh"}
+                </Button>
+            </div>
             {bookings.map(booking => (
                 <Booking
                     key={booking.id}

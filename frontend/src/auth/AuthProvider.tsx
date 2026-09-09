@@ -1,73 +1,105 @@
-import { useEffect, useState, type ReactNode } from "react";
-import AuthContext, { type User } from "@/hooks/authContext";
-import { getCurrentUser, login as loginUser, register as registerUser, logout as logoutUser } from "@/services/auth";
+import type { ReactNode } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import AuthContext from "@/hooks/authContext";
+import { login as loginUser, logout as logoutUser, register as registerUser } from "@/services/auth";
+
+import { currentUserQuery } from "../queries/auth.queries";
 
 type AuthProviderProps = {
     children: ReactNode;
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
-    const isAdmin = user?.roles?.includes("admin") ?? false;
+    const queryClient = useQueryClient();
 
-    // TODO: look into useSyncExternalStore
-    useEffect(() => {
-        fetchUser().finally(() => setLoading(false));
-    }, []);
+    const userQuery = useQuery(currentUserQuery);
 
-    async function fetchUser(): Promise<User | null> {
-        try {
-            const user: User = await getCurrentUser();
-            console.log(user);
-            setUser(user);
-            return user;
-        } catch {
-            setUser(null);
-            return null;
+    const loginMutation = useMutation({
+        mutationFn: ({ email, password }: { email: string; password: string }) => loginUser(email, password),
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: currentUserQuery.queryKey
+            });
         }
-    }
+    });
 
-    async function login(email: string, password: string): Promise<boolean> {
-        try {
-            await loginUser(email, password);
-            const user = await fetchUser();
-            return user !== null;
-        } catch {
-            return false;
+    const registerMutation = useMutation({
+        mutationFn: ({
+            fullName,
+            email,
+            password,
+            confirmPassword
+        }: {
+            fullName: string;
+            email: string;
+            password: string;
+            confirmPassword: string;
+        }) => registerUser(fullName, email, password, confirmPassword),
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: currentUserQuery.queryKey
+            });
         }
-    }
+    });
 
-    async function register(fullName: string, email: string, password: string, confirmPassword: string) {
-        try {
-            await registerUser(fullName, email, password, confirmPassword);
-            await fetchUser();
-            return true;
-        } catch {
-            return false;
+    const logoutMutation = useMutation({
+        mutationFn: logoutUser,
+
+        onSuccess: () => {
+            queryClient.setQueryData(currentUserQuery.queryKey, null);
         }
-    }
+    });
 
-    async function logout() {
-        try {
-            await logoutUser();
-        } finally {
-            setUser(null);
+    const user = userQuery.data ?? null;
+
+    const value = {
+        user,
+
+        loading: userQuery.isLoading,
+
+        isAdmin: user?.roles?.includes("admin") ?? false,
+
+        login: async (email: string, password: string) => {
+            try {
+                await loginMutation.mutateAsync({
+                    email,
+                    password
+                });
+
+                return true;
+            } catch {
+                return false;
+            }
+        },
+
+        register: async (fullName: string, email: string, password: string, confirmPassword: string) => {
+            try {
+                await registerMutation.mutateAsync({
+                    fullName,
+                    email,
+                    password,
+                    confirmPassword
+                });
+
+                return true;
+            } catch {
+                return false;
+            }
+        },
+
+        logout: async () => {
+            try {
+                await logoutMutation.mutateAsync();
+            } catch {
+                // We still clear the local auth state below.
+            } finally {
+                queryClient.setQueryData(currentUserQuery.queryKey, null);
+            }
         }
-    }
+    };
 
-    return (
-        <AuthContext.Provider
-            value={{
-                user,
-                loading,
-                login,
-                register,
-                logout,
-                isAdmin
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
