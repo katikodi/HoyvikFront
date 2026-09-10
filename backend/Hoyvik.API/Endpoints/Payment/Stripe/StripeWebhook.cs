@@ -5,18 +5,30 @@ namespace Hoyvik.API.Endpoints.Payment.Stripe;
 
 internal sealed class StripeWebhook : IEndpoint
 {
+    public void MapEndpoint(RouteGroupBuilder app) =>
+        app.MapPost("/payment/webhook", Webhook);
 
-    /*
-     *stripe listen --forward-to localhost:5200/api/payment/webhook
-     * */
-
-    public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/payment/webhook", Webhook);
-
-    static async Task<IResult> Webhook(HttpRequest request, IConfiguration config, IBookingService bookingService, ILogger<StripeWebhook> logger, CancellationToken ct)
+    static async Task<IResult> Webhook(
+        HttpRequest request,
+        IConfiguration config,
+        IBookingService bookingService,
+        ILogger<StripeWebhook> logger,
+        CancellationToken ct)
     {
-        var json = await new StreamReader(request.Body).ReadToEndAsync(ct);
+        var json = await new StreamReader(request.Body)
+            .ReadToEndAsync(ct);
 
         var stripeSignature = request.Headers["Stripe-Signature"];
+
+        var webhookSecret = config["Stripe:WebhookSecret"];
+
+        if (string.IsNullOrWhiteSpace(webhookSecret))
+        {
+            logger.LogCritical("Stripe webhook secret is not configured");
+
+            return Results.Problem(
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
 
         Event stripeEvent;
 
@@ -25,16 +37,21 @@ internal sealed class StripeWebhook : IEndpoint
             stripeEvent = EventUtility.ConstructEvent(
                 json,
                 stripeSignature,
-                config["Stripe:WebhookSecret"]
-                    ?? throw new Exception("Stripe:WebhookSecret is missing"));
+                webhookSecret);
         }
-        catch (Exception ex)
+        catch (StripeException ex)
         {
-            logger.LogError(ex, "Invalid Stripe webhook");
+            logger.LogWarning(
+                ex,
+                "Invalid Stripe webhook signature");
+
             return Results.BadRequest();
         }
 
-        logger.LogInformation("Stripe event: {Type}", stripeEvent.Type);
+        logger.LogInformation(
+            "Received Stripe event {EventId} of type {EventType}",
+            stripeEvent.Id,
+            stripeEvent.Type);
 
         if (stripeEvent.Type is not
             ("checkout.session.completed" or "checkout.session.expired"))
@@ -43,18 +60,31 @@ internal sealed class StripeWebhook : IEndpoint
         }
 
         if (stripeEvent.Data.Object is not Session session)
-            return Results.BadRequest();
-
-        if (!session.Metadata.TryGetValue("BookingId", out var bookingIdString))
         {
-            logger.LogError("Stripe session {SessionId} has no BookingId", session.Id);
+            logger.LogWarning(
+                "Stripe event {EventId} did not contain a Checkout Session",
+                stripeEvent.Id);
+
+            return Results.BadRequest();
+        }
+
+        if (!session.Metadata.TryGetValue(
+                "BookingId",
+                out var bookingIdString))
+        {
+            logger.LogError(
+                "Stripe session {SessionId} has no BookingId",
+                session.Id);
 
             return Results.BadRequest();
         }
 
         if (!int.TryParse(bookingIdString, out var bookingId))
         {
-            logger.LogError("Invalid BookingId {BookingId}", bookingIdString);
+            logger.LogError(
+                "Stripe session {SessionId} contains invalid BookingId {BookingId}",
+                session.Id,
+                bookingIdString);
 
             return Results.BadRequest();
         }
@@ -66,26 +96,42 @@ internal sealed class StripeWebhook : IEndpoint
                 if (session.PaymentStatus != "paid")
                 {
                     logger.LogWarning(
-                        "Session {SessionId} completed but payment status is {PaymentStatus}",
+                        "Session {SessionId} completed with payment status {PaymentStatus}",
                         session.Id,
                         session.PaymentStatus);
 
                     return Results.Ok();
                 }
 
-                await bookingService.ConfirmBooking(
+                var confirmed = await bookingService.ConfirmBooking(
                     bookingId,
                     session.Id,
                     ct);
+
+                if (!confirmed)
+                {
+                    logger.LogWarning(
+                        "Could not confirm booking {BookingId} from Stripe session {SessionId}",
+                        bookingId,
+                        session.Id);
+                }
 
                 break;
 
             case "checkout.session.expired":
 
-                await bookingService.ExpireBooking(
+                var expired = await bookingService.ExpireBooking(
                     bookingId,
                     session.Id,
                     ct);
+
+                if (!expired)
+                {
+                    logger.LogWarning(
+                        "Could not expire booking {BookingId} from Stripe session {SessionId}",
+                        bookingId,
+                        session.Id);
+                }
 
                 break;
         }

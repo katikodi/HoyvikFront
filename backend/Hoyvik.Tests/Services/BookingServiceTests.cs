@@ -42,11 +42,14 @@ public class BookingServiceTests
 
         stripeMock ??= new Mock<IStripePaymentService>();
 
+        var emailMock = new Mock<IEmailService>();
+
         return new BookingService(
-            db,
-            optionsMonitorMock.Object,
-            stripeMock.Object,
-            NullLogger<BookingService>.Instance);
+            db: db,
+            stripePaymentService: stripeMock.Object,
+            bookingConfiguration: optionsMonitorMock.Object,
+            emailService: emailMock.Object,
+            logger: NullLogger<BookingService>.Instance);
     }
 
     [Fact]

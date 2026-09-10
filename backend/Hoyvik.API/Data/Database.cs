@@ -7,10 +7,8 @@ namespace Hoyvik.API.Data;
 
 internal sealed class Database(DbContextOptions<Database> options) : IdentityDbContext<ApplicationUser>(options)
 {
-
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Image> Images { get; set; }
-
     public DbSet<BlockedPeriod> BlockedPeriods { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -21,7 +19,6 @@ internal sealed class Database(DbContextOptions<Database> options) : IdentityDbC
             .HasOne(booking => booking.User)
             .WithMany(user => user.Bookings)
             .HasForeignKey(booking => booking.UserId);
-
 
         builder.Entity<Booking>()
             .Property(x => x.Status)

@@ -17,6 +17,7 @@ public sealed class Booking
     public BookingStatus Status { get; set; } = BookingStatus.Pending;
 
     public DateTime CreatedAt { get; set; }
+    public DateTime? ConfirmedAt { get; set; }
     public DateTime? ExpiresAt { get; set; }
 }
 

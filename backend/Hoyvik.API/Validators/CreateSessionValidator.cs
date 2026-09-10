@@ -1,12 +1,13 @@
 ﻿using FluentValidation;
 using Hoyvik.API.Models.Requests;
+using Hoyvik.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hoyvik.API.Validators;
 
 public sealed class CreateSessionValidator : AbstractValidator<CreateSessionRequest>
 {
-    public CreateSessionValidator()
+    public CreateSessionValidator(IBusinessClock clock)
     {
         RuleFor(x => x.NumberOfGuests)
             .InclusiveBetween(1, 4)
@@ -15,7 +16,7 @@ public sealed class CreateSessionValidator : AbstractValidator<CreateSessionRequ
         RuleFor(x => x.CheckIn)
             .NotEqual(default(DateOnly))
             .WithMessage("Check-in date is required.")
-            .GreaterThanOrEqualTo(DateOnly.FromDateTime(DateTime.Today))
+            .GreaterThanOrEqualTo(clock.Today)
             .WithMessage("Check-in date cannot be in the past.");
 
         RuleFor(x => x.CheckOut)

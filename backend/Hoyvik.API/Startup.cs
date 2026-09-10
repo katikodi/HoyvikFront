@@ -39,6 +39,7 @@ internal static class Startup
         builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
         builder.Services.AddHostedService<BookingExpirationService>();
         builder.Services.AddScoped<IEmailService, FakeEmailService>();
+        builder.Services.AddSingleton<IBusinessClock, BusinessClock>();
 
         builder.Services.AddOptions<BookingConfiguration>()
             .BindConfiguration("BookingSettings")

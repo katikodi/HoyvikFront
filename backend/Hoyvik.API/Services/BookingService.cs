@@ -51,7 +51,7 @@ internal sealed class BookingService(
     {
         var booking = await db.Bookings
             .Include(x => x.User)
-            .FirstAsync(x => x.Id == bookingId, ct);
+            .SingleOrDefaultAsync(x => x.Id == bookingId, ct);
 
         if (booking is null)
         {
@@ -63,8 +63,7 @@ internal sealed class BookingService(
         }
 
         // Make sure this Stripe session belongs to this booking
-        if (booking.StripeSessionId != null &&
-            booking.StripeSessionId != stripeSessionId)
+        if (booking.StripeSessionId != null && booking.StripeSessionId != stripeSessionId)
         {
             logger.LogError(
                 "Booking {BookingId} has Stripe session {ExistingSessionId}, " +
@@ -93,12 +92,24 @@ internal sealed class BookingService(
             return false;
         }
 
+        var now = DateTime.UtcNow;
+
+        if (booking.ExpiresAt <= now)
+        {
+            logger.LogWarning(
+                "Booking {BookingId} expired before payment confirmation",
+                booking.Id);
+
+            return false;
+        }
+
         booking.Status = BookingStatus.Confirmed;
+        booking.ConfirmedAt = now;
         booking.StripeSessionId = stripeSessionId;
 
         await db.SaveChangesAsync(ct);
 
-        await emailService.SendBookingConfirmation(booking!.User!.Email!, booking.Id.ToString(), booking.CheckIn, booking.CheckOut);
+        await emailService.SendBookingConfirmation(booking.User?.Email!, booking.Id.ToString(), booking.CheckIn, booking.CheckOut);
         logger.LogInformation("Booking {BookingId} confirmed", booking.Id);
 
         return true;
@@ -172,10 +183,12 @@ internal sealed class BookingService(
             //send the checkout url to the customer
             return stripeSession.Url;
         }
-        catch
+        catch(Exception ex)
         {
-            logger.LogError("Removing booking {BookingId} because checkout session creation failed", booking.Id);
-
+            logger.LogError(
+                ex,
+                "Removing booking {BookingId} because checkout session creation failed",
+                booking.Id);
             db.Bookings.Remove(booking);
 
             await db.SaveChangesAsync(ct);
