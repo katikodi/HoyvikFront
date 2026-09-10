@@ -11,12 +11,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { DatePickerDemo } from "./DatePicker";
 
 const formSchema = z.object({
     checkIn: z.iso.date(),
     checkOut: z.iso.date(),
-    guestAmount: z.number().min(1).max(20)
+    guestAmount: z.number().min(1).max(4)
 });
 
 const HeroBooking = () => {
@@ -26,7 +28,8 @@ const HeroBooking = () => {
             checkIn: "",
             checkOut: "",
             guestAmount: 1
-        }
+        },
+        mode: "onChange"
     });
 
     function onSubmit(data: z.infer<typeof formSchema>) {
@@ -47,62 +50,76 @@ const HeroBooking = () => {
     }
 
     return (
-        <Card className="w-full h-fit rounded-none">
-            <CardContent className="flex flex-row w-full h-fit">
+        <Card className="w-10/12 h-fit rounded-none bg-[#B8CBBE]">
+            <CardContent className="flex flex-row w-full">
                 <form
                     id="hero-booking-form"
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="h-fit w-full"
+                    className="w-full"
                 >
-                    <FieldGroup className="@container/field-group flex flex-row gap-6 grow h-fit">
+                    <FieldGroup className="@container/field-group flex flex-row gap-6 h-auto">
                         <Controller
-                            name="checkIn"
                             control={form.control}
+                            name="checkIn"
+                            render={({ field }) => (
+                                <Field
+                                    orientation="vertical"
+                                    className="grow-7"
+                                >
+                                    <FieldLabel className="font-light">Innsjekk</FieldLabel>
+                                    <div className="h-12">
+                                        <DatePickerDemo {...field} />
+                                    </div>
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            control={form.control}
+                            name="checkOut"
+                            render={({ field }) => (
+                                <Field
+                                    orientation="vertical"
+                                    className="grow-7"
+                                >
+                                    <FieldLabel className="font-light">Utsjekk</FieldLabel>
+                                    <div className="h-12">
+                                        <DatePickerDemo {...field} />
+                                    </div>
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            control={form.control}
+                            name="guestAmount"
                             render={({ field, fieldState }) => (
                                 <Field
-                                    data-invalid={fieldState.invalid}
                                     orientation="vertical"
-                                    className="h-fit"
+                                    className="grow"
+                                    aria-invalid={fieldState.invalid}
                                 >
-                                    <FieldLabel>Innsjekk</FieldLabel>
-                                    <DatePickerDemo {...field} />
-
-                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                                </Field>
-                            )}
-                        />
-                        <Controller
-                            name="checkOut"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel>Utsjekk</FieldLabel>
-                                    <DatePickerDemo {...field} />
-
-                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                                </Field>
-                            )}
-                        />
-                        <Controller
-                            name="guestAmount"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field>
-                                    <FieldLabel htmlFor="gjester">Gjester</FieldLabel>
+                                    <FieldLabel
+                                        className="font-light"
+                                        htmlFor={field.name}
+                                    >
+                                        Innsjekk
+                                    </FieldLabel>
                                     <Input
                                         {...field}
-                                        id="gjester"
-                                        aria-invalid={fieldState.invalid}
+                                        className="grow rounded-none border-2 border-solid border-[#2A3430]"
                                     />
+                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                 </Field>
                             )}
                         />
-                        <Button
-                            type="submit"
-                            form="hero-booking-form"
-                        >
-                            Submit
-                        </Button>
+                        <Field orientation="vertical">
+                            <Button
+                                type="submit"
+                                form="hero-booking-form"
+                                className=" rounded-none h-12 mt-auto bg-[#44383E] text-[#BCE8EF]"
+                            >
+                                Bestill
+                            </Button>
+                        </Field>
                     </FieldGroup>
                 </form>
             </CardContent>

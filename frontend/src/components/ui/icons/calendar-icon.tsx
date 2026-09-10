@@ -5,8 +5,6 @@ export const CalendarIcon: React.FC<SVGProps<SVGSVGElement>> = props => {
         <svg {...props}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="inherit"
-                height="inherit"
                 viewBox="0 0 36 36"
                 fill="none"
             >

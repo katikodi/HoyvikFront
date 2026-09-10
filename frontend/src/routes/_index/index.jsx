@@ -34,7 +34,7 @@ function Home() {
     return (
         <div className="flex-col bg-primary">
             {/* <Hero /> */}
-            <div className="bg-gray-200 h-dvh w-dvw flex justify-center items-center">
+            <div className="bg-[#678A73] h-dvh w-dvw flex justify-center items-center">
                 <HeroBooking />
             </div>
 
