@@ -11,14 +11,25 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectSeparator,
+    SelectTrigger,
+    SelectValue,
+    SelectGroup
+} from "@/components/ui/select";
 
 import { DatePickerDemo } from "./DatePicker";
+import { PeopleIcon } from "./ui/icons/people-icon";
+import { CabinIcon } from "./ui/icons/cabin-icon";
 
 const formSchema = z.object({
     checkIn: z.iso.date(),
     checkOut: z.iso.date(),
-    guestAmount: z.number().min(1).max(4)
+    guestAmount: z.number().min(1).max(4),
+    cabin: z.string()
 });
 
 const HeroBooking = () => {
@@ -27,7 +38,8 @@ const HeroBooking = () => {
         defaultValues: {
             checkIn: "",
             checkOut: "",
-            guestAmount: 1
+            guestAmount: 1,
+            cabin: ""
         },
         mode: "onChange"
     });
@@ -50,7 +62,7 @@ const HeroBooking = () => {
     }
 
     return (
-        <Card className="w-10/12 h-fit rounded-none bg-[#B8CBBE]">
+        <Card className="w-full h-fit rounded-none bg-[#B8CBBE]">
             <CardContent className="flex flex-row w-full">
                 <form
                     id="hero-booking-form"
@@ -94,7 +106,7 @@ const HeroBooking = () => {
                             render={({ field, fieldState }) => (
                                 <Field
                                     orientation="vertical"
-                                    className="grow"
+                                    className="w-fit"
                                     aria-invalid={fieldState.invalid}
                                 >
                                     <FieldLabel
@@ -103,10 +115,83 @@ const HeroBooking = () => {
                                     >
                                         Innsjekk
                                     </FieldLabel>
-                                    <Input
+
+                                    <Select
+                                        name={field.name}
+                                        value={String(field.value)}
+                                        onValueChange={e => {
+                                            field.onChange(parseInt(e));
+                                        }}
+                                    >
+                                        <SelectTrigger className="w-[180px] grow rounded-none border-2 border-solid border-[#2A3430]">
+                                            <PeopleIcon className="size-8" />
+                                            <SelectValue placeholder="Gjester" />
+                                        </SelectTrigger>
+                                        <SelectContent className="rounded-none bg-[#B8CBBE] hover:bg-[#B8CBBE] active:bg-[#B8CBBE]">
+                                            <SelectGroup className="bg-[#B8CBBE] hover:bg-[#B8CBBE]">
+                                                {new Array(4).fill(0).map((_, i) => (
+                                                    <SelectItem
+                                                        value={String(i + 1)}
+                                                        className="rounded-none bg-[#B8CBBE] hover:bg-[#B8CBBE]"
+                                                        key={i}
+                                                    >
+                                                        {i + 1}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    {/* <Input
                                         {...field}
                                         className="grow rounded-none border-2 border-solid border-[#2A3430]"
-                                    />
+                                    /> */}
+                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            control={form.control}
+                            name="cabin"
+                            render={({ field, fieldState }) => (
+                                <Field
+                                    orientation="vertical"
+                                    className="w-fit"
+                                    aria-invalid={fieldState.invalid}
+                                >
+                                    <FieldLabel
+                                        className="font-light"
+                                        htmlFor={field.name}
+                                    >
+                                        Hytte?
+                                    </FieldLabel>
+
+                                    <Select
+                                        name={field.name}
+                                        value={String(field.value)}
+                                        onValueChange={field.onChange}
+                                    >
+                                        <SelectTrigger className="w-[180px] grow rounded-none border-2 border-solid border-[#2A3430]">
+                                            <CabinIcon className="size-8" />
+                                            <SelectValue placeholder="Gjester" />
+                                        </SelectTrigger>
+                                        <SelectContent className="rounded-none bg-[#B8CBBE] hover:bg-[#B8CBBE] active:bg-[#B8CBBE]">
+                                            <SelectGroup className="bg-[#B8CBBE] hover:bg-[#B8CBBE]">
+                                                {["yes", "no", "maybe"].map((value, i) => (
+                                                    <SelectItem
+                                                        value={value}
+                                                        className="rounded-none bg-[#B8CBBE] hover:bg-[#B8CBBE]"
+                                                        key={i}
+                                                    >
+                                                        {value}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    {/* <Input
+                                        {...field}
+                                        className="grow rounded-none border-2 border-solid border-[#2A3430]"
+                                    /> */}
                                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                 </Field>
                             )}

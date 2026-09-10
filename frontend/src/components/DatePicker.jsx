@@ -16,7 +16,7 @@ export function DatePickerDemo({ value, onChange, ...props }) {
                 <Button
                     variant="outline"
                     data-empty={!value}
-                    className="justify-start text-left font-normal data-[empty=true]:text-muted-foreground rounded-none h-full w-full bg-transparent border-2 border-solid border-[#2A3430]"
+                    className="justify-start text-left font-normal data-[empty=true]:text-muted-foreground data-[empty=false]:bg-muted rounded-none h-full w-full bg-transparent border-2 border-solid border-[#2A3430]"
                 >
                     <CalendarIcon className="size-8" />
                     {value ? format(value, "PPP") : <span>Pick a date</span>}

@@ -5,6 +5,7 @@ import { DatePickerDemo } from "@/components/DatePicker";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { HeroBooking } from "@/components/HeroBooking";
+import { IconSection } from "@/components/icon-section";
 
 export const Route = createFileRoute("/_index/")({
     component: Home
@@ -33,20 +34,20 @@ function HomeComponent() {
 function Home() {
     return (
         <div className="flex-col bg-primary">
-            {/* <Hero /> */}
-            <div className="bg-[#678A73] h-dvh w-dvw flex justify-center items-center">
-                <HeroBooking />
-            </div>
+            <Hero />
+            {/* <div className="bg-[#678A73] h-dvh w-dvw flex justify-center items-center"> */}
+            {/* <HeroBooking /> */}
+            {/* </div> */}
 
-            {/* <IconSection>
-                {icons.map(icon => (
+            <IconSection>
+                {/* {icons.map(icon => (
                     <Icon
                         key={icon.id}
                         src={icon.url}
                         text={icon.text}
                     />
-                ))}
-            </IconSection> */}
+                ))} */}
+            </IconSection>
 
             {/* <AboutSection /> */}
         </div>
@@ -66,7 +67,10 @@ const Hero = () => {
                 cta="CTA Tagline tekst, må vere fangande keywords som er SEO"
             />
 
-            <BookingForm />
+            {/* <BookingForm /> */}
+            <div className="mt-auto px-44 transform translate-y-12">
+                <HeroBooking />
+            </div>
         </section>
     );
 };
