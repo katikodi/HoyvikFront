@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Hoyvik.API;
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
+using Hoyvik.API.Services.Abstractions;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +34,21 @@ app.UseAuthorization();
 app.UseStatusCodePages();
 
 app.MapApiEndpoints();
+app.MapGet("/test-email", async (
+    IEmailService emailService,
+    CancellationToken ct) =>
+{
+    await emailService.Send(
+        "elias96.kodehode@gmail.com",
+        "Hoyvik test email",
+        """
+        <h1>Hello!</h1>
+        <p>This email was sent from Hoyvik.</p>
+        """,
+        ct);
 
+    return Results.Ok();
+});
 
 Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath!, "uploads"));
 

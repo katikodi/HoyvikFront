@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import ProfilePage from "@/pages/ProfilePage.jsx";
 import { currentUserQuery } from "@/queries/auth.queries";
 
-export const Route = createFileRoute("/_index/profile")({
+export const Route = createFileRoute("/profile/")({
     beforeLoad: async ({ context }) => {
         const user = await context.queryClient.ensureQueryData(currentUserQuery);
 

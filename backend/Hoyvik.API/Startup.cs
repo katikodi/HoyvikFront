@@ -6,6 +6,7 @@ using Hoyvik.API.Services;
 using Hoyvik.API.Services.Abstractions;
 using Hoyvik.API.Validators;
 using Microsoft.AspNetCore.Identity;
+using Resend;
 using Stripe;
 
 namespace Hoyvik.API;
@@ -20,7 +21,7 @@ internal static class Startup
         builder.Services.AddProblemDetails();
 
         builder.Services.AddMemoryCache();
-
+        builder.Services.AddOptions();
         builder.Services.AddCors(options => options.AddPolicy("frontend",
             p => p.WithOrigins("http://localhost:54131")
                 .AllowAnyHeader()
@@ -38,7 +39,8 @@ internal static class Startup
         builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
         builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
         builder.Services.AddHostedService<BookingExpirationService>();
-        builder.Services.AddScoped<IEmailService, FakeEmailService>();
+        builder.Services.AddHostedService<EmailBackgroundService>();
+        builder.Services.AddScoped<IEmailService, ResendEmailService>();
         builder.Services.AddSingleton<IBusinessClock, BusinessClock>();
 
         builder.Services.AddOptions<BookingConfiguration>()
@@ -50,6 +52,28 @@ internal static class Startup
             .BindConfiguration("Frontend")
             .ValidateDataAnnotations()
             .ValidateOnStart();
+
+        builder.Services.AddHttpClient<ResendClient>();
+
+        builder.Services.Configure<ResendClientOptions>(options =>
+        {
+            options.ApiToken =
+                builder.Configuration["Resend:ApiKey"]
+                ?? throw new InvalidOperationException(
+                    "Resend API key is not configured.");
+        });
+
+
+        builder.Services
+            .AddOptions<ResendConfiguration>()
+            .Bind(builder.Configuration.GetSection("Resend"))
+            .Validate(x => !string.IsNullOrWhiteSpace(x.ApiKey),
+                "Resend API key is required.")
+            .Validate(x => !string.IsNullOrWhiteSpace(x.From),
+                "Resend from address is required.")
+            .ValidateOnStart();
+
+        builder.Services.AddTransient<IResend, ResendClient>();
 
         StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 
