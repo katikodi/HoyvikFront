@@ -1,17 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/authContext";
-import { Link, Outlet, useNavigate } from "@tanstack/react-router";
+// import { useAuth } from "@/hooks/authContext";
+import { Link, Outlet } from "@tanstack/react-router";
 
 export default function ProfileLayout() {
-    const { user, logout } = useAuth();
-
-    const navigate = useNavigate();
-
-    async function handleLogout() {
-        await logout();
-        navigate({ to: "/" });
-    }
-
     return (
         <div className="min-h-dvh flex flex-col">
             <header className="border-b">
