@@ -12,10 +12,22 @@ export default function ProfileLayout() {
                     >
                         Home
                     </Link>
+                    <Link
+                        to="/profile"
+                        className="[&.active]:font-bold"
+                    >
+                        Profile
+                    </Link>
+                    <Link
+                        to="/profile/bookings"
+                        className="[&.active]:font-bold"
+                    >
+                        Bookings
+                    </Link>
                 </nav>
             </header>
 
-            <main className="flex flex-1">
+            <main className="flex flex-1 p-2">
                 <Outlet />
             </main>
         </div>

@@ -4,7 +4,6 @@ using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models;
 using Hoyvik.API.Models.Requests;
 using Hoyvik.API.Services.Abstractions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;
@@ -13,9 +12,9 @@ namespace Hoyvik.API.Services;
 
 internal sealed class BookingService(
     Database db,
-    IOptionsMonitor<BookingConfiguration> bookingConfiguration, 
+    IOptionsMonitor<BookingConfiguration> bookingConfiguration,
     IStripePaymentService stripePaymentService,
-    UserManager<ApplicationUser> userManager,
+    //UserManager<ApplicationUser> userManager,
     ILogger<BookingService> logger
     ) : IBookingService
 {
@@ -130,7 +129,7 @@ internal sealed class BookingService(
 
         await db.SaveChangesAsync(ct);
 
-        
+
         logger.LogInformation("Booking {BookingId} confirmed", booking.Id);
 
         return true;
@@ -191,7 +190,7 @@ internal sealed class BookingService(
     /// <returns></returns>
     public async Task<string> CreateBookingPaymentSession(
         CreateSessionRequest request,
-        string? userId,
+        string userId,
         CancellationToken ct = default)
     {
         var booking = await CreatePendingBooking(request, userId, ct);
@@ -207,7 +206,7 @@ internal sealed class BookingService(
             //send the checkout url to the customer
             return stripeSession.Url;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             logger.LogError(
                 ex,
@@ -221,7 +220,7 @@ internal sealed class BookingService(
         }
     }
     private async Task<Booking> CreatePendingBooking(
-        CreateSessionRequest request, 
+        CreateSessionRequest request,
         string userId,
         CancellationToken ct)
     {

@@ -45,7 +45,7 @@ export default function MainLayout() {
                 </nav>
             </header>
 
-            <main className="flex flex-1">
+            <main className="flex flex-1 p-3">
                 <Outlet />
             </main>
         </div>

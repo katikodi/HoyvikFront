@@ -44,11 +44,11 @@ public class BookingServiceTests
 
         var emailMock = new Mock<IEmailService>();
 
+
         return new BookingService(
             db: db,
-            stripePaymentService: stripeMock.Object,
             bookingConfiguration: optionsMonitorMock.Object,
-            emailService: emailMock.Object,
+            stripePaymentService: stripeMock.Object,
             logger: NullLogger<BookingService>.Instance);
     }
 
@@ -544,6 +544,16 @@ public class BookingServiceTests
     {
         await using var db = CreateDatabase();
 
+        var user = new ApplicationUser
+        {
+            Id = "user-123",
+            Email = "testing@testing.com",
+            FullName = "test mctestface"
+        };
+
+        db.Users.Add(user);
+        await db.SaveChangesAsync();
+
         var stripeMock = new Mock<IStripePaymentService>();
 
         stripeMock
@@ -585,6 +595,28 @@ public class BookingServiceTests
                     b.Price == 5250),
                 It.IsAny<CancellationToken>()),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateBookingPaymentSession_Throws_WhenUserDoesNotExist()
+    {
+        await using var db = CreateDatabase();
+
+        var stripeMock = new Mock<IStripePaymentService>();
+        var service = CreateService(db, stripeMock);
+
+        var request = new CreateSessionRequest(
+            new DateOnly(2026, 9, 10),
+            new DateOnly(2026, 9, 15),
+            2);
+
+        var act = () => service.CreateBookingPaymentSession(
+            request,
+            "user-does-not-exist");
+
+        await act.Should()
+            .ThrowAsync<InvalidOperationException>()
+            .WithMessage("User not found.");
     }
 
     [Fact]

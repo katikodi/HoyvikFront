@@ -11,6 +11,8 @@ export const Route = createFileRoute("/profile/")({
                 to: "/login"
             });
         }
+
+        return { user };
     },
     component: ProfilePage
 });

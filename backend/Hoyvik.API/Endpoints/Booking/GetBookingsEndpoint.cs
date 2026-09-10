@@ -4,21 +4,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hoyvik.API.Endpoints.Booking;
 
-public class GetBookingsEndpoint : IEndpoint
+/// <summary>
+/// TODO: Add projection instead of anonymous objects
+/// </summary>
+internal sealed class GetBookingsEndpoint : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app)
     {
-        app.MapGet("/me/bookings", Get);//.RequireAuthorization("user", "User", "admin", "Admin");
+        app.MapGet("/me/bookings", Get).RequireAuthorization(Roles.USER);
     }
 
     static async Task<IResult> Get(HttpContext ctx, Database db, CancellationToken ct = default)
     {
-        var user = ctx.User;
-        var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = ctx.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var bookings = await db.Bookings.Where(x => x.UserId == userId).ToListAsync(ct);
+        var bookings = await db.Bookings
+            .Where(x => x.UserId == userId)
+            .Select(x => new
+            {
+                x.Id,
+                x.StripeSessionId,
+                x.Status,
+                x.CheckIn,
+                x.CheckOut,
+                x.NumberOfGuests,
+                x.Price
+            })
+            .ToListAsync(ct);
 
-        return Results.Ok(bookings ?? []);
+        return Results.Ok(bookings);
 
     }
 }

@@ -36,7 +36,7 @@ export function BookingPage() {
     }
 
     return (
-        <>
+        <div>
             <BookingCalendar
                 onDateChange={e => {
                     setSelectedDates(e);
@@ -52,6 +52,6 @@ export function BookingPage() {
                     <Button onClick={book}>Book</Button>
                 </div>
             )}
-        </>
+        </div>
     );
 }
