@@ -4,7 +4,9 @@ import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 
 export default function ProfileLayout() {
     const { user, logout } = useAuth();
+
     const navigate = useNavigate();
+
     async function handleLogout() {
         await logout();
         navigate({ to: "/" });
