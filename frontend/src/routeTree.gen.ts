@@ -14,6 +14,7 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProfileRouteRouteImport } from './routes/profile/route'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as IndexIndexRouteImport } from './routes/_index/index'
 import { Route as IndexAboutRouteImport } from './routes/_index/about'
 import { Route as IndexBookingRouteImport } from './routes/_index/booking'
@@ -44,6 +45,11 @@ const ProfileRouteRoute = ProfileRouteRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexIndexRoute = IndexIndexRouteImport.update({
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/about': typeof IndexAboutRoute
   '/booking': typeof IndexBookingRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/about': typeof IndexAboutRoute
   '/booking': typeof IndexBookingRoute
   '/': typeof IndexIndexRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/_index/about': typeof IndexAboutRoute
   '/_index/booking': typeof IndexBookingRoute
   '/_index/': typeof IndexIndexRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/login'
     | '/register'
+    | '/verify-email'
     | '/about'
     | '/booking'
     | '/dashboard/'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
   to:
     | '/login'
     | '/register'
+    | '/verify-email'
     | '/about'
     | '/booking'
     | '/'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/login'
     | '/register'
+    | '/verify-email'
     | '/_index/about'
     | '/_index/booking'
     | '/_index/'
@@ -169,6 +181,7 @@ export interface RootRouteChildren {
   ProfileRouteRoute: typeof ProfileRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -206,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_index/': {
@@ -310,6 +330,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRouteRoute: ProfileRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -42,6 +42,7 @@ internal static class Startup
         builder.Services.AddHostedService<EmailBackgroundService>();
         builder.Services.AddScoped<IEmailService, ResendEmailService>();
         builder.Services.AddSingleton<IBusinessClock, BusinessClock>();
+        builder.Services.AddScoped<EmailVerificationLinkFactory>();
 
         builder.Services.AddOptions<BookingConfiguration>()
             .BindConfiguration("BookingSettings")
@@ -84,6 +85,8 @@ internal static class Startup
                 x.Password.RequireDigit = false;
                 x.Password.RequireUppercase = false;
                 //x.Password.RequiredLength = 0;
+                x.User.RequireUniqueEmail = true;
+                x.SignIn.RequireConfirmedEmail = true;
                 x.Password.RequireLowercase = false;
                 x.Password.RequireNonAlphanumeric = false;
             })
