@@ -3,8 +3,19 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/montserrat";
 @import "@fontsource-variable/merriweather";
-
-@custom-variant dark (&:is(.dark *));
+@import "@fontsource-variable/cinzel";
+@custom-variant dark (&: is(.dark *));
+/* 
+--bg1: #678a73;
+    --bg2: #b8cbbe;
+    --darkgreen: #2a3430;
+    --brown: #44383e;
+    --brownhover: #52454b;
+    --brightgreen: #9bb678;
+    --textbrown: #271c22;
+    --textsky: #bce8ef;
+    --icons: #111815;
+    --Text-text-opacity-down: rgba(39, 28, 34, 0.7); */
 
 :root {
     --background: oklch(1 0 0);
@@ -19,11 +30,11 @@
     --secondary-foreground: oklch(0.205 0 0);
     --muted: oklch(0.97 0 0);
     --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
+    --accent: #b8cbbe;
     --accent-foreground: oklch(0.205 0 0);
     --destructive: oklch(0.577 0.245 27.325);
     --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
+    --input: #b8cbbe;
     --ring: oklch(0.708 0 0);
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
@@ -77,7 +88,8 @@
 
 @theme inline {
     --font-sans: "Montserrat Variable", sans-serif;
-    --font-heading: "Merriweather Variable", serif;
+    --font-heading: "Cinzel Variable", serif;
+    --font-serif: "Cinzel Variable", serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
