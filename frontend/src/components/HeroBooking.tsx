@@ -119,11 +119,11 @@ const HeroBooking = () => {
                                             <SelectValue placeholder="Gjester" />
                                         </SelectTrigger>
                                         <SelectContent className="rounded-none bg-[#B8CBBE] hover:bg-[#B8CBBE] active:bg-[#B8CBBE]">
-                                            <SelectGroup className="bg-[#B8CBBE] hover:bg-[#B8CBBE]">
+                                            <SelectGroup className="bg-black border-red-500">
                                                 {new Array(4).fill(0).map((_, i) => (
                                                     <SelectItem
                                                         value={String(i + 1)}
-                                                        className="rounded-none bg-[#B8CBBE] hover:bg-[#B8CBBE]"
+                                                        className="rounded-none bg-[#B8CBBE] focus:bg-[#B8CBBE]/80 "
                                                         key={i}
                                                     >
                                                         {i + 1}

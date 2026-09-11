@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { HeroBooking } from "@/components/HeroBooking";
 import { IconSection } from "@/components/icon-section";
+import { icons } from "@/test-data/icons.json";
 
 export const Route = createFileRoute("/_index/")({
     component: Home

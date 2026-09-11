@@ -1,3 +1,4 @@
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/authContext";
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
@@ -42,6 +43,7 @@ export default function MainLayout() {
                             <Link to="/register">Register</Link>
                         </>
                     )}
+                    <ModeToggle />
                 </nav>
             </header>
 

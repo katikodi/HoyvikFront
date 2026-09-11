@@ -19,6 +19,7 @@ wwwroot/uploads/*
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+
 .idea
 .DS_Store
 *.suo
@@ -36,6 +37,8 @@ production.env
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
+*.prettierrc.json
+
 *.rsuser
 *.suo
 *.user
