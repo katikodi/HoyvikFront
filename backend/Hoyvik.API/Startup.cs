@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Threading.RateLimiting;
+using FluentValidation;
 using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
@@ -120,6 +121,48 @@ internal static class Startup
                 return Task.CompletedTask;
             };
 
+        });
+
+        builder.Services.AddRateLimiter(options => { 
+            options.RejectionStatusCode = options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.OnRejected = async (context, ct) =>
+            {
+                context.HttpContext.Response.ContentType = "application/json";
+
+                var retryAfter = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var ra)
+                    ? ra.TotalSeconds
+                    : (double?)null;
+
+                await context.HttpContext.Response.WriteAsJsonAsync(new
+                {
+                    error = "rate_limited",
+                    message = "Too many attempts. Please wait a moment and try again.",
+                    retryAfterSeconds = retryAfter
+                }, ct);
+            };
+
+            options.AddPolicy("email-sending", ctx => {
+                var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 3,
+                    Window = TimeSpan.FromMinutes(15),
+                    QueueLimit = 0
+                });
+            });
+
+            options.AddPolicy("login-attempts", ctx => {
+                var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 10,
+                    Window = TimeSpan.FromMinutes(5),
+                    QueueLimit = 0
+                });
+            });
         });
     }
 }

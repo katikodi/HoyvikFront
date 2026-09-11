@@ -7,8 +7,11 @@ internal sealed class LoginEndpoint : IEndpoint
 {
 
     //CURL: curl.exe -c cookies.txt -X POST https://localhost:7170/api/auth/login -d '{\"email\":\"admin@admin.com\",\"password\":\"admin@admin.com\"}' -H "Content-Type: application/json"
-    public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/auth/login", Login);
-
+    public void MapEndpoint(RouteGroupBuilder app)
+    {
+        app.MapPost("/auth/login", Login)
+            .RequireRateLimiting("login-attempts");
+    }
 
     static async Task<IResult> Login(
         SignInManager<ApplicationUser> signInManager,

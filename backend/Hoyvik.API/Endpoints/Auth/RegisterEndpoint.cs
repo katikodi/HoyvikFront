@@ -10,8 +10,12 @@ internal sealed class RegisterEndpoint : IEndpoint
     public void MapEndpoint(RouteGroupBuilder app)
     {
         app.MapPost("/auth/register", Register).WithName("Register");
+
         app.MapGet("/auth/verify-email", VerifyEmail).WithName("VerifyEmail");
-        //app.MapPost("/auth/resend-verification", null);
+
+        app.MapPost("/auth/resend-verification", ResendVerification)
+            .RequireRateLimiting("email-sending")
+            .WithName("ResendVerification");
     }
 
     static async Task<IResult> Register(
@@ -100,7 +104,35 @@ internal sealed class RegisterEndpoint : IEndpoint
         return Results.Ok("Email verified successfully.");
     }
 
+    static async Task<IResult> ResendVerification(
+        ResendVerificationRequest request,
+        IEmailService emailService,
+        EmailVerificationLinkFactory linkFactory,
+        UserManager<ApplicationUser> userManager,
+        CancellationToken ct = default)
+    {
+        var user = await userManager.FindByEmailAsync(request.Email);
 
+        if(user is null || user.EmailConfirmed)
+        {
+            return Results.Ok();
+        }
+
+
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        var link = linkFactory.Create(user.Id, token);
+
+            await emailService.Send(
+             user.Email!,
+             "Verify Email",
+             $"""<a href="{link}">Click here to verify</a>""",
+             ct);
+
+            return Results.Ok();
+    }
+
+
+    internal sealed record ResendVerificationRequest(string Email);
     internal sealed record RegisterRequest(
         string FullName,
         string Email,
