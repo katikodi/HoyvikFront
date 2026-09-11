@@ -11,29 +11,15 @@ export default function MainLayout() {
     }
 
     return (
-        <div className="min-h-dvh flex flex-col">
+        <div className="flex min-h-dvh flex-col">
             <header className="border-b">
-                <nav className="flex gap-4 p-4">
-                    <Link
-                        to="/"
-                        className="[&.active]:font-bold"
-                    >
-                        Home
-                    </Link>
+                <nav className="flex items-center gap-4 overflow-x-auto p-4 *:whitespace-nowrap *:[&.active]:font-bold">
+                    <Link to="/">Home</Link>
 
-                    <Link
-                        to="/about"
-                        className="[&.active]:font-bold"
-                    >
-                        About
-                    </Link>
+                    <Link to="/about">About</Link>
 
-                    <Link
-                        to="/profile"
-                        className="[&.active]:font-bold"
-                    >
-                        Profile
-                    </Link>
+                    <Link to="/profile">Profile</Link>
+
                     {user ? (
                         <Button onClick={handleLogout}>Logout</Button>
                     ) : (
@@ -45,7 +31,7 @@ export default function MainLayout() {
                 </nav>
             </header>
 
-            <main className="flex flex-1 p-3">
+            <main className="flex min-w-0 flex-1 p-3">
                 <Outlet />
             </main>
         </div>
