@@ -39,7 +39,7 @@ function Home() {
             {/* <HeroBooking /> */}
             {/* </div> */}
 
-            <IconSection>
+            <IconSection icons={icons}>
                 {/* {icons.map(icon => (
                     <Icon
                         key={icon.id}

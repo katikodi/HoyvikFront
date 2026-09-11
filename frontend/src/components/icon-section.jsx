@@ -1,9 +1,17 @@
 const IconSection = ({ icons }) => {
     return (
-        <div className="bg-green-400 h-dvh w-dvw">
-            <h1>Icon</h1>
+        <div className="bg-green-400 h-72 w-dvw">
+            <div className="flex flex-row justify-around">
+                {icons.map(({ icon, text }) => (
+                    <div className="grow flex flex-col items-center">
+                        <img src="icon" />
+                        <p>{text}</p>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
 
-export { IconSection };
+const Icon = () => {};
+export { IconSection, Icon };

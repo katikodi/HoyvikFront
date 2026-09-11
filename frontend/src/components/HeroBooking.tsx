@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -34,7 +32,7 @@ const HeroBooking = () => {
         },
         mode: "onChange"
     });
-
+    // TODO: write this function
     function onSubmit(data: z.infer<typeof formSchema>) {
         toast("You submitted the following values:", {
             description: (
@@ -71,6 +69,8 @@ const HeroBooking = () => {
                                 >
                                     <FieldLabel className="font-light">Innsjekk</FieldLabel>
                                     <div className="h-12">
+                                        {/* TODO: get booked dates from db and dislpay them*/}
+                                        {/* TODO: maybe combine the two calendars to one with range selection */}
                                         <DatePickerDemo {...field} />
                                     </div>
                                 </Field>
@@ -188,6 +188,7 @@ const HeroBooking = () => {
                             )}
                         />
                         <Field orientation="vertical">
+                            {/* TODO: this shoudl probably redirect to booking page with current data filled in */}
                             <Button
                                 type="submit"
                                 form="hero-booking-form"
