@@ -13,7 +13,7 @@ export default function MainLayout() {
     return (
         <div className="flex min-h-dvh flex-col">
             <header className="border-b">
-                <nav className="flex items-center gap-4 overflow-x-auto p-4 *:whitespace-nowrap *:[&.active]:font-bold">
+                <nav className="flex items-center gap-4 overflow-x-auto p-4 *:whitespace-nowrap *:[&.active]:font-bold *:shrink-0">
                     <Link to="/">Home</Link>
 
                     <Link to="/about">About</Link>

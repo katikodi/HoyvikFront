@@ -18,15 +18,22 @@ internal sealed class LoginEndpoint : IEndpoint
         var user = await userManager.FindByEmailAsync(request.Email);
 
         if (user is null)
-            return Results.Unauthorized();
+            return Results.BadRequest(new { error = "invalid_credentials", message = "Invalid email or password." });
 
-        if (!await userManager.CheckPasswordAsync(user, request.Password))
-            return Results.Unauthorized();
+        var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
 
+        if (!result.Succeeded)
+        {
+            if (result.IsNotAllowed)
+                return Results.BadRequest(new { error = "email_not_confirmed", message = "Please confirm your email before logging in." });
 
+            if (result.IsLockedOut)
+                return Results.BadRequest(new { error = "locked_out", message = "Account locked out. Try again later." });
 
-        await userManager.AddToRoleAsync(user, Roles.USER);
-        await signInManager.SignInAsync(user, true);
+            return Results.BadRequest(new { error = "invalid_credentials", message = "Invalid email or password." });
+        }
+
+        await signInManager.SignInAsync(user, isPersistent: true);
 
         return Results.NoContent();
     }

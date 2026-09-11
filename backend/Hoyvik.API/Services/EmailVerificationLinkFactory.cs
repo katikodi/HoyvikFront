@@ -1,15 +1,21 @@
-﻿namespace Hoyvik.API.Services;
+﻿using Microsoft.AspNetCore.WebUtilities;
 
-public class EmailVerificationLinkFactory(IHttpContextAccessor httpContextAccessor, LinkGenerator linkGenerator)
+namespace Hoyvik.API.Services;
+
+public class EmailVerificationLinkFactory(IHttpContextAccessor httpContextAccessor)
 {
     public string Create(string userId, string token)
     {
-        string? verificationLink = linkGenerator.GetUriByName(
-            httpContextAccessor.HttpContext!,
-            "VerifyEmail",
-            new {  userId,token}
-            );
+        var request = httpContextAccessor.HttpContext!.Request;
 
-        return verificationLink ?? throw new Exception("could not create email verification token");
+        var baseUrl = $"{request.Scheme}://{request.Host}";
+
+        return QueryHelpers.AddQueryString(
+            $"{baseUrl}/verify-email",
+            new Dictionary<string, string?>
+            {
+                ["userId"] = userId,
+                ["token"] = token
+            });
     }
 }

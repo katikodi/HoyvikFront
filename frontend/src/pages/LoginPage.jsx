@@ -10,11 +10,11 @@ export default function LoginPage() {
 
     async function handleLogin(email, password) {
         setError(null);
-        const success = await login(email, password);
-        if (success) {
+        const result = await login(email, password);
+        if (result.success) {
             await navigate({ to: "/" });
         } else {
-            setError("Invalid email or password");
+            setError(result.message);
         }
     }
     return (

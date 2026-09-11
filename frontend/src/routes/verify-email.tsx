@@ -1,3 +1,4 @@
+import { api } from "@/services/client";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
@@ -29,14 +30,11 @@ function VerifyEmailPage() {
             }
 
             try {
-                const response = await fetch(
-                    `${import.meta.env.VITE_API_URL}/api/auth/verify-email?userId=${encodeURIComponent(search.userId)}&token=${encodeURIComponent(search.token)}`,
-                    {
-                        method: "GET"
-                    }
+                const response = await api.get(
+                    `/auth/verify-email?userId=${encodeURIComponent(search.userId)}&token=${encodeURIComponent(search.token)}`
                 );
 
-                if (!response.ok) {
+                if (!response.data) {
                     setState({
                         status: "error",
                         message: "We could not verify your email. The link may have expired or already been used."

@@ -7,10 +7,12 @@ export type User = {
     roles: string[];
 };
 
+export type LoginResult = { success: true } | { success: false; message: string };
+
 export type AuthContextType = {
     user: User | null;
     loading: boolean;
-    login: (email: string, password: string) => Promise<boolean>;
+    login: (email: string, password: string) => Promise<LoginResult>;
     register: (fullName: string, email: string, password: string, confirmPassword: string) => Promise<boolean>;
     logout: () => Promise<void>;
     isAdmin: boolean;

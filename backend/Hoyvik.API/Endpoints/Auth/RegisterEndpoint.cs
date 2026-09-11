@@ -57,6 +57,7 @@ internal sealed class RegisterEndpoint : IEndpoint
 
 
         var link = linkFactory.Create(user.Id,emailVerificationToken);
+
         await emailService.Send(
             user.Email, 
             "Verify Email",
