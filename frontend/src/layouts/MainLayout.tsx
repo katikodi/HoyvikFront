@@ -11,43 +11,57 @@ export default function MainLayout() {
         navigate({ to: "/" });
     }
 
+    const navLinks = [
+        {
+            to: "/",
+            text: "Home"
+        },
+        {
+            to: "/about",
+            text: "About"
+        },
+        {
+            to: "/profile",
+            text: "Profile"
+        },
+        {
+            to: "/",
+            text: "Home"
+        }
+    ];
+
+    const anonNavLinks = [
+        {
+            to: "/login",
+            text: "Login"
+        },
+        {
+            to: "/register",
+            text: "Register"
+        }
+    ];
+
+    const allLinks = user ? navLinks : [...navLinks, ...anonNavLinks];
+
     return (
         <>
-            <header>
-                <nav className="flex gap-4 p-4">
-                    <Link
-                        to="/"
-                        className="[&.active]:font-bold"
-                    >
-                        Home
-                    </Link>
-
-                    <Link
-                        to="/about"
-                        className="[&.active]:font-bold"
-                    >
-                        About
-                    </Link>
-
-                    <Link
-                        to="/profile"
-                        className="[&.active]:font-bold"
-                    >
-                        Profile
-                    </Link>
-                    {user ? (
-                        <Button onClick={handleLogout}>Logout</Button>
-                    ) : (
-                        <>
-                            <Link to="/login">Login</Link>
-                            <Link to="/register">Register</Link>
-                        </>
-                    )}
-                    <ModeToggle />
-                </nav>
-            </header>
-
             <main className="h-dvh">
+                <header className="w-dvw">
+                    <nav className="absolute bg-transparent flex w-full max-w-100% gap-4 p-4 justify-around">
+                        {allLinks.map(({ to, text }, i) => (
+                            <Link
+                                to={to}
+                                key={i}
+                                className="font-serif text-[#B8CBBE]"
+                            >
+                                {text}
+                            </Link>
+                        ))}
+
+                        {user && <Button onClick={handleLogout}>Logout</Button>}
+                        <ModeToggle />
+                    </nav>
+                </header>
                 <Outlet />
             </main>
         </>

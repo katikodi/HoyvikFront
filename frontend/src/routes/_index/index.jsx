@@ -82,7 +82,7 @@ const Hero = () => {
 const HeroContent = ({ title, cta }) => {
     // TODO: fix text color
     return (
-        <header className="pt-52 w-72 pl-20 text-green-700 text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
+        <header className="pt-52 pl-20 text-[#9BB678] text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
             <HeroTitle text={title} />
 
             <svg
