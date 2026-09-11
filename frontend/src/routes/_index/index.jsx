@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { HeroBooking } from "@/components/HeroBooking";
 import { IconSection } from "@/components/icon-section";
 import { icons } from "@/test-data/icons.json";
+import { Card, CardHeader, CardAction, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/_index/")({
     component: Home
@@ -50,7 +52,8 @@ function Home() {
                 ))} */}
             </IconSection>
 
-            {/* <AboutSection /> */}
+            <AboutSection />
+            <ImageCarousel />
         </div>
     );
 }
@@ -163,7 +166,7 @@ const BookingField = ({ type, label, classNames = [] }) => {
 
 const AboutSection = () => {
     return (
-        <section className="bg-background ">
+        <section className="bg-secondary ">
             {/* <div className="blocker"></div> */}
             <AboutContent />
         </section>
@@ -192,8 +195,6 @@ const AboutContent = () => {
                     />
                 </figure>
             </div>
-
-            <ImageCarousel />
         </article>
     );
 };
@@ -207,6 +208,7 @@ const AboutText = ({ text, onClick, actionLabel }) => {
             <Button
                 onClick={onClick}
                 variant="outline"
+                className="border-brown-button bg-secondary hover:bg-brown-button hover:text-secondary w-52 rounded-none"
             >
                 {actionLabel || "CTA"}
             </Button>
@@ -216,7 +218,7 @@ const AboutText = ({ text, onClick, actionLabel }) => {
 
 const ImageCarousel = () => {
     return (
-        <section className="flex flex-row gap-4 justify-center py-12 pt-40">
+        <section className="flex flex-row gap-4 justify-center px-12 pt-40 bg-secondary">
             <CarouselCard
                 image="/images/rom1.webp"
                 title="ROM"
@@ -236,6 +238,34 @@ const ImageCarousel = () => {
 };
 
 const CarouselCard = ({ image, title }) => {
+    return (
+        <Card className="grow pt-0 rounded-none bg-light-background">
+            <img
+                src="/images/rom1.webp"
+                alt="Event cover"
+                className="relative z-20 aspect-video w-full object-cover rounded-none"
+            />
+            <CardHeader className="">
+                <CardAction>
+                    <Badge
+                        variant="secondary"
+                        className="rounded-none"
+                    >
+                        Featured
+                    </Badge>
+                </CardAction>
+                <CardTitle>Rom</CardTitle>
+                <CardDescription className="text-brown">Ett deilig rom</CardDescription>
+            </CardHeader>
+            <CardFooter>
+                <Button
+                    variant="outline"
+                    className="ml-auto w-24 rounded-none border-brown bg-light-background"
+                ></Button>
+            </CardFooter>
+        </Card>
+    );
+
     return (
         <article className="flex flex-col h-80 w-80 border-2 border-solid border-[#2a3430]">
             <figure
