@@ -7,7 +7,7 @@ export type User = {
     roles: string[];
 };
 
-export type LoginResult = { success: true } | { success: false; message: string };
+export type LoginResult = { success: true } | { success: false; error: string; message: string };
 
 export type AuthContextType = {
     user: User | null;

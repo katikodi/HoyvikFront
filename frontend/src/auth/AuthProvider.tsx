@@ -63,16 +63,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         login: async (email: string, password: string) => {
             try {
-                await loginMutation.mutateAsync({
-                    email,
-                    password
-                });
-
+                await loginMutation.mutateAsync({ email, password });
                 return { success: true as const };
             } catch (err) {
-                const message = axios.isAxiosError(err) ? (err.response?.data?.message ?? "Login failed.") : "Login failed.";
-
-                return { success: false as const, message };
+                const data = axios.isAxiosError(err) ? err.response?.data : null;
+                return {
+                    success: false as const,
+                    error: data?.error ?? "unknown_error",
+                    message: data?.message ?? "Login failed."
+                };
             }
         },
 
