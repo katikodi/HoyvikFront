@@ -3,54 +3,77 @@ import { useAuth } from "@/hooks/authContext";
 import { myBookingsQuery } from "@/queries/booking.queries";
 import { api } from "@/services/client";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { FieldDescription, FieldLabel, Field } from "@/components/ui/field";
 
 export default function ProfileComponent() {
-    const { data: bookings = [], isPending, isError, error, isFetching, refetch } = useQuery(myBookingsQuery);
+    const { user } = useAuth();
+    const navigate = useNavigate();
 
-    if (isPending || isFetching) {
-        return <h1>Loading bookings...</h1>;
+    if (!user) {
+        navigate({ to: "/login" });
     }
 
+    console.log("User: ", user);
     return (
-        <div className="w-3/5 p-3 flex flex-col">
-            <div className="flex flex-row justify-between">
-                <h2>Your bookings</h2>
-                <Button
-                    onClick={() => refetch()}
-                    disabled={isFetching}
-                >
-                    {isFetching ? "Refreshing..." : "Refresh"}
-                </Button>
-            </div>
-            {bookings.map(booking => (
-                <Booking
-                    key={booking.id}
-                    booking={booking}
+        <section className="w-full flex justify-center items-center">
+            <form className="flex flex-col gap-8 bg-primary p-8 rounded-2xl text-white">
+                <Email user={user} />
+                <FullName user={user} />
+
+                <div className="flex flex-row gap-8 justify-between">
+                    <Button variant={"secondary"}>Save Changes</Button>
+                    <Button
+                        type="button"
+                        variant={"destructive"}
+                    >
+                        Discard
+                    </Button>
+                </div>
+            </form>
+        </section>
+    );
+}
+
+function Email({ user }) {
+    return (
+        <div className="flex flex-row">
+            <Field>
+                <FieldLabel htmlFor="input-field-email">Email</FieldLabel>
+                <Input
+                    id="input-field-email"
+                    type="text"
+                    placeholder={user.email}
                 />
-            ))}
-
-            <Button>Logout</Button>
+                <FieldDescription>Enter your email.</FieldDescription>
+            </Field>
         </div>
     );
 }
 
-function Booking({ booking }) {
+function FullName({ user }) {
     return (
-        <div className="h-fit border rounded p-2 m-2 hover:bg-gray-800">
-            <p>Booking #{booking.id}</p>
-            <p>Check-in: {formatDate(booking.checkIn)}</p>
-            <p>Check-out: {formatDate(booking.checkOut)}</p>
-            <div className="flex justify-between">
-                <Button>View Details</Button>
-                <Button>Cancel</Button>
-            </div>
+        <div className="flex flex-row gap-8">
+            <Field>
+                <FieldLabel htmlFor="input-field-first-name">First Name</FieldLabel>
+                <Input
+                    id="input-field-first-name"
+                    type="text"
+                    placeholder={user.fullName}
+                />
+                <FieldDescription>Enter your first name.</FieldDescription>
+            </Field>
+            <Field>
+                <FieldLabel htmlFor="input-field-last-name">Last Name</FieldLabel>
+                <Input
+                    id="input-field-last-name"
+                    type="text"
+                    placeholder={user.fullName}
+                />
+                <FieldDescription>Enter your first name.</FieldDescription>
+            </Field>
         </div>
     );
-}
-
-function formatDate(date) {
-    return new Intl.DateTimeFormat(undefined, {
-        dateStyle: "medium"
-    }).format(new Date(date));
 }
