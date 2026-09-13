@@ -13,7 +13,10 @@ internal sealed class GetBookingByBookingId : IEndpoint
     static async Task<IResult> Get(string sessionId, Database db)
     {
 
-        var result = await db.Bookings.FirstOrDefaultAsync(x => x.StripeSessionId  == sessionId);
+        var result = await db
+            .Bookings
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.StripeSessionId  == sessionId);
 
 
         if(result is not null)
@@ -25,7 +28,8 @@ internal sealed class GetBookingByBookingId : IEndpoint
                 result.CheckOut,
                 result.NumberOfGuests,
                 result.Price,
-                result.Id
+                result.Id,
+                result.User!.Email
             });
         }
 

@@ -22,6 +22,12 @@ export async function register(fullName: string, email: string, password: string
     });
 }
 
+export async function resendVerification(email: string): Promise<void> {
+    await api.post("/auth/resend-verification", {
+        email
+    });
+}
+
 export async function logout(): Promise<void> {
     await api.post("/auth/logout");
 }

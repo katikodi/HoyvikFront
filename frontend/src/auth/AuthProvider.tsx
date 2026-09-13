@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AuthContext from "@/hooks/authContext";
 import { login as loginUser, logout as logoutUser, register as registerUser } from "@/services/auth";
 import { currentUserQuery } from "@/queries/auth.queries";
+import axios from "axios";
 
 type AuthProviderProps = {
     children: ReactNode;
@@ -62,14 +63,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         login: async (email: string, password: string) => {
             try {
-                await loginMutation.mutateAsync({
-                    email,
-                    password
-                });
-
-                return true;
-            } catch {
-                return false;
+                await loginMutation.mutateAsync({ email, password });
+                return { success: true as const };
+            } catch (err) {
+                const data = axios.isAxiosError(err) ? err.response?.data : null;
+                return {
+                    success: false as const,
+                    error: data?.error ?? "unknown_error",
+                    message: data?.message ?? "Login failed."
+                };
             }
         },
 

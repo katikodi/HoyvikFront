@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/services/client";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_index/payment/payment-success")({
     validateSearch: search => ({
@@ -69,18 +70,34 @@ function PaymentSuccess() {
     }
 
     return (
-        <section>
-            <h1>Payment successful</h1>
-            <p>Your booking is confirmed!</p>
-            <div>
-                <h2>Booking #{booking.id}</h2>
-                <p>Check-in: {booking.checkIn}</p>
-                <p>Check-out: {booking.checkOut}</p>
-                <p>Guests: {booking.numberOfGuests}</p>
-                <p>Total: {booking.price},-</p>
-            </div>
+        <div className="flex flex-1 items-center justify-center p-6">
+            <Card className="w-full max-w-md">
+                <CardHeader>
+                    <CardTitle>Payment successful</CardTitle>
+                    <CardDescription>Your booking has been confirmed.</CardDescription>
+                </CardHeader>
 
-            <Button>View my booking</Button>
-        </section>
+                <CardContent className="space-y-6">
+                    <p>
+                        Your booking confirmation will be sent to <strong>{booking.email}</strong>.
+                    </p>
+
+                    <div className="space-y-2">
+                        <h2 className="font-semibold">Booking #{booking.id}</h2>
+
+                        <div className="text-sm text-muted-foreground space-y-1">
+                            <p>Check-in: {booking.checkIn}</p>
+                            <p>Check-out: {booking.checkOut}</p>
+                            <p>Guests: {booking.numberOfGuests}</p>
+                            <p>Total: {booking.price},-</p>
+                        </div>
+                    </div>
+                </CardContent>
+
+                <CardFooter>
+                    <Button className="w-full">View my booking</Button>
+                </CardFooter>
+            </Card>
+        </div>
     );
 }

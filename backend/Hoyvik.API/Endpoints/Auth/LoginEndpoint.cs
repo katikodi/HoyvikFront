@@ -7,8 +7,11 @@ internal sealed class LoginEndpoint : IEndpoint
 {
 
     //CURL: curl.exe -c cookies.txt -X POST https://localhost:7170/api/auth/login -d '{\"email\":\"admin@admin.com\",\"password\":\"admin@admin.com\"}' -H "Content-Type: application/json"
-    public void MapEndpoint(RouteGroupBuilder app) => app.MapPost("/auth/login", Login);
-
+    public void MapEndpoint(RouteGroupBuilder app)
+    {
+        app.MapPost("/auth/login", Login)
+            .RequireRateLimiting("login-attempts");
+    }
 
     static async Task<IResult> Login(
         SignInManager<ApplicationUser> signInManager,
@@ -18,15 +21,22 @@ internal sealed class LoginEndpoint : IEndpoint
         var user = await userManager.FindByEmailAsync(request.Email);
 
         if (user is null)
-            return Results.Unauthorized();
+            return Results.BadRequest(new { error = "invalid_credentials", message = "Invalid email or password." });
 
-        if (!await userManager.CheckPasswordAsync(user, request.Password))
-            return Results.Unauthorized();
+        var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
 
+        if (!result.Succeeded)
+        {
+            if (result.IsNotAllowed)
+                return Results.BadRequest(new { error = "email_not_confirmed", message = "Please confirm your email before logging in." });
 
+            if (result.IsLockedOut)
+                return Results.BadRequest(new { error = "locked_out", message = "Account locked out. Try again later." });
 
-        await userManager.AddToRoleAsync(user, Roles.USER);
-        await signInManager.SignInAsync(user, true);
+            return Results.BadRequest(new { error = "invalid_credentials", message = "Invalid email or password." });
+        }
+
+        await signInManager.SignInAsync(user, isPersistent: true);
 
         return Results.NoContent();
     }

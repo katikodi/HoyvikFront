@@ -11,28 +11,53 @@ internal static class IdentitySeeder
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var db = services.GetRequiredService<Database>();
 
-
-        const string adminRole = "admin";
-        const string userRole = "user";
         const string adminEmail = "admin@admin.com";
         const string adminPassword = "admin@admin.com";
 
-
-
-        if (!await roleManager.RoleExistsAsync(adminRole))
+        
+        if (!await roleManager.RoleExistsAsync(Roles.ADMIN))
         {
-            await roleManager.CreateAsync(new IdentityRole(adminRole));
+            await roleManager.CreateAsync(new IdentityRole(Roles.ADMIN));
         }
 
-        if (!await roleManager.RoleExistsAsync(userRole))
+        if (!await roleManager.RoleExistsAsync(Roles.USER))
         {
-            await roleManager.CreateAsync(new IdentityRole(userRole));
+            await roleManager.CreateAsync(new IdentityRole(Roles.USER));
 
         }
 
         var admin = await userManager.FindByEmailAsync(adminEmail);
 
-        if (admin == null)
+
+        if (config["PersonalAccount"] is not null)
+        {
+            var personalAccount = await userManager.FindByEmailAsync(config["PersonalAccount:Email"] ?? throw new NullReferenceException(""));
+
+
+            if (personalAccount is null)
+            {
+                
+                personalAccount = new ApplicationUser
+                {
+                    FullName = config["PersonalAccount:FullName"] ?? throw new NullReferenceException(""),
+                    UserName = config["PersonalAccount:Email"] ?? throw new NullReferenceException(""),
+                    Email = config["PersonalAccount:Email"] ?? throw new NullReferenceException(""),
+                    EmailConfirmed = true
+                };
+                var result = await userManager.CreateAsync(personalAccount, config["PersonalAccount:Password"] ?? throw new NullReferenceException(""));
+
+                if (!result.Succeeded)
+                {
+                    throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
+            }
+            if (!await userManager.IsInRoleAsync(personalAccount, Roles.ADMIN))
+            {
+                await userManager.AddToRoleAsync(personalAccount, Roles.ADMIN);
+            }
+        }
+ 
+        if (admin is null)
         {
             admin = new ApplicationUser
             {
@@ -41,28 +66,18 @@ internal static class IdentitySeeder
                 Email = adminEmail,
                 EmailConfirmed = true
             };
-            var appUser = new ApplicationUser
-            {
-                FullName = "billy bob",
-                UserName = "test@test.com",
-                Email = "test@test.com",
-                EmailConfirmed = true
-            };
 
-            await userManager.CreateAsync(appUser, "test@test.com");
             var result = await userManager.CreateAsync(admin, adminPassword);
 
             if (!result.Succeeded)
             {
                 throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
             }
-
-
         }
 
-        if (!await userManager.IsInRoleAsync(admin, adminRole))
+        if (!await userManager.IsInRoleAsync(admin, Roles.ADMIN))
         {
-            await userManager.AddToRoleAsync(admin, adminRole);
+            await userManager.AddToRoleAsync(admin, Roles.ADMIN);
         }
 
 

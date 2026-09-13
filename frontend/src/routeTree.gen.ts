@@ -12,13 +12,16 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteRouteImport } from './routes/_index/route'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ProfileRouteRouteImport } from './routes/profile/route'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as IndexIndexRouteImport } from './routes/_index/index'
 import { Route as IndexAboutRouteImport } from './routes/_index/about'
 import { Route as IndexBookingRouteImport } from './routes/_index/booking'
-import { Route as IndexProfileRouteImport } from './routes/_index/profile'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as IndexPaymentPaymentSuccessRouteImport } from './routes/_index/payment/payment-success'
+import { Route as ProfileBookingsIndexRouteImport } from './routes/profile/bookings/index'
 
 const IndexRouteRoute = IndexRouteRouteImport.update({
   id: '/_index',
@@ -34,9 +37,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRouteRoute = ProfileRouteRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexIndexRoute = IndexIndexRouteImport.update({
@@ -54,15 +67,15 @@ const IndexBookingRoute = IndexBookingRouteImport.update({
   path: '/booking',
   getParentRoute: () => IndexRouteRoute,
 } as any)
-const IndexProfileRoute = IndexProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => IndexRouteRoute,
-} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRouteRoute,
+} as any)
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProfileRouteRoute,
 } as any)
 const IndexPaymentPaymentSuccessRoute =
   IndexPaymentPaymentSuccessRouteImport.update({
@@ -70,82 +83,105 @@ const IndexPaymentPaymentSuccessRoute =
     path: '/payment/payment-success',
     getParentRoute: () => IndexRouteRoute,
   } as any)
+const ProfileBookingsIndexRoute = ProfileBookingsIndexRouteImport.update({
+  id: '/bookings/',
+  path: '/bookings/',
+  getParentRoute: () => ProfileRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexIndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/profile': typeof ProfileRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/about': typeof IndexAboutRoute
   '/booking': typeof IndexBookingRoute
-  '/profile': typeof IndexProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/profile/': typeof ProfileIndexRoute
   '/payment/payment-success': typeof IndexPaymentPaymentSuccessRoute
+  '/profile/bookings/': typeof ProfileBookingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/about': typeof IndexAboutRoute
   '/booking': typeof IndexBookingRoute
-  '/profile': typeof IndexProfileRoute
   '/': typeof IndexIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/profile': typeof ProfileIndexRoute
   '/payment/payment-success': typeof IndexPaymentPaymentSuccessRoute
+  '/profile/bookings': typeof ProfileBookingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_index': typeof IndexRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/profile': typeof ProfileRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/_index/about': typeof IndexAboutRoute
   '/_index/booking': typeof IndexBookingRoute
-  '/_index/profile': typeof IndexProfileRoute
   '/_index/': typeof IndexIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/profile/': typeof ProfileIndexRoute
   '/_index/payment/payment-success': typeof IndexPaymentPaymentSuccessRoute
+  '/profile/bookings/': typeof ProfileBookingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/profile'
     | '/login'
     | '/register'
+    | '/verify-email'
     | '/about'
     | '/booking'
-    | '/profile'
     | '/dashboard/'
+    | '/profile/'
     | '/payment/payment-success'
+    | '/profile/bookings/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/register'
+    | '/verify-email'
     | '/about'
     | '/booking'
-    | '/profile'
     | '/'
     | '/dashboard'
+    | '/profile'
     | '/payment/payment-success'
+    | '/profile/bookings'
   id:
     | '__root__'
     | '/_index'
     | '/dashboard'
+    | '/profile'
     | '/login'
     | '/register'
+    | '/verify-email'
     | '/_index/about'
     | '/_index/booking'
-    | '/_index/profile'
     | '/_index/'
     | '/dashboard/'
+    | '/profile/'
     | '/_index/payment/payment-success'
+    | '/profile/bookings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRouteRoute: typeof IndexRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  ProfileRouteRoute: typeof ProfileRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -171,11 +207,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_index/': {
@@ -199,19 +249,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexBookingRouteImport
       parentRoute: typeof IndexRouteRoute
     }
-    '/_index/profile': {
-      id: '/_index/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof IndexProfileRouteImport
-      parentRoute: typeof IndexRouteRoute
-    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
+    }
+    '/profile/': {
+      id: '/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof ProfileIndexRouteImport
+      parentRoute: typeof ProfileRouteRoute
     }
     '/_index/payment/payment-success': {
       id: '/_index/payment/payment-success'
@@ -220,13 +270,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexPaymentPaymentSuccessRouteImport
       parentRoute: typeof IndexRouteRoute
     }
+    '/profile/bookings/': {
+      id: '/profile/bookings/'
+      path: '/bookings'
+      fullPath: '/profile/bookings/'
+      preLoaderRoute: typeof ProfileBookingsIndexRouteImport
+      parentRoute: typeof ProfileRouteRoute
+    }
   }
 }
 
 interface IndexRouteRouteChildren {
   IndexAboutRoute: typeof IndexAboutRoute
   IndexBookingRoute: typeof IndexBookingRoute
-  IndexProfileRoute: typeof IndexProfileRoute
   IndexIndexRoute: typeof IndexIndexRoute
   IndexPaymentPaymentSuccessRoute: typeof IndexPaymentPaymentSuccessRoute
 }
@@ -234,7 +290,6 @@ interface IndexRouteRouteChildren {
 const IndexRouteRouteChildren: IndexRouteRouteChildren = {
   IndexAboutRoute: IndexAboutRoute,
   IndexBookingRoute: IndexBookingRoute,
-  IndexProfileRoute: IndexProfileRoute,
   IndexIndexRoute: IndexIndexRoute,
   IndexPaymentPaymentSuccessRoute: IndexPaymentPaymentSuccessRoute,
 }
@@ -255,11 +310,27 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
   DashboardRouteRouteChildren,
 )
 
+interface ProfileRouteRouteChildren {
+  ProfileIndexRoute: typeof ProfileIndexRoute
+  ProfileBookingsIndexRoute: typeof ProfileBookingsIndexRoute
+}
+
+const ProfileRouteRouteChildren: ProfileRouteRouteChildren = {
+  ProfileIndexRoute: ProfileIndexRoute,
+  ProfileBookingsIndexRoute: ProfileBookingsIndexRoute,
+}
+
+const ProfileRouteRouteWithChildren = ProfileRouteRoute._addFileChildren(
+  ProfileRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRouteRoute: IndexRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  ProfileRouteRoute: ProfileRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

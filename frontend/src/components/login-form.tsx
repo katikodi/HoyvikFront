@@ -10,9 +10,20 @@ import { Link } from "@tanstack/react-router";
 type LoginFormProps = {
     onLogin: (email: string, password: string) => Promise<void>;
     error?: string | null;
+    errorCode?: string | null;
+    onResend?: (email: string) => Promise<void>;
+    resendState?: "idle" | "sending" | "sent";
 };
 
-export function LoginForm({ onLogin, error, className, ...props }: LoginFormProps & React.ComponentProps<"div">) {
+export function LoginForm({
+    onLogin,
+    error,
+    errorCode,
+    onResend,
+    resendState,
+    className,
+    ...props
+}: LoginFormProps & React.ComponentProps<"div">) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -39,6 +50,16 @@ export function LoginForm({ onLogin, error, className, ...props }: LoginFormProp
                     <form onSubmit={handleSubmit}>
                         {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
 
+                        {errorCode === "email_not_confirmed" && (
+                            <Button
+                                type="button"
+                                variant="link"
+                                onClick={() => onResend?.(email)}
+                                disabled={resendState !== "idle"}
+                            >
+                                {resendState === "sent" ? "Verification email sent!" : "Resend verification email"}
+                            </Button>
+                        )}
                         <FieldGroup>
                             <Field>
                                 <FieldLabel htmlFor="email">Email</FieldLabel>

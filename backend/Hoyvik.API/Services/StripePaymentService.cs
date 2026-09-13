@@ -8,7 +8,9 @@ using Stripe.Checkout;
 
 namespace Hoyvik.API.Services;
 
-internal sealed class StripePaymentService(IOptions<FrontendConfiguration> frontendConfig, ILogger<StripePaymentService> logger) : IStripePaymentService
+internal sealed class StripePaymentService(
+    IOptions<FrontendConfiguration> frontendConfig, 
+    ILogger<StripePaymentService> logger) : IStripePaymentService
 {
     public async Task<StripeCheckoutSession> CreateCheckoutSession(Booking booking, CancellationToken ct = default)
     {
@@ -23,6 +25,7 @@ internal sealed class StripePaymentService(IOptions<FrontendConfiguration> front
         var options = new SessionCreateOptions
         {
             Mode = "payment",
+            CustomerEmail = booking.User?.Email,
             SuccessUrl = $"{frontendUrl}/payment/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
             CancelUrl = $"{frontendUrl}/payment/payment-cancel",
             Currency = "nok",

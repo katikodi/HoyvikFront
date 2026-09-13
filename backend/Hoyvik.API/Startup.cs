@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Threading.RateLimiting;
+using FluentValidation;
 using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
@@ -6,6 +7,7 @@ using Hoyvik.API.Services;
 using Hoyvik.API.Services.Abstractions;
 using Hoyvik.API.Validators;
 using Microsoft.AspNetCore.Identity;
+using Resend;
 using Stripe;
 
 namespace Hoyvik.API;
@@ -20,7 +22,7 @@ internal static class Startup
         builder.Services.AddProblemDetails();
 
         builder.Services.AddMemoryCache();
-
+        builder.Services.AddOptions();
         builder.Services.AddCors(options => options.AddPolicy("frontend",
             p => p.WithOrigins("http://localhost:54131")
                 .AllowAnyHeader()
@@ -38,8 +40,10 @@ internal static class Startup
         builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
         builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
         builder.Services.AddHostedService<BookingExpirationService>();
-        builder.Services.AddScoped<IEmailService, FakeEmailService>();
+        builder.Services.AddHostedService<EmailBackgroundService>();
+        builder.Services.AddScoped<IEmailService, ResendEmailService>();
         builder.Services.AddSingleton<IBusinessClock, BusinessClock>();
+        builder.Services.AddScoped<EmailVerificationLinkFactory>();
 
         builder.Services.AddOptions<BookingConfiguration>()
             .BindConfiguration("BookingSettings")
@@ -51,6 +55,28 @@ internal static class Startup
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        builder.Services.AddHttpClient<ResendClient>();
+
+        builder.Services.Configure<ResendClientOptions>(options =>
+        {
+            options.ApiToken =
+                builder.Configuration["Resend:ApiKey"]
+                ?? throw new InvalidOperationException(
+                    "Resend API key is not configured.");
+        });
+
+
+        builder.Services
+            .AddOptions<ResendConfiguration>()
+            .Bind(builder.Configuration.GetSection("Resend"))
+            .Validate(x => !string.IsNullOrWhiteSpace(x.ApiKey),
+                "Resend API key is required.")
+            .Validate(x => !string.IsNullOrWhiteSpace(x.From),
+                "Resend from address is required.")
+            .ValidateOnStart();
+
+        builder.Services.AddTransient<IResend, ResendClient>();
+
         StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
 
 
@@ -60,6 +86,8 @@ internal static class Startup
                 x.Password.RequireDigit = false;
                 x.Password.RequireUppercase = false;
                 //x.Password.RequiredLength = 0;
+                x.User.RequireUniqueEmail = true;
+                x.SignIn.RequireConfirmedEmail = true;
                 x.Password.RequireLowercase = false;
                 x.Password.RequireNonAlphanumeric = false;
             })
@@ -93,6 +121,48 @@ internal static class Startup
                 return Task.CompletedTask;
             };
 
+        });
+
+        builder.Services.AddRateLimiter(options => { 
+            options.RejectionStatusCode = options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.OnRejected = async (context, ct) =>
+            {
+                context.HttpContext.Response.ContentType = "application/json";
+
+                var retryAfter = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var ra)
+                    ? ra.TotalSeconds
+                    : (double?)null;
+
+                await context.HttpContext.Response.WriteAsJsonAsync(new
+                {
+                    error = "rate_limited",
+                    message = "Too many attempts. Please wait a moment and try again.",
+                    retryAfterSeconds = retryAfter
+                }, ct);
+            };
+
+            options.AddPolicy("email-sending", ctx => {
+                var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 3,
+                    Window = TimeSpan.FromMinutes(15),
+                    QueueLimit = 0
+                });
+            });
+
+            options.AddPolicy("login-attempts", ctx => {
+                var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 10,
+                    Window = TimeSpan.FromMinutes(5),
+                    QueueLimit = 0
+                });
+            });
         });
     }
 }

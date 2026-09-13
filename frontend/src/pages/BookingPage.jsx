@@ -1,5 +1,6 @@
 import { BookingCalendar } from "@/components/BookingCalendar";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/authContext";
 import { api } from "@/services/client";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ import { useEffect, useState } from "react";
 export function BookingPage() {
     const [selectedDates, setSelectedDates] = useState(null);
 
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     async function book() {
@@ -34,7 +36,7 @@ export function BookingPage() {
     }
 
     return (
-        <>
+        <div>
             <BookingCalendar
                 onDateChange={e => {
                     setSelectedDates(e);
@@ -44,9 +46,12 @@ export function BookingPage() {
 
             {selectedDates && (
                 <div>
+                    <p>
+                        We'll send your confirmation to: <strong>{user.email}</strong>
+                    </p>
                     <Button onClick={book}>Book</Button>
                 </div>
             )}
-        </>
+        </div>
     );
 }
