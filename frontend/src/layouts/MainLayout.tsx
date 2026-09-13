@@ -1,69 +1,52 @@
 import { ModeToggle } from "@/components/mode-toggle";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/authContext";
-import { Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { Link, Outlet } from "@tanstack/react-router";
 
 export default function MainLayout() {
-    const { user, logout } = useAuth();
-    const navigate = useNavigate();
-    async function handleLogout() {
-        await logout();
-        navigate({ to: "/" });
-    }
-
     const navLinks = [
         {
             to: "/",
             text: "Home"
         },
         {
+            to: "/activities",
+            text: "Activities"
+        },
+        {
             to: "/about",
             text: "About"
         },
         {
-            to: "/profile",
-            text: "Profile"
+            to: "/contact",
+            text: "Contact Us"
         },
         {
-            to: "/",
-            text: "Home"
+            to: "/shop",
+            text: "Shop"
         }
     ];
 
-    const anonNavLinks = [
-        {
-            to: "/login",
-            text: "Login"
-        },
-        {
-            to: "/register",
-            text: "Register"
-        }
-    ];
-
-    const allLinks = user ? navLinks : [...navLinks, ...anonNavLinks];
-
+    //the layouts should control the layout and structure of the page, not its children
     return (
-        <>
-            <main className="h-dvh">
-                <header className="w-dvw">
-                    <nav className="absolute bg-transparent flex w-full max-w-100% gap-4 p-4 justify-around">
-                        {allLinks.map(({ to, text }, i) => (
-                            <Link
-                                to={to}
-                                key={i}
-                                className="font-serif text-[#B8CBBE]"
-                            >
-                                {text}
-                            </Link>
-                        ))}
+        <div className="flex min-h-dvh w-full flex-col">
+            {/* header does not belong inside of main */}
+            <header className="absolute inset-x-0 top-0 z-50">
+                <nav className="flex w-full items-center justify-around gap-4 p-4">
+                    {navLinks.map(({ to, text }) => (
+                        <Link
+                            to={to}
+                            key={to}
+                            className="font-serif text-[#B8CBBE]"
+                        >
+                            {text}
+                        </Link>
+                    ))}
+                    <ModeToggle />
+                </nav>
+            </header>
 
-                        {user && <Button onClick={handleLogout}>Logout</Button>}
-                        <ModeToggle />
-                    </nav>
-                </header>
+            <main className="min-w-0 w-full flex-1">
                 <Outlet />
             </main>
-        </>
+        </div>
     );
 }
