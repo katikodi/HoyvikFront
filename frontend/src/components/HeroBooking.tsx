@@ -15,8 +15,8 @@ import { PeopleIcon } from "./ui/icons/people-icon";
 import { CabinIcon } from "./ui/icons/cabin-icon";
 
 const formSchema = z.object({
-    checkIn: z.iso.date(),
-    checkOut: z.iso.date(),
+    checkIn: z.date(),
+    checkOut: z.date(),
     guestAmount: z.number().min(1).max(4),
     cabin: z.string()
 });
@@ -25,8 +25,8 @@ const HeroBooking = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            checkIn: "",
-            checkOut: "",
+            checkIn: new Date(),
+            checkOut: new Date(),
             guestAmount: 1,
             cabin: ""
         },
@@ -34,6 +34,8 @@ const HeroBooking = () => {
     });
     // TODO: write this function
     function onSubmit(data: z.infer<typeof formSchema>) {
+        console.log("something happened");
+        console.log(data);
         toast("You submitted the following values:", {
             description: (
                 <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
@@ -65,10 +67,10 @@ const HeroBooking = () => {
                             render={({ field }) => (
                                 <Field
                                     orientation="vertical"
-                                    className="grow-7"
+                                    className="grow-7 shrink"
                                 >
                                     <FieldLabel className="font-light">Innsjekk</FieldLabel>
-                                    <div className="h-12">
+                                    <div className="h-full">
                                         {/* TODO: get booked dates from db and dislpay them*/}
                                         {/* TODO: maybe combine the two calendars to one with range selection */}
                                         <DatePickerDemo {...field} />
@@ -82,10 +84,10 @@ const HeroBooking = () => {
                             render={({ field }) => (
                                 <Field
                                     orientation="vertical"
-                                    className="grow-7"
+                                    className="grow-7 shrink"
                                 >
                                     <FieldLabel className="font-light">Utsjekk</FieldLabel>
-                                    <div className="h-12">
+                                    <div className="h-full">
                                         <DatePickerDemo {...field} />
                                     </div>
                                 </Field>
@@ -97,7 +99,7 @@ const HeroBooking = () => {
                             render={({ field, fieldState }) => (
                                 <Field
                                     orientation="vertical"
-                                    className="w-fit"
+                                    className="flex-1"
                                     aria-invalid={fieldState.invalid}
                                 >
                                     <FieldLabel
@@ -114,7 +116,7 @@ const HeroBooking = () => {
                                             field.onChange(parseInt(e));
                                         }}
                                     >
-                                        <SelectTrigger className="w-[180px] grow rounded-none border-2 border-solid border-[#2A3430]">
+                                        <SelectTrigger className="w-[180px] h-12 flex-1 rounded-none border-2 border-solid border-[#2A3430]">
                                             <PeopleIcon className="size-8" />
                                             <SelectValue placeholder="Gjester" />
                                         </SelectTrigger>
