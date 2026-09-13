@@ -1,4 +1,5 @@
 import { Outlet } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/sonner";
 
 export function AdminLayout() {
     return (
@@ -9,6 +10,7 @@ export function AdminLayout() {
 
             <main>
                 <Outlet />
+                <Toaster />
             </main>
         </div>
     );

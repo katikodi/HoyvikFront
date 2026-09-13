@@ -9,6 +9,7 @@ import { IconSection } from "@/components/icon-section";
 import { icons } from "@/test-data/icons.json";
 import { Card, CardHeader, CardAction, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_index/")({
     component: Home
@@ -182,7 +183,7 @@ const AboutContent = () => {
                 <AboutText
                     text={description}
                     onClick={() => {
-                        console.log("cta cluck");
+                        toast("test");
                     }}
                     actionLabel="CTA 2"
                 />

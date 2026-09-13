@@ -15,8 +15,8 @@ import { PeopleIcon } from "./ui/icons/people-icon";
 import { CabinIcon } from "./ui/icons/cabin-icon";
 
 const formSchema = z.object({
-    checkIn: z.iso.date(),
-    checkOut: z.iso.date(),
+    checkIn: z.date(),
+    checkOut: z.date(),
     guestAmount: z.number().min(1).max(4),
     cabin: z.string()
 });
@@ -25,8 +25,8 @@ const HeroBooking = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            checkIn: "",
-            checkOut: "",
+            checkIn: new Date(),
+            checkOut: new Date(),
             guestAmount: 1,
             cabin: ""
         },
@@ -34,6 +34,8 @@ const HeroBooking = () => {
     });
     // TODO: write this function
     function onSubmit(data: z.infer<typeof formSchema>) {
+        console.log("something happened");
+        console.log(data);
         toast("You submitted the following values:", {
             description: (
                 <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
