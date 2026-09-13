@@ -67,10 +67,10 @@ const HeroBooking = () => {
                             render={({ field }) => (
                                 <Field
                                     orientation="vertical"
-                                    className="grow-7"
+                                    className="grow-7 shrink"
                                 >
                                     <FieldLabel className="font-light">Innsjekk</FieldLabel>
-                                    <div className="h-12">
+                                    <div className="h-full">
                                         {/* TODO: get booked dates from db and dislpay them*/}
                                         {/* TODO: maybe combine the two calendars to one with range selection */}
                                         <DatePickerDemo {...field} />
@@ -84,10 +84,10 @@ const HeroBooking = () => {
                             render={({ field }) => (
                                 <Field
                                     orientation="vertical"
-                                    className="grow-7"
+                                    className="grow-7 shrink"
                                 >
                                     <FieldLabel className="font-light">Utsjekk</FieldLabel>
-                                    <div className="h-12">
+                                    <div className="h-full">
                                         <DatePickerDemo {...field} />
                                     </div>
                                 </Field>
@@ -99,7 +99,7 @@ const HeroBooking = () => {
                             render={({ field, fieldState }) => (
                                 <Field
                                     orientation="vertical"
-                                    className="w-fit"
+                                    className="flex-1"
                                     aria-invalid={fieldState.invalid}
                                 >
                                     <FieldLabel
@@ -116,7 +116,7 @@ const HeroBooking = () => {
                                             field.onChange(parseInt(e));
                                         }}
                                     >
-                                        <SelectTrigger className="w-[180px] grow rounded-none border-2 border-solid border-[#2A3430]">
+                                        <SelectTrigger className="w-[180px] h-12 flex-1 rounded-none border-2 border-solid border-[#2A3430]">
                                             <PeopleIcon className="size-8" />
                                             <SelectValue placeholder="Gjester" />
                                         </SelectTrigger>
