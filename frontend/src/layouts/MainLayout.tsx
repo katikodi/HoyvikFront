@@ -30,18 +30,18 @@ export default function MainLayout() {
         <div className="flex min-h-dvh w-full flex-col">
             {/* Header does not belong inside of main */}
             <header className="absolute inset-x-0 top-0 z-50">
-                <nav className="flex w-full items-center justify-around gap-4 p-4">
+                <nav className="flex w-full items-center justify-around gap-4 p-4 pr-24 backdrop-blur-sm">
                     {navLinks.map(({ to, text }) => (
                         <Link
                             to={to}
                             key={to}
-                            className="font-serif text-[#B8CBBE]"
+                            className="font-serif text-[#B8CBBE] h-9 content-center"
                         >
                             {text}
                         </Link>
                     ))}
-                    <HamburgerDropdown />
                 </nav>
+                <HamburgerDropdown />
             </header>
 
             <main className={`min-w-0 w-full flex-1 ${isHome ? "" : "pt-20"}`}>
@@ -61,14 +61,14 @@ function HamburgerDropdown() {
                 <Button
                     variant="outline"
                     size="icon"
-                    className="fixed right-4 top-4 z-50"
+                    className="fixed right-4 top-4 z-50 rounded-none"
                 >
                     <Menu />
                     <span className="sr-only">Open menu</span>
                 </Button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent>
+            <DropdownMenuContent className="rounded-none">
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
 
