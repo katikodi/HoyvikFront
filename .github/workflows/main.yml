@@ -8,7 +8,6 @@ on:
 
 jobs:
     notify-discord:
-        # if: github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
 
         steps:
@@ -35,15 +34,29 @@ jobs:
 
                   COMMIT_COUNT=$(echo "$COMMITS" | jq 'length')
 
-                  RAW_COMMIT_LIST=$(echo "$COMMITS" | jq -r '
-                    .[]? | "- [\(.id[0:7])](\(.url)) \(.message | split("\n")[0]) — \(.author.name)"
+                  COMMIT_FIELDS=$(echo "$COMMITS" | jq -c '
+                    [
+                      .[]? |
+                      "- [\(.id[0:7])](\(.url)) \(.message | split("\n")[0]) — \(.author.name)"
+                    ]
+                    | reduce .[] as $commit
+                        ({fields: [], current: ""};
+                         if (.current | length) + ($commit | length) + 1 > 1024
+                         then
+                           .fields += [.current]
+                           | .current = $commit
+                         else
+                           .current = if .current == "" then $commit else .current + "\n" + $commit end
+                         end)
+                    | .fields + (if .current != "" then [.current] else [] end)
+                    | map(select(length > 0))
+                    | to_entries
+                    | map({
+                        name: (if .key == 0 then "Commits" else "Commits (continued)" end),
+                        value: .value,
+                        inline: false
+                      })
                   ')
-
-                  if [ ${#RAW_COMMIT_LIST} -gt 1000 ]; then
-                    COMMIT_LIST="${RAW_COMMIT_LIST:0:950}... (truncated)"
-                  else
-                    COMMIT_LIST="${RAW_COMMIT_LIST:-"No commit details available"}"
-                  fi
 
                   jq -n \
                     --arg title "🚀 New Push to $REPOSITORY" \
@@ -51,18 +64,19 @@ jobs:
                     --arg branch "$BRANCH" \
                     --arg author "$AUTHOR" \
                     --arg commit_count "$COMMIT_COUNT commits pushed" \
-                    --arg commits "$COMMIT_LIST" \
+                    --argjson commit_fields "$COMMIT_FIELDS" \
                     '{
                       embeds: [{
                         title: $title,
                         url: $compare_url,
                         color: 3447003,
-                        fields: [
-                          { name: "Branch", value: $branch, inline: true },
-                          { name: "Pushed by", value: $author, inline: true },
-                          { name: "Changes", value: $commit_count, inline: true },
-                          { name: "Commits", value: $commits, inline: false }
-                        ]
+                        fields: (
+                          [
+                            { name: "Branch", value: $branch, inline: true },
+                            { name: "Pushed by", value: $author, inline: true },
+                            { name: "Changes", value: $commit_count, inline: true }
+                          ] + $commit_fields
+                        )
                       }]
                     }' |
                   curl \
