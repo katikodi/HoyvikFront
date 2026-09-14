@@ -1,34 +1,50 @@
-using System.Security.Claims;
 using Hoyvik.API;
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
 using Hoyvik.API.Services.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddApplication();
-var app = builder.Build();
+
+
 
 
 #region Middleware
+var app = builder.Build();
 
-app.UseCors("frontend");
-app.MapDefaultEndpoints();
+
+app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseExceptionHandler("/error");
     app.UseDeveloperExceptionPage();
-    using var scope = app.Services.CreateScope();
-    await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
-if (app.Environment.IsProduction())
-    app.UseHttpsRedirection();
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+
+app.UseCors("frontend");
+app.MapDefaultEndpoints();
+
+
+using var scope = app.Services.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<Database>();
+await db.Database.MigrateAsync();
+await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+
+
+//if (app.Environment.IsProduction())
+//    app.UseHttpsRedirection();
 
 app.UseRateLimiter();
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -62,6 +78,7 @@ app.UseFileServer(new FileServerOptions
 
 });
 
+app.MapFallbackToFile("/index.html");
 
 app.Run();
 #endregion

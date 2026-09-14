@@ -17,6 +17,10 @@ export default defineConfig(({ mode }) => {
             tailwindcss(),
             babel({ presets: [reactCompilerPreset()] })
         ],
+        build: {
+            emptyOutDir: false,
+            outDir: "../backend/Hoyvik.API/wwwroot"
+        },
         server: {
             port: 54131,
             proxy: {

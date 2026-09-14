@@ -6,6 +6,7 @@ using Hoyvik.API.Endpoints;
 using Hoyvik.API.Services;
 using Hoyvik.API.Services.Abstractions;
 using Hoyvik.API.Validators;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Resend;
 using Stripe;
@@ -34,7 +35,12 @@ internal static class Startup
             .AddPolicy(Roles.USER, p => p.RequireRole(Roles.ADMIN, Roles.USER))
             .AddPolicy(Roles.ADMIN, p => p.RequireRole(Roles.ADMIN));
 
-
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders =
+                ForwardedHeaders.XForwardedFor |
+                ForwardedHeaders.XForwardedProto;
+        });
         builder.Services.AddScoped<ImageUploaderService>();
         builder.Services.AddScoped<IBookingService, BookingService>();
         builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
@@ -123,7 +129,8 @@ internal static class Startup
 
         });
 
-        builder.Services.AddRateLimiter(options => { 
+        builder.Services.AddRateLimiter(options =>
+        {
             options.RejectionStatusCode = options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
             options.OnRejected = async (context, ct) =>
@@ -142,7 +149,8 @@ internal static class Startup
                 }, ct);
             };
 
-            options.AddPolicy("email-sending", ctx => {
+            options.AddPolicy("email-sending", ctx =>
+            {
                 var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
                 return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
@@ -153,7 +161,8 @@ internal static class Startup
                 });
             });
 
-            options.AddPolicy("login-attempts", ctx => {
+            options.AddPolicy("login-attempts", ctx =>
+            {
                 var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
                 return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
