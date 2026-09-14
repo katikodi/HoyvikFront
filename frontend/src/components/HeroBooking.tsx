@@ -14,6 +14,9 @@ import { DatePickerDemo } from "./DatePicker";
 import { PeopleIcon } from "./ui/icons/people-icon";
 import { CabinIcon } from "./ui/icons/cabin-icon";
 
+import { occupiedBookingsQuery } from "@/queries/booking.queries";
+import { useQuery } from "@tanstack/react-query";
+
 const formSchema = z.object({
     checkIn: z.date(),
     checkOut: z.date(),
@@ -22,6 +25,12 @@ const formSchema = z.object({
 });
 
 const HeroBooking = () => {
+    const { data } = useQuery(occupiedBookingsQuery);
+
+    {
+        data && console.log(data);
+    }
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
