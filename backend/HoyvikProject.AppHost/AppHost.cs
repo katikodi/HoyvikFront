@@ -5,31 +5,15 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 
 var env = builder.AddDockerComposeEnvironment("env");
+var stripeKey = builder.AddParameter("stripe-secret-key", secret: true);
+var resendKey = builder.AddParameter("resend-api-key", secret: true);
 
 env.ConfigureComposeFile(compose =>
 {
-
     compose.AddVolume(new Volume { Name = "backend_uploads" });
 });
-var caddy = builder
-    .AddContainer("caddy", "caddy", "2")
-    .WithEntrypoint("/usr/bin/caddy")
-    .WithArgs(
-        "reverse-proxy",
-        "--from", "hoyvik.home.arpa",
-        "--to", "backend:8080",
-        "--internal-certs")
-    .WithVolume("caddy_data", "/data")
-    .WithVolume("caddy_config", "/config")
-    .WithHttpEndpoint(port: 80, targetPort: 80)
-    .WithHttpsEndpoint(port: 443, targetPort: 443)
-    .PublishAsDockerComposeService((resource, service) =>
-    {
-        service.Ports.Add("80:80");
-        service.Ports.Add("443:443");
-    });
-var stripeKey = builder.AddParameter("stripe-secret-key", secret: true);
-var resendKey = builder.AddParameter("resend-api-key", secret: true);
+
+
 
 var postgres = builder
     .AddPostgres("postgres")
@@ -64,6 +48,27 @@ var api = builder.AddProject<Hoyvik_API>("backend")
         });
         service.Name = "backend";
     });
+    
+var caddy = builder
+    .AddContainer("caddy", "caddy", "2")
+    .WithEntrypoint("/usr/bin/caddy")
+    .WithArgs(
+        "reverse-proxy",
+        "--from", "hoyvik.home.arpa",
+        "--to", "backend:8080",
+        "--internal-certs")
+    .WithVolume("caddy_data", "/data")
+    .WithVolume("caddy_config", "/config")
+    .WithHttpEndpoint(port: 80, targetPort: 80)
+    .WithHttpsEndpoint(port: 443, targetPort: 443)
+    .PublishAsDockerComposeService((resource, service) =>
+    {
+        service.Ports.Add("80:80");
+        service.Ports.Add("443:443");
+    });
+
+
+
 
 //var frontend = builder
 //    .AddViteApp("frontend", "../../frontend")
