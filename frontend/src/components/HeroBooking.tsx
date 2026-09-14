@@ -1,4 +1,3 @@
-import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -43,7 +42,7 @@ const HeroBooking = () => {
         mode: "onChange"
     });
     // TODO: write this function
-    function onSubmit(data: z.infer<typeof formSchema>) {
+    function onSubmit(/*data: z.infer<typeof formSchema>*/) {
         console.log("TODO: do something cool here");
     }
 
