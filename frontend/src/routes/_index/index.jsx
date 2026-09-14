@@ -81,7 +81,7 @@ const Hero = () => {
 };
 
 const HeroContent = ({ title, cta }) => {
-    // TODO: fix text color
+    // TODO: add color to theme
     return (
         <header className="pt-52 pl-20 text-[#9BB678] text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
             <HeroTitle text={title} />
