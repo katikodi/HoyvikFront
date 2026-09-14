@@ -27,6 +27,7 @@ export function DatePickerDemo({ value, onChange, ...props }) {
                     mode="single"
                     selected={value}
                     onSelect={onChange}
+                    fixedWeeks
                 />
             </PopoverContent>
         </Popover>
