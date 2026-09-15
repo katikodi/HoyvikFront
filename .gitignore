@@ -12,10 +12,11 @@ dist
 dist-ssr
 *.local
 wwwroot
-wwwroot/uploads/*
-!wwwroot/uploads/.gitkeep
-/backend/Hoyvik.API/wwwroot/uploads/*
-!backend/Hoyvik.API/wwwroot/uploads/.gitkeep
+wwwroot/
+#wwwroot/uploads/*
+#!wwwroot/uploads/.gitkeep
+#/backend/Hoyvik.API/wwwroot/uploads/*
+#!backend/Hoyvik.API/wwwroot/uploads/.gitkeep
 .env
 .env.Production
 aspire-output
