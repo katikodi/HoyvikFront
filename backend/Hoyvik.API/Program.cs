@@ -29,7 +29,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 
-app.UseCors("frontend");
+app.UseCors();
 app.MapDefaultEndpoints();
 
 

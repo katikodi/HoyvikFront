@@ -5,7 +5,8 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 
 var env = builder.AddDockerComposeEnvironment("env");
-var stripeKey = builder.AddParameter("stripe-secret-key", secret: true);
+var stripeSecretKey = builder.AddParameter("stripe-secret-key", secret: true);
+var stripeWebhookKey = builder.AddParameter("stripe-webhook-key", secret: true);
 var resendKey = builder.AddParameter("resend-api-key", secret: true);
 
 env.ConfigureComposeFile(compose =>
@@ -30,8 +31,9 @@ var db = postgres.AddDatabase("database", "hoyvika");
 //    .WaitFor(db);
 
 var api = builder.AddProject<Hoyvik_API>("backend")
-    .WithEnvironment("Stripe__SecretKey", stripeKey)
+    .WithEnvironment("Stripe__SecretKey", stripeSecretKey)
     .WithEnvironment("Resend__ApiKey", resendKey)
+    .WithEnvironment("Stripe__Webhook", stripeWebhookKey)
     .WithReference(db)
     .WaitFor(db)
     //.WithReference(migrations)
@@ -48,7 +50,7 @@ var api = builder.AddProject<Hoyvik_API>("backend")
         });
         service.Name = "backend";
     });
-    
+
 var caddy = builder
     .AddContainer("caddy", "caddy", "2")
     .WithEntrypoint("/usr/bin/caddy")
@@ -70,11 +72,11 @@ var caddy = builder
 
 
 
-//var frontend = builder
-//    .AddViteApp("frontend", "../../frontend")
-//    .WithHttpEndpoint(port: 54131, name: "http")
-//    .WithReference(api)
-//    .WaitFor(api);
+var frontend = builder
+   .AddViteApp("frontend", "../../frontend")
+   .WithHttpEndpoint(port: 54131, name: "http")
+   .WithReference(api)
+   .WaitFor(api);
 
 
 //api.PublishWithContainerFiles(frontend, "wwwroot");
