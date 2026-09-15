@@ -15,6 +15,16 @@ import { CabinIcon } from "@/components/ui/icons/cabin-icon";
 
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
+import { api } from "@/services/client";
+
+function formatDateOnly(date: Date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
 const formSchema = z
     .object({
         checkIn: z.date().min(startOfDay(new Date()), { error: "Can't book the past" }),
@@ -53,9 +63,22 @@ export function BookingPage() {
         mode: "onChange"
     });
     // TODO: write this function
-    // function onSubmit(/*data: z.infer<typeof formSchema>*/) {
-    //     console.log("TODO: do something cool here");
-    // }
+    async function onSubmit(data: z.infer<typeof formSchema>) {
+        const { checkIn, checkOut, guestAmount } = data;
+        console.log(data);
+
+        const result = await api.post("/payment/create-checkout-session", {
+            checkin: formatDateOnly(checkIn),
+            checkout: formatDateOnly(checkOut),
+            numberOfGuests: guestAmount
+        });
+
+        console.log(result);
+
+        setTimeout(() => {
+            window.location.href = result.data.url;
+        }, 1000);
+    }
 
     return (
         <div className="h-dvh w-dvw  bg-background flex flex-col items-center justify-center">
@@ -68,7 +91,11 @@ export function BookingPage() {
                     </CardAction> */}
                 </CardHeader>
                 <CardContent>
-                    <form className="flex flex-col gap-6">
+                    <form
+                        id="booking-form"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="flex flex-col gap-6"
+                    >
                         <FieldGroup className="@container/field-group flex sm:flex-col md:flex-row h-auto items-start justify-around w-full">
                             <Controller
                                 control={form.control}
@@ -375,7 +402,7 @@ export function BookingPage() {
                 <CardFooter className="flex flex-col gap-2 grow">
                     <Button
                         type="submit"
-                        form="hero-booking-form"
+                        form="booking-form"
                         className="rounded-none h-14 px-12 mt-auto bg-[#44383E] text-[#BCE8EF]"
                     >
                         Book
