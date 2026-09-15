@@ -28,7 +28,9 @@ wwwroot/uploads/*
 *.sln
 *.sw?
 production.env
-
+.env
+.env.Production
+aspire-output
 #-----------------------------------
 
 ## Ignore Visual Studio temporary files, build results, and

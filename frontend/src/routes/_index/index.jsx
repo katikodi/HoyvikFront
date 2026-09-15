@@ -7,6 +7,9 @@ import { Input } from "@/components/ui/input";
 import { HeroBooking } from "@/components/HeroBooking";
 import { IconSection } from "@/components/icon-section";
 import { icons } from "@/test-data/icons.json";
+import { Card, CardHeader, CardAction, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_index/")({
     component: Home
@@ -50,7 +53,8 @@ function Home() {
                 ))} */}
             </IconSection>
 
-            {/* <AboutSection /> */}
+            <AboutSection />
+            <ImageCarousel />
         </div>
     );
 }
@@ -77,9 +81,9 @@ const Hero = () => {
 };
 
 const HeroContent = ({ title, cta }) => {
-    // TODO: fix text color
+    // TODO: add color to theme
     return (
-        <header className="pt-52 w-72 pl-20 text-green-700 text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
+        <header className="pt-52 pl-20 text-[#9BB678] text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
             <HeroTitle text={title} />
 
             <svg
@@ -163,7 +167,7 @@ const BookingField = ({ type, label, classNames = [] }) => {
 
 const AboutSection = () => {
     return (
-        <section className="bg-background ">
+        <section className="bg-secondary ">
             {/* <div className="blocker"></div> */}
             <AboutContent />
         </section>
@@ -179,7 +183,7 @@ const AboutContent = () => {
                 <AboutText
                     text={description}
                     onClick={() => {
-                        console.log("cta cluck");
+                        toast("test");
                     }}
                     actionLabel="CTA 2"
                 />
@@ -192,8 +196,6 @@ const AboutContent = () => {
                     />
                 </figure>
             </div>
-
-            <ImageCarousel />
         </article>
     );
 };
@@ -207,6 +209,7 @@ const AboutText = ({ text, onClick, actionLabel }) => {
             <Button
                 onClick={onClick}
                 variant="outline"
+                className="border-brown-button bg-secondary hover:bg-brown-button hover:text-secondary w-52 rounded-none"
             >
                 {actionLabel || "CTA"}
             </Button>
@@ -216,7 +219,7 @@ const AboutText = ({ text, onClick, actionLabel }) => {
 
 const ImageCarousel = () => {
     return (
-        <section className="flex flex-row gap-4 justify-center py-12 pt-40">
+        <section className="flex flex-row gap-4 justify-center px-12 pt-40 bg-secondary">
             <CarouselCard
                 image="/images/rom1.webp"
                 title="ROM"
@@ -236,6 +239,34 @@ const ImageCarousel = () => {
 };
 
 const CarouselCard = ({ image, title }) => {
+    return (
+        <Card className="grow pt-0 rounded-none bg-light-background">
+            <img
+                src="/images/rom1.webp"
+                alt="Event cover"
+                className="relative z-20 aspect-video w-full object-cover rounded-none"
+            />
+            <CardHeader className="">
+                <CardAction>
+                    <Badge
+                        variant="secondary"
+                        className="rounded-none"
+                    >
+                        Featured
+                    </Badge>
+                </CardAction>
+                <CardTitle>Rom</CardTitle>
+                <CardDescription className="text-brown">Ett deilig rom</CardDescription>
+            </CardHeader>
+            <CardFooter>
+                <Button
+                    variant="outline"
+                    className="ml-auto w-24 rounded-none border-brown bg-light-background"
+                ></Button>
+            </CardFooter>
+        </Card>
+    );
+
     return (
         <article className="flex flex-col h-80 w-80 border-2 border-solid border-[#2a3430]">
             <figure

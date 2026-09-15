@@ -2,22 +2,24 @@ import svgRawString from "@/icons/manHiking.svg?raw";
 
 const IconSection = ({ icons }) => {
     return (
-        <div className="bg-background h-fit w-dvw pt-24 pb-20">
-            <div className="flex flex-row justify-around">
+        <section className="h-fit w-full min-w-0 bg-background px-4 py-24 sm:px-8 lg:px-12">
+            <div className="flex w-full min-w-0 items-start justify-around gap-4">
                 {icons.map(({ url, text }) => (
                     <div
-                        className="grow flex flex-col items-center"
+                        className="flex min-w-0 flex-1 flex-col items-center"
                         key={url}
                     >
                         <img
                             src={url}
                             alt=""
+                            className="max-w-full"
                         />
-                        <p className="font-semibold">{text}</p>
+
+                        <p className="text-center font-semibold">{text}</p>
                     </div>
                 ))}
             </div>
-        </div>
+        </section>
     );
 };
 
