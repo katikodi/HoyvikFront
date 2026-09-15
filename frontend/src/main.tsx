@@ -7,7 +7,6 @@ import { queryClient } from "@/lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 
 const rootElement = document.getElementById("app")!;
-
 if (!rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement);
 

@@ -22,18 +22,18 @@ export default defineConfig(({ mode }) => {
             outDir: "../backend/Hoyvik.API/wwwroot"
         },
         server: {
-            port: 54131,
+            // port: 54131,
             proxy: {
                 // Proxy API calls to the app service
                 "/api": {
                     target: env.services__backend__https__0 || process.env.services__backend__http__0,
                     changeOrigin: false,
-                    secure: false
+                    secure: true
                 },
                 "/content": {
                     target: env.services__backend__https__0 || process.env.services__backend__http__0,
                     changeOrigin: false,
-                    secure: false
+                    secure: true
                 }
             }
         },

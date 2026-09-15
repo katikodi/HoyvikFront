@@ -59,10 +59,7 @@ internal static class Startup
         {
             x.Cookie.HttpOnly = true;
             x.Cookie.SameSite = SameSiteMode.Lax;
-            x.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
-                ? CookieSecurePolicy.None
-                : CookieSecurePolicy.Always;
-
+            x.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 
             x.Events.OnRedirectToLogin = ctx =>
             {
@@ -75,7 +72,6 @@ internal static class Startup
                 ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
                 return Task.CompletedTask;
             };
-
         });
 
         builder.Services.AddRateLimiter(options =>
@@ -141,7 +137,7 @@ internal static class Startup
                 x.Password.RequireUppercase = false;
                 //x.Password.RequiredLength = 0;
                 x.User.RequireUniqueEmail = true;
-                x.SignIn.RequireConfirmedEmail = true;
+                x.SignIn.RequireConfirmedEmail = false;
                 x.Password.RequireLowercase = false;
                 x.Password.RequireNonAlphanumeric = false;
             })
@@ -181,7 +177,8 @@ internal static class Startup
         builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
         builder.Services.AddHostedService<BookingExpirationService>();
         builder.Services.AddHostedService<EmailBackgroundService>();
-        builder.Services.AddScoped<IEmailService, ResendEmailService>();
+        builder.Services.AddScoped<IEmailService, FakeEmailService>();
+        // builder.Services.AddScoped<IEmailService, ResendEmailService>();
         builder.Services.AddSingleton<IBusinessClock, BusinessClock>();
         builder.Services.AddScoped<EmailVerificationLinkFactory>();
     }

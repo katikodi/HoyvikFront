@@ -39,6 +39,7 @@ var api = builder.AddProject<Hoyvik_API>("backend")
     //.WithReference(migrations)
     //.WaitForCompletion(migrations)
     .WithExternalHttpEndpoints()
+    .WithHttpEndpoint(targetPort: 5127, port: 5128)
     .PublishAsDockerComposeService((resource, service) =>
     {
         service.AddVolume(new Volume
@@ -51,32 +52,32 @@ var api = builder.AddProject<Hoyvik_API>("backend")
         service.Name = "backend";
     });
 
-var caddy = builder
-    .AddContainer("caddy", "caddy", "2")
-    .WithEntrypoint("/usr/bin/caddy")
-    .WithArgs(
-        "reverse-proxy",
-        "--from", "hoyvik.home.arpa",
-        "--to", "backend:8080",
-        "--internal-certs")
-    .WithVolume("caddy_data", "/data")
-    .WithVolume("caddy_config", "/config")
-    .WithHttpEndpoint(port: 80, targetPort: 80)
-    .WithHttpsEndpoint(port: 443, targetPort: 443)
-    .PublishAsDockerComposeService((resource, service) =>
-    {
-        service.Ports.Add("80:80");
-        service.Ports.Add("443:443");
-    });
+// var caddy = builder
+//     .AddContainer("caddy", "caddy", "2")
+//     .WithEntrypoint("/usr/bin/caddy")
+//     .WithArgs(
+//         "reverse-proxy",
+//         "--from", "hoyvik.home.arpa",
+//         "--to", "backend:8080",
+//         "--internal-certs")
+//     .WithVolume("caddy_data", "/data")
+//     .WithVolume("caddy_config", "/config")
+//     .WithHttpEndpoint(port: 80, targetPort: 80)
+//     .WithHttpsEndpoint(port: 443, targetPort: 443)
+//     .PublishAsDockerComposeService((resource, service) =>
+//     {
+//         service.Ports.Add("80:80");
+//         service.Ports.Add("443:443");
+//     });
 
 
 
 
-var frontend = builder
-   .AddViteApp("frontend", "../../frontend")
-   .WithHttpEndpoint(port: 54131, name: "http")
-   .WithReference(api)
-   .WaitFor(api);
+// var frontend = builder
+//    .AddViteApp("frontend", "../../frontend")
+//    .WithHttpEndpoint(port: 54131, name: "http")
+//    .WithReference(api)
+//    .WaitFor(api);
 
 
 //api.PublishWithContainerFiles(frontend, "wwwroot");

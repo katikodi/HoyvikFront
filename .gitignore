@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+wwwroot
 wwwroot/uploads/*
 !wwwroot/uploads/.gitkeep
 /backend/Hoyvik.API/wwwroot/uploads/*
