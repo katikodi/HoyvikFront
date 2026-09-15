@@ -13,9 +13,11 @@ import { DatePickerDemo } from "@/components/DatePicker";
 import { PeopleIcon } from "@/components/ui/icons/people-icon";
 import { CabinIcon } from "@/components/ui/icons/cabin-icon";
 
+const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
 const formSchema = z
     .object({
-        checkIn: z.date(),
+        checkIn: z.date().min(startOfDay(new Date()), { error: "Can't book the past" }),
         checkOut: z.date(),
         guestAmount: z.number().min(1).max(4),
         cabin: z.string(),
