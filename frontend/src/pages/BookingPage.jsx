@@ -1,13 +1,10 @@
 import { BookingCalendar } from "@/components/BookingCalendar";
 import { Button } from "@/components/ui/button";
 import { api } from "@/services/client";
-import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export function BookingPage() {
     const [selectedDates, setSelectedDates] = useState(null);
-
-    const navigate = useNavigate();
 
     async function book() {
         if (!selectedDates) return;

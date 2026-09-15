@@ -1,12 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/authContext";
 import { myBookingsQuery } from "@/queries/booking.queries";
-import { api } from "@/services/client";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 
 export default function ProfileComponent() {
-    const { data: bookings = [], isPending, isError, error, isFetching, refetch } = useQuery(myBookingsQuery);
+    const { data: bookings = [], isPending, isFetching, refetch } = useQuery(myBookingsQuery);
 
     if (isPending || isFetching) {
         return <h1>Loading bookings...</h1>;
