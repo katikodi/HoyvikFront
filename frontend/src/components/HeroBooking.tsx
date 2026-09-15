@@ -12,9 +12,6 @@ import { DatePickerDemo } from "./DatePicker";
 import { PeopleIcon } from "./ui/icons/people-icon";
 import { CabinIcon } from "./ui/icons/cabin-icon";
 
-import { occupiedBookingsQuery } from "@/queries/booking.queries";
-import { useQuery } from "@tanstack/react-query";
-
 const formSchema = z
     .object({
         checkIn: z.date(),
@@ -29,7 +26,6 @@ const formSchema = z
 
 const HeroBooking = () => {
     // TODO: figure out how to handle stale cache
-    const { data } = useQuery(occupiedBookingsQuery);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -63,10 +59,7 @@ const HeroBooking = () => {
                                     <FieldLabel className="font-light">Innsjekk</FieldLabel>
                                     <div className="h-14">
                                         {/* TODO: maybe combine the two calendars to one with range selection */}
-                                        <DatePickerDemo
-                                            {...field}
-                                            bookedDates={data}
-                                        />
+                                        <DatePickerDemo {...field} />
                                     </div>
                                     {fieldState.invalid && (
                                         <FieldError
@@ -85,10 +78,7 @@ const HeroBooking = () => {
                                     <FieldLabel className="font-light">Utsjekk</FieldLabel>
                                     <div className="h-14">
                                         {/* TODO: maybe combine the two calendars to one with range selection */}
-                                        <DatePickerDemo
-                                            {...field}
-                                            bookedDates={data}
-                                        />
+                                        <DatePickerDemo {...field} />
                                     </div>
                                     {fieldState.invalid && (
                                         <FieldError
