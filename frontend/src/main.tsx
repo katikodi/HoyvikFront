@@ -5,6 +5,7 @@ import App from "@/app";
 import { ThemeProvider } from "@/components/theme-provider";
 import { queryClient } from "@/lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
+import ReactProfiler from "./components/ReactProfiler.tsx";
 
 const rootElement = document.getElementById("app")!;
 
@@ -15,7 +16,9 @@ if (!rootElement.innerHTML) {
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
                 <ThemeProvider>
-                    <App />
+                    <ReactProfiler id="App">
+                        <App />
+                    </ReactProfiler>
                 </ThemeProvider>
             </AuthProvider>
         </QueryClientProvider>
