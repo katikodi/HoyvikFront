@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -52,9 +51,9 @@ export function BookingPage() {
         mode: "onChange"
     });
     // TODO: write this function
-    function onSubmit(/*data: z.infer<typeof formSchema>*/) {
-        console.log("TODO: do something cool here");
-    }
+    // function onSubmit(/*data: z.infer<typeof formSchema>*/) {
+    //     console.log("TODO: do something cool here");
+    // }
 
     return (
         <div className="h-dvh w-dvw  bg-background flex flex-col items-center justify-center">
