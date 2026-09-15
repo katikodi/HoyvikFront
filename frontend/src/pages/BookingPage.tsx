@@ -22,7 +22,11 @@ const formSchema = z
         cabin: z.string(),
         email: z.email(),
         firstName: z.string().min(2, { error: "i don't want your single letter name having ass in my cabin" }),
-        lastName: z.string().min(2, { error: "Your name must have at least 2 letters" })
+        lastName: z.string().min(2, { error: "Your name must have at least 2 letters" }),
+        countryCode: z.string(),
+        phone: z.string(),
+        postNr: z.string().min(4, { error: "må være 4 tall" }).max(4, { error: "må være 4 tall" }),
+        gateNavn: z.string()
     })
     .refine(data => data.checkOut.getTime() >= data.checkIn.getTime(), {
         message: "End date must be on or after start date",
@@ -39,7 +43,11 @@ export function BookingPage() {
             cabin: "",
             email: "",
             firstName: "",
-            lastName: ""
+            lastName: "",
+            phone: "",
+            countryCode: "",
+            postNr: "",
+            gateNavn: ""
         },
         mode: "onChange"
     });
@@ -60,7 +68,7 @@ export function BookingPage() {
                 </CardHeader>
                 <CardContent>
                     <form className="flex flex-col gap-6">
-                        <FieldGroup className="@container/field-group flex sm:flex-col md:flex-row h-auto items-end justify-around w-full">
+                        <FieldGroup className="@container/field-group flex sm:flex-col md:flex-row h-auto items-start justify-around w-full">
                             <Controller
                                 control={form.control}
                                 name="checkIn"
@@ -102,7 +110,7 @@ export function BookingPage() {
                             />
                         </FieldGroup>
 
-                        <FieldGroup className="@container/field-group flex flex-row gap-2 h-auto items-end">
+                        <FieldGroup className="@container/field-group flex flex-row gap-2 h-auto items-end justify-around">
                             <Controller
                                 control={form.control}
                                 name="guestAmount"
@@ -263,19 +271,100 @@ export function BookingPage() {
                                 )}
                             />
                             <Controller
-                                name="email"
+                                name="countryCode"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field
+                                        data-invalid={fieldState.invalid}
+                                        className="w-24"
+                                    >
+                                        <FieldLabel>Country Code</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="+1"
+                                            className="h-12 rounded-none border-2 border-solid border-[#2A3430]"
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                className="absolute bottom-0"
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="phone"
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="form-rhf-input-username">Email</FieldLabel>
+                                        <FieldLabel htmlFor="form-rhf-input-username">Phone</FieldLabel>
                                         <Input
                                             {...field}
                                             id="form-rhf-input-username"
                                             aria-invalid={fieldState.invalid}
-                                            placeholder="ola@nordman.no"
-                                            autoComplete="email"
+                                            placeholder="44444444"
+                                            autoComplete="tel"
                                             className="h-12 rounded-none border-2 border-solid border-[#2A3430]"
                                         />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                className="absolute bottom-0"
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </FieldGroup>
+                        <FieldGroup className="flex flex-row">
+                            <Controller
+                                name="postNr"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field
+                                        data-invalid={fieldState.invalid}
+                                        className="w-16"
+                                    >
+                                        <FieldLabel className="tracking-tighter">Postnummer</FieldLabel>
+                                        <Input
+                                            {...field}
+
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="0000"
+                                            autoComplete="tel"
+                                            className="h-12  rounded-none border-2 border-solid border-[#2A3430]"
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                className="absolute bottom-0"
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="gateNavn"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Gatenavn</FieldLabel>
+                                        <Input
+                                            {...field}
+
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="lupinvegen 5"
+                                            autoComplete="tel"
+                                            className="h-12  rounded-none border-2 border-solid border-[#2A3430]"
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                className="absolute bottom-0"
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
                                     </Field>
                                 )}
                             />
