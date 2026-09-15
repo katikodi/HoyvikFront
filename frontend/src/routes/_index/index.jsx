@@ -10,6 +10,7 @@ import { icons } from "@/test-data/icons.json";
 import { Card, CardHeader, CardAction, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import ReactProfiler from "@/components/ReactProfiler.tsx";
 
 export const Route = createFileRoute("/_index/")({
     component: Home
@@ -37,25 +38,35 @@ function HomeComponent() {
 
 function Home() {
     return (
-        <div className="flex-col bg-primary">
-            <Hero />
-            {/* <div className="bg-[#678A73] h-dvh w-dvw flex justify-center items-center"> */}
-            {/* <HeroBooking /> */}
-            {/* </div> */}
+        <ReactProfiler id="Home">
+            <div className="flex-col bg-primary">
+                <ReactProfiler id="Hero">
+                    <Hero />
+                </ReactProfiler>
+                {/* <div className="bg-[#678A73] h-dvh w-dvw flex justify-center items-center"> */}
+                {/* <HeroBooking /> */}
+                {/* </div> */}
 
-            <IconSection icons={icons}>
-                {/* {icons.map(icon => (
+                <ReactProfiler id="IconSection">
+                    <IconSection icons={icons}>
+                        {/* {icons.map(icon => (
                     <Icon
-                        key={icon.id}
-                        src={icon.url}
-                        text={icon.text}
+                    key={icon.id}
+                    src={icon.url}
+                    text={icon.text}
                     />
-                ))} */}
-            </IconSection>
+                    ))} */}
+                    </IconSection>
+                </ReactProfiler>
 
-            <AboutSection />
-            <ImageCarousel />
-        </div>
+                <ReactProfiler id="AboutSection">
+                    <AboutSection />
+                </ReactProfiler>
+                <ReactProfiler id="ImageCarousel">
+                    <ImageCarousel />
+                </ReactProfiler>
+            </div>
+        </ReactProfiler>
     );
 }
 
@@ -83,24 +94,26 @@ const Hero = () => {
 const HeroContent = ({ title, cta }) => {
     // TODO: add color to theme
     return (
-        <header className="pt-52 pl-20 text-[#9BB678] text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
-            <HeroTitle text={title} />
+        <ReactProfiler id="HeroContent">
+            <header className="pt-52 pl-20 text-[#9BB678] text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
+                <HeroTitle text={title} />
 
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="350"
-                height="12"
-                viewBox="0 0 350 12"
-                fill="none"
-            >
-                <path
-                    d="M-6.53267e-05 5.77344L5.77344 11.5469L11.5469 5.77344L5.77344 -6.53267e-05L-6.53267e-05 5.77344ZM349.571 5.77344L343.797 -6.53267e-05L338.024 5.77344L343.797 11.5469L349.571 5.77344ZM5.77344 5.77344V6.77344L343.797 6.77344V5.77344V4.77344L5.77344 4.77344V5.77344Z"
-                    fill="#BCE8EF"
-                />
-            </svg>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="350"
+                    height="12"
+                    viewBox="0 0 350 12"
+                    fill="none"
+                >
+                    <path
+                        d="M-6.53267e-05 5.77344L5.77344 11.5469L11.5469 5.77344L5.77344 -6.53267e-05L-6.53267e-05 5.77344ZM349.571 5.77344L343.797 -6.53267e-05L338.024 5.77344L343.797 11.5469L349.571 5.77344ZM5.77344 5.77344V6.77344L343.797 6.77344V5.77344V4.77344L5.77344 4.77344V5.77344Z"
+                        fill="#BCE8EF"
+                    />
+                </svg>
 
-            <HeroCTA text={cta} />
-        </header>
+                <HeroCTA text={cta} />
+            </header>
+        </ReactProfiler>
     );
 };
 
