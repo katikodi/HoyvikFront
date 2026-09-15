@@ -1,9 +1,5 @@
-import { useAuth } from "@/hooks/authContext";
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { DatePickerDemo } from "@/components/DatePicker";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { HeroBooking } from "@/components/HeroBooking";
 import { IconSection } from "@/components/icon-section";
 import { icons } from "@/test-data/icons.json";
@@ -15,26 +11,6 @@ import ReactProfiler from "@/components/ReactProfiler.tsx";
 export const Route = createFileRoute("/_index/")({
     component: Home
 });
-
-function HomeComponent() {
-    const { user } = useAuth();
-
-    if (user) {
-        return <h1>Hello {user.fullName}</h1>;
-    }
-
-    return <></>;
-}
-
-// COMPONENT IMPORTS
-// import Button from "@/components/Button";
-// import Icon from "@/components/Icon";
-// import IconSection from "@/components/IconSection";
-// ICON AND IMAGE IMPORTS
-// import vikingStuffUrl from "@/images/randomVikingStuff.webp";
-// import roomImageUrl from "@/images/rom1.webp";
-// DATA IMPORTS
-// import { icons } from "@/test-data/icons.json";
 
 function Home() {
     return (
@@ -125,59 +101,6 @@ const HeroCTA = ({ text }) => {
     return <h2 className="text-base/[150%] not-italic font-normal font-sans">{text}</h2>;
 };
 
-const BookingForm = () => {
-    const bookingFields = [
-        { label: "Innsjekk", type: "date" },
-        { label: "Utsjekk", type: "date" },
-        { label: "Gjester", type: "number" }
-    ];
-
-    return (
-        <form className="pl-48 pr-24 mt-auto relative transform translate-y-3/10 z-50">
-            {/* TODO: fix background color */}
-            <div className="shadow-[0_7px_4px_0_rgba(0,0,0,0.25)] grid grid-cols-[1fr_1fr_0.15fr_0.5fr] px-7 py-4 gap-4 justify-around w-full max-w-full bg-gray-400">
-                {bookingFields.map(field => (
-                    <BookingField
-                        key={field.label}
-                        type={field.type}
-                        label={field.label}
-                    />
-                ))}
-                {/* TODO: fix this color */}
-                <Button
-                    className="self-end bg-yellow-900"
-                    onClick={() => {
-                        const sound = new Audio("/sounds/order_sound.wav");
-                        sound.play();
-                    }}
-                >
-                    SJEKK TILGJENGELIGHET
-                </Button>
-            </div>
-        </form>
-    );
-};
-
-const BookingField = ({ type, label, classNames = [] }) => {
-    const fieldId = crypto.randomUUID();
-    const fieldClassNames = [...classNames, "hero-booking-input"].join(" ");
-
-    return (
-        <div className="flex flex-col grow gap-1">
-            <Label
-                // TODO: fix color
-                htmlFor={fieldId}
-                className="font-sans text-xs/normal bg-amber-900"
-            >
-                {label}
-            </Label>
-
-            {type === "date" && <DatePickerDemo id={fieldId} />}
-            {type === "number" && <Input type="number" />}
-        </div>
-    );
-};
-
 const AboutSection = () => {
     return (
         <section className="bg-secondary ">
@@ -251,7 +174,7 @@ const ImageCarousel = () => {
     );
 };
 
-const CarouselCard = ({ image, title }) => {
+const CarouselCard = () => {
     return (
         <Card className="grow pt-0 rounded-none bg-light-background">
             <img
@@ -278,25 +201,5 @@ const CarouselCard = ({ image, title }) => {
                 ></Button>
             </CardFooter>
         </Card>
-    );
-
-    return (
-        <article className="flex flex-col h-80 w-80 border-2 border-solid border-[#2a3430]">
-            <figure
-                className={`grow bg-no-repeat bg-cover flex flex-row items-center justify-center text-white text-xl/normal font-sans font-semibold`}
-            >
-                <img src={image} />
-                <figcaption>{title}</figcaption>
-            </figure>
-
-            <div className="flex flex-row w-full h-26 justify-around items-center px-4 bg-[#678a73]">
-                <Button
-                    className="w-28 ml-auto border-2 border-solid border-[#271c22]"
-                    onClick={() => {
-                        console.log("room click");
-                    }}
-                />
-            </div>
-        </article>
     );
 };
