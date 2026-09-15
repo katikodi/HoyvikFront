@@ -6,11 +6,11 @@ type ReactProfilerProps = {
 };
 
 const onRender: ProfilerOnRenderCallback = (id, phase, actualDuration, baseDuration) => {
-    console.log(`[Profiler] ${id}`, {
-        phase,
-        actualDuration,
-        baseDuration
-    });
+    if (actualDuration < 10) return;
+    const level = actualDuration >= 16.67 ? "SLOW" : "NOTICE";
+    console.info(
+        `[React Profiler] ${level} ${id} — ${actualDuration.toFixed(2)}ms (${phase}) - baseDuration: ${baseDuration.toFixed(2)}ms`
+    );
 };
 
 export default function ReactProfiler({ id, children }: ReactProfilerProps) {
