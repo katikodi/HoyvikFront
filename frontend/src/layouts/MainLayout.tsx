@@ -21,16 +21,17 @@ export default function MainLayout() {
         { to: "/activities", text: "Activities" },
         { to: "/about", text: "About" },
         { to: "/contact", text: "Contact Us" },
-        { to: "/shop", text: "Shop" }
+        { to: "/shop", text: "Shop" },
+        { to: "/booking", text: "Booking" }
     ];
 
     const isHome = location.pathname === "/";
 
     return (
-        <div className="flex min-h-dvh w-full flex-col">
+        <div className="flex h-dvh w-full flex-col">
             {/* Header does not belong inside of main */}
             <header className="absolute inset-x-0 top-0 z-50">
-                <nav className="flex w-full items-center justify-around gap-4 p-4 pr-24 bg-background/90">
+                <nav className="fixed flex w-full items-center justify-around gap-4 p-4 pr-24 backdrop-blur-sm bg-background/80">
                     {navLinks.map(({ to, text }) => (
                         <Link
                             to={to}
