@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/services/client";
 import { useEffect, useState } from "react";
 
-export default function SuccessfulPaymentPage({ sessionId }) {
+export default function SuccessfulPaymentPage() {
+    const sessionId = new URLSearchParams(window.location.search).get("session_id");
     const [booking, setBooking] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
