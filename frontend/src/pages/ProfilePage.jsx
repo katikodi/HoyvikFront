@@ -1,3 +1,4 @@
+import ReactProfiler from "@/components/ReactProfiler";
 import { Button } from "@/components/ui/button";
 import { myBookingsQuery } from "@/queries/booking.queries";
 import { useQuery } from "@tanstack/react-query";
@@ -10,25 +11,27 @@ export default function ProfileComponent() {
     }
 
     return (
-        <div className="w-3/5 p-3 flex flex-col">
-            <div className="flex flex-row justify-between">
-                <h2>Your bookings</h2>
-                <Button
-                    onClick={() => refetch()}
-                    disabled={isFetching}
-                >
-                    {isFetching ? "Refreshing..." : "Refresh"}
-                </Button>
-            </div>
-            {bookings.map(booking => (
-                <Booking
-                    key={booking.id}
-                    booking={booking}
-                />
-            ))}
+        <ReactProfiler id="ProfilePage">
+            <div className="w-3/5 p-3 flex flex-col">
+                <div className="flex flex-row justify-between">
+                    <h2>Your bookings</h2>
+                    <Button
+                        onClick={() => refetch()}
+                        disabled={isFetching}
+                    >
+                        {isFetching ? "Refreshing..." : "Refresh"}
+                    </Button>
+                </div>
+                {bookings.map(booking => (
+                    <Booking
+                        key={booking.id}
+                        booking={booking}
+                    />
+                ))}
 
-            <Button>Logout</Button>
-        </div>
+                <Button>Logout</Button>
+            </div>
+        </ReactProfiler>
     );
 }
 

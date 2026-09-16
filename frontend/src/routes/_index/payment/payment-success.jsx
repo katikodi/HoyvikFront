@@ -1,3 +1,4 @@
+import ReactProfiler from "@/components/ReactProfiler";
 import { Button } from "@/components/ui/button";
 import { api } from "@/services/client";
 import { createFileRoute } from "@tanstack/react-router";
@@ -8,7 +9,11 @@ export const Route = createFileRoute("/_index/payment/payment-success")({
         session_id: typeof search.session_id === "string" ? search.session_id : undefined
     }),
 
-    component: PaymentSuccess
+    component: () => (
+        <ReactProfiler id="PaymentSuccess">
+            <PaymentSuccess />
+        </ReactProfiler>
+    )
 });
 
 function PaymentSuccess() {

@@ -1,3 +1,4 @@
+import ReactProfiler from "@/components/ReactProfiler";
 import { BookingCalendar } from "@/components/BookingCalendar";
 import { Button } from "@/components/ui/button";
 import { api } from "@/services/client";
@@ -31,7 +32,7 @@ export function BookingPage() {
     }
 
     return (
-        <>
+        <ReactProfiler id="BookingPage">
             <BookingCalendar
                 onDateChange={e => {
                     setSelectedDates(e);
@@ -44,6 +45,6 @@ export function BookingPage() {
                     <Button onClick={book}>Book</Button>
                 </div>
             )}
-        </>
+        </ReactProfiler>
     );
 }

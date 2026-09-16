@@ -1,5 +1,4 @@
 import { HeroBooking } from "@/components/HeroBooking";
-import ReactProfiler from "./ReactProfiler.tsx";
 
 export default function HomeHero() {
     return (
@@ -26,9 +25,7 @@ export default function HomeHero() {
             </header>
 
             <div className="mt-auto translate-y-12 transform px-44">
-                <ReactProfiler id={"HeroBooking"}>
-                    <HeroBooking />
-                </ReactProfiler>
+                <HeroBooking />
             </div>
         </section>
     );
