@@ -180,7 +180,7 @@ export function BookingPage() {
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-none bg-[#B8CBBE] hover:bg-[#B8CBBE] active:bg-[#B8CBBE]">
                                                     <SelectGroup className="bg-black">
-                                                        {new Array(4).fill(0).map((_, i) => (
+                                                        {Array.from({ length: 4 }).map((_, i) => (
                                                             <SelectItem
                                                                 value={String(i + 1)}
                                                                 className="rounded-none bg-[#B8CBBE] focus:bg-[#B8CBBE]/80 "
