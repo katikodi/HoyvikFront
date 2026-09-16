@@ -1,22 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { isAfter } from "date-fns";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup } from "@/components/ui/select";
-
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { api } from "@/services/client";
 import { DatePickerDemo } from "@/components/DatePicker";
 import { PeopleIcon } from "@/components/ui/icons/people-icon";
 import { CabinIcon } from "@/components/ui/icons/cabin-icon";
+import ReactProfiler from "@/components/ReactProfiler";
 
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-import { api } from "@/services/client";
-import ReactProfiler from "@/components/ReactProfiler.tsx";
 
 function formatDateOnly(date: Date) {
     const year = date.getFullYear();
@@ -40,12 +38,21 @@ const formSchema = z
         postNr: z.string().min(4, { error: "må være 4 tall" }).max(4, { error: "må være 4 tall" }),
         gateNavn: z.string()
     })
-    .refine(data => data.checkOut.getTime() >= data.checkIn.getTime(), {
+    .refine(data => isAfter(data.checkOut, data.checkIn), {
         message: "End date must be on or after start date",
         path: ["checkOut"] // Highlights the error on the endDate field
     });
 
 export function BookingPage() {
+    const [serverValidationErrors, setServerValidationErrors] = useState<
+        | (
+              | {
+                    message?: string | undefined;
+                }
+              | undefined
+          )[]
+        | undefined
+    >();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -68,16 +75,20 @@ export function BookingPage() {
         const { checkIn, checkOut, guestAmount } = data;
         console.log(data);
 
-        const result = await api.post("/payment/create-checkout-session", {
-            checkin: formatDateOnly(checkIn),
-            checkout: formatDateOnly(checkOut),
-            numberOfGuests: guestAmount
-        });
-
-        console.log(result);
+        const result = await api
+            .post("/payment/create-checkout-session", {
+                checkin: formatDateOnly(checkIn),
+                checkout: formatDateOnly(checkOut),
+                numberOfGuests: guestAmount
+            })
+            .catch(error => {
+                if (error.response) {
+                    setServerValidationErrors(prev => (prev ? [...prev, error.response.data] : [error.response.data]));
+                }
+            });
 
         setTimeout(() => {
-            window.location.href = result.data.url;
+            window.location.href = result?.data.url;
         }, 1000);
     }
 
@@ -409,6 +420,7 @@ export function BookingPage() {
                         >
                             Book
                         </Button>
+                        {serverValidationErrors && <FieldError errors={serverValidationErrors} />}
                     </CardFooter>
                 </Card>
             </div>

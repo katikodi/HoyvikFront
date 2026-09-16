@@ -14,7 +14,7 @@ internal sealed class OccupiedBookingsEndpoint : IEndpoint
     {
         var bookings = await db
             .Bookings
-            .Where(x => x.Status == BookingStatus.Confirmed)
+            .Where(x => x.Status == BookingStatus.Confirmed || x.Status == BookingStatus.Pending)
             .ToListAsync();
 
 
