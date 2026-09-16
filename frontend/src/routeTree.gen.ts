@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as IndexIndexRouteImport } from './routes/_index/index'
 import { Route as IndexAboutRouteImport } from './routes/_index/about'
+import { Route as IndexAdminRouteImport } from './routes/_index/admin'
 import { Route as IndexBookingRouteImport } from './routes/_index/booking'
 import { Route as IndexProfileRouteImport } from './routes/_index/profile'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
@@ -49,6 +50,11 @@ const IndexAboutRoute = IndexAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => IndexRouteRoute,
 } as any)
+const IndexAdminRoute = IndexAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => IndexRouteRoute,
+} as any)
 const IndexBookingRoute = IndexBookingRouteImport.update({
   id: '/booking',
   path: '/booking',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/about': typeof IndexAboutRoute
+  '/admin': typeof IndexAdminRoute
   '/booking': typeof IndexBookingRoute
   '/profile': typeof IndexProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/about': typeof IndexAboutRoute
+  '/admin': typeof IndexAdminRoute
   '/booking': typeof IndexBookingRoute
   '/profile': typeof IndexProfileRoute
   '/': typeof IndexIndexRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/_index/about': typeof IndexAboutRoute
+  '/_index/admin': typeof IndexAdminRoute
   '/_index/booking': typeof IndexBookingRoute
   '/_index/profile': typeof IndexProfileRoute
   '/_index/': typeof IndexIndexRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/about'
+    | '/admin'
     | '/booking'
     | '/profile'
     | '/dashboard/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/about'
+    | '/admin'
     | '/booking'
     | '/profile'
     | '/'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/_index/about'
+    | '/_index/admin'
     | '/_index/booking'
     | '/_index/profile'
     | '/_index/'
@@ -192,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexAboutRouteImport
       parentRoute: typeof IndexRouteRoute
     }
+    '/_index/admin': {
+      id: '/_index/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof IndexAdminRouteImport
+      parentRoute: typeof IndexRouteRoute
+    }
     '/_index/booking': {
       id: '/_index/booking'
       path: '/booking'
@@ -225,6 +244,7 @@ declare module '@tanstack/react-router' {
 
 interface IndexRouteRouteChildren {
   IndexAboutRoute: typeof IndexAboutRoute
+  IndexAdminRoute: typeof IndexAdminRoute
   IndexBookingRoute: typeof IndexBookingRoute
   IndexProfileRoute: typeof IndexProfileRoute
   IndexIndexRoute: typeof IndexIndexRoute
@@ -233,6 +253,7 @@ interface IndexRouteRouteChildren {
 
 const IndexRouteRouteChildren: IndexRouteRouteChildren = {
   IndexAboutRoute: IndexAboutRoute,
+  IndexAdminRoute: IndexAdminRoute,
   IndexBookingRoute: IndexBookingRoute,
   IndexProfileRoute: IndexProfileRoute,
   IndexIndexRoute: IndexIndexRoute,

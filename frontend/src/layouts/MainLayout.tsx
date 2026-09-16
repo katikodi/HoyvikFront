@@ -22,7 +22,8 @@ export default function MainLayout() {
         { to: "/about", text: "About" },
         { to: "/contact", text: "Contact Us" },
         { to: "/shop", text: "Shop" },
-        { to: "/booking", text: "Booking" }
+        { to: "/booking", text: "Booking" },
+        { to: "/utleige-diverse", text: "Utleige diverse" }
     ];
 
     const isHome = location.pathname === "/";
@@ -70,6 +71,17 @@ function HamburgerDropdown() {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="rounded-none">
+                {user?.roles.includes("admin") && (
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>Admin</DropdownMenuLabel>
+                        <DropdownMenuItem asChild>
+                            <Link to="/admin">Admin Page</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <Link to="/dashboard">Dashboard</Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                )}
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
 
@@ -77,9 +89,14 @@ function HamburgerDropdown() {
                         <Link to="/profile">Profile</Link>
                     </DropdownMenuItem>
                     {user ? (
-                        <>
+                        <DropdownMenuGroup>
                             <DropdownMenuItem asChild>
-                                <Link to="/profile">My Bookings</Link>
+                                <Link
+                                    preload="render"
+                                    to="/profile"
+                                >
+                                    My Bookings
+                                </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => logout()}
@@ -87,16 +104,19 @@ function HamburgerDropdown() {
                             >
                                 Logout
                             </DropdownMenuItem>
-                        </>
+                        </DropdownMenuGroup>
                     ) : (
-                        <>
-                            <DropdownMenuItem
-                                onClick={() => logout()}
-                                className="cursor-pointer"
+                        <DropdownMenuItem
+                            asChild
+                            className="cursor-pointer"
+                        >
+                            <Link
+                                preload="render"
+                                to="/login"
                             >
-                                <Link to="/login">Login</Link>
-                            </DropdownMenuItem>
-                        </>
+                                Login
+                            </Link>
+                        </DropdownMenuItem>
                     )}
                 </DropdownMenuGroup>
 

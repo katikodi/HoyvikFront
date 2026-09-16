@@ -1,17 +1,16 @@
 import { Outlet } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AdminSidebar";
 
 export function AdminLayout() {
     return (
-        <div>
-            <header>
-                <h1>ADMIN LAYOUT</h1>
-            </header>
-
+        <SidebarProvider>
+            <AppSidebar />
             <main>
+                <SidebarTrigger />
                 <Outlet />
-                <Toaster />
             </main>
-        </div>
+        </SidebarProvider>
     );
 }
