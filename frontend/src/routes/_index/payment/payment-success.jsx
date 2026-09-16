@@ -24,16 +24,11 @@ function PaymentSuccess() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!session_id) {
-            setError("Missing payment session.");
-            setLoading(false);
-            return;
-        }
+        if (!session_id) return;
 
         async function fetchBooking() {
             try {
                 const response = await api.get(`/bookings/payment/${session_id}`);
-
                 console.log(response.data);
                 setBooking(response.data);
             } catch (err) {
@@ -46,6 +41,15 @@ function PaymentSuccess() {
 
         fetchBooking();
     }, [session_id]);
+
+    if (!session_id) {
+        return (
+            <section>
+                <h1>Something went wrong</h1>
+                <p>Missing session id.</p>
+            </section>
+        );
+    }
 
     if (loading) {
         return (
