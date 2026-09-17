@@ -5,6 +5,9 @@ namespace Hoyvik.API.Endpoints.Payment.Stripe;
 
 internal sealed class StripeWebhook : IEndpoint
 {
+    /*
+     *stripe listen --forward-to localhost:5200/api/payment/webhook
+     * */
     public void MapEndpoint(RouteGroupBuilder app) =>
         app.MapPost("/payment/webhook", Webhook);
 

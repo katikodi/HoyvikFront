@@ -10,6 +10,8 @@ internal sealed class Database(DbContextOptions<Database> options) : IdentityDbC
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Image> Images { get; set; }
     public DbSet<BlockedPeriod> BlockedPeriods { get; set; }
+    public DbSet<EmailOutbox> EmailOutbox { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

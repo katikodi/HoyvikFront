@@ -33,9 +33,10 @@ public class BlockBookingEndpoint : IEndpoint
         return Results.NoContent();
     }
 
-    async Task<IResult> Create(CreateBlockedPeriodRequest request, Database db,CancellationToken ct)
+    async Task<IResult> Create(CreateBlockedPeriodRequest request, Database db, CancellationToken ct)
     {
-        var blockedPeriod = new BlockedPeriod { 
+        var blockedPeriod = new BlockedPeriod
+        {
             CheckIn = request.CheckIn,
             CheckOut = request.CheckOut,
             CreatedAt = DateTime.UtcNow,
