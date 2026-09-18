@@ -11,19 +11,19 @@ internal sealed class UploadEndpoint : IEndpoint
     {
         app.MapPost("/uploads", UploadFile)
             .DisableAntiforgery()
-            .RequireAuthorization("admin", "Admin");
+            .RequireAuthorization(Roles.ADMIN);
 
         app.MapPost("/uploads/hero", UploadHero)
             .DisableAntiforgery()
-            .RequireAuthorization("admin", "Admin");
+            .RequireAuthorization(Roles.ADMIN);
 
         app.MapPost("/uploads/icons", UploadIcon)
             .DisableAntiforgery()
-            .RequireAuthorization("Admin", "admin");
+            .RequireAuthorization(Roles.ADMIN);
     }
 
 
-    static async Task<IResult> UploadIcon([FromForm] IFormFile file, ImageUploaderService imageUploader, ILogger<UploadEndpoint> logger)
+    static async Task<IResult> UploadIcon(IFormFile file, ImageUploaderService imageUploader, ILogger<UploadEndpoint> logger)
     {
         if (file == null || file.Length == 0)
             return Results.BadRequest();
@@ -44,7 +44,7 @@ internal sealed class UploadEndpoint : IEndpoint
             return Results.BadRequest("Failed to process the uploaded image.");
         }
     }
-    static async Task<IResult> UploadHero([FromForm] IFormFile file, ImageUploaderService imageUploader, ILogger<UploadEndpoint> logger)
+    static async Task<IResult> UploadHero(IFormFile file, ImageUploaderService imageUploader, ILogger<UploadEndpoint> logger)
     {
         if (file == null || file.Length == 0)
             return Results.BadRequest();
@@ -66,7 +66,7 @@ internal sealed class UploadEndpoint : IEndpoint
             return Results.BadRequest("Failed to process the uploaded image.");
         }
     }
-    static async Task<IResult> UploadFile([FromForm] IFormFile file, ImageUploaderService imageUploader, ILogger<UploadEndpoint> logger)
+    static async Task<IResult> UploadFile(IFormFile file, ImageUploaderService imageUploader, ILogger<UploadEndpoint> logger)
     {
         if (file == null || file.Length == 0)
             return Results.BadRequest();

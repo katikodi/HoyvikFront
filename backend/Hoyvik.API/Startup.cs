@@ -43,6 +43,10 @@ internal static class Startup
                 ForwardedHeaders.XForwardedProto;
         });
 
+
+
+
+
         ConfigureServices(builder);
 
         AddConfigurations(builder);
@@ -181,6 +185,9 @@ internal static class Startup
         // builder.Services.AddScoped<IEmailService, ResendEmailService>();
         builder.Services.AddSingleton<IBusinessClock, BusinessClock>();
         builder.Services.AddScoped<EmailVerificationLinkFactory>();
+
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
     }
 
     private static void AddConfigurations(WebApplicationBuilder builder)
