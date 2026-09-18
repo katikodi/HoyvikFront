@@ -1,87 +1,87 @@
 name: Notify Discord on Push
 
 on:
-    push:
-        branches:
-            - main
-            - newFront
+  push:
+    branches:
+      - main
+      - pre-main
 
 jobs:
-    notify-discord:
-        runs-on: ubuntu-latest
+  notify-discord:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Send Discord notification
-              env:
-                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-                  REPOSITORY: ${{ github.repository }}
-                  SHA: ${{ github.sha }}
-                  BEFORE: ${{ github.event.before }}
-                  BRANCH: ${{ github.ref_name }}
-                  AUTHOR: ${{ github.actor }}
-                  COMMITS: ${{ toJson(github.event.commits) }}
-              run: |
-                  if [ -z "$DISCORD_WEBHOOK" ]; then
-                    echo "DISCORD_WEBHOOK secret is not configured"
-                    exit 1
-                  fi
+    steps:
+      - name: Send Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          REPOSITORY: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          BEFORE: ${{ github.event.before }}
+          BRANCH: ${{ github.ref_name }}
+          AUTHOR: ${{ github.actor }}
+          COMMITS: ${{ toJson(github.event.commits) }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "DISCORD_WEBHOOK secret is not configured"
+            exit 1
+          fi
 
-                  if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
-                    COMPARE_URL="https://github.com/$REPOSITORY/commit/$SHA"
-                  else
-                    COMPARE_URL="https://github.com/$REPOSITORY/compare/$BEFORE...$SHA"
-                  fi
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            COMPARE_URL="https://github.com/$REPOSITORY/commit/$SHA"
+          else
+            COMPARE_URL="https://github.com/$REPOSITORY/compare/$BEFORE...$SHA"
+          fi
 
-                  COMMIT_COUNT=$(echo "$COMMITS" | jq 'length')
+          COMMIT_COUNT=$(echo "$COMMITS" | jq 'length')
 
-                  COMMIT_FIELDS=$(echo "$COMMITS" | jq -c '
-                    [
-                      .[]? |
-                      "- [\(.id[0:7])](\(.url)) \(.message | split("\n")[0]) — \(.author.name)"
-                    ]
-                    | reduce .[] as $commit
-                        ({fields: [], current: ""};
-                         if (.current | length) + ($commit | length) + 1 > 1024
-                         then
-                           .fields += [.current]
-                           | .current = $commit
-                         else
-                           .current = if .current == "" then $commit else .current + "\n" + $commit end
-                         end)
-                    | .fields + (if .current != "" then [.current] else [] end)
-                    | map(select(length > 0))
-                    | to_entries
-                    | map({
-                        name: (if .key == 0 then "Commits" else "Commits (continued)" end),
-                        value: .value,
-                        inline: false
-                      })
-                  ')
+          COMMIT_FIELDS=$(echo "$COMMITS" | jq -c '
+            [
+              .[]? |
+              "- [\(.id[0:7])](\(.url)) \(.message | split("\n")[0]) — \(.author.name)"
+            ]
+            | reduce .[] as $commit
+                ({fields: [], current: ""};
+                 if (.current | length) + ($commit | length) + 1 > 1024
+                 then
+                   .fields += [.current]
+                   | .current = $commit
+                 else
+                   .current = if .current == "" then $commit else .current + "\n" + $commit end
+                 end)
+            | .fields + (if .current != "" then [.current] else [] end)
+            | map(select(length > 0))
+            | to_entries
+            | map({
+                name: (if .key == 0 then "Commits" else "Commits (continued)" end),
+                value: .value,
+                inline: false
+              })
+          ')
 
-                  jq -n \
-                    --arg title "🚀 New Push to $REPOSITORY" \
-                    --arg compare_url "$COMPARE_URL" \
-                    --arg branch "$BRANCH" \
-                    --arg author "$AUTHOR" \
-                    --arg commit_count "$COMMIT_COUNT commits pushed" \
-                    --argjson commit_fields "$COMMIT_FIELDS" \
-                    '{
-                      embeds: [{
-                        title: $title,
-                        url: $compare_url,
-                        color: 3447003,
-                        fields: (
-                          [
-                            { name: "Branch", value: $branch, inline: true },
-                            { name: "Pushed by", value: $author, inline: true },
-                            { name: "Changes", value: $commit_count, inline: true }
-                          ] + $commit_fields
-                        )
-                      }]
-                    }' |
-                  curl \
-                    --fail-with-body \
-                    -H "Content-Type: application/json" \
-                    -X POST \
-                    -d @- \
-                    "$DISCORD_WEBHOOK"
+          jq -n \
+            --arg title "🚀 New Push to $REPOSITORY" \
+            --arg compare_url "$COMPARE_URL" \
+            --arg branch "$BRANCH" \
+            --arg author "$AUTHOR" \
+            --arg commit_count "$COMMIT_COUNT commits pushed" \
+            --argjson commit_fields "$COMMIT_FIELDS" \
+            '{
+              embeds: [{
+                title: $title,
+                url: $compare_url,
+                color: 3447003,
+                fields: (
+                  [
+                    { name: "Branch", value: $branch, inline: true },
+                    { name: "Pushed by", value: $author, inline: true },
+                    { name: "Changes", value: $commit_count, inline: true }
+                  ] + $commit_fields
+                )
+              }]
+            }' |
+          curl \
+            --fail-with-body \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d @- \
+            "$DISCORD_WEBHOOK"
