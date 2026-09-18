@@ -1,4 +1,5 @@
 using Aspire.Hosting.Docker.Resources.ServiceNodes;
+using Microsoft.Extensions.Hosting;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -26,9 +27,13 @@ var postgres = builder
 
 var db = postgres.AddDatabase("database", "hoyvika");
 
-//var migrations = builder.AddProject<Hoyvik_MigrationService>("migrations")
-//    .WithReference(db)
-//    .WaitFor(db);
+if (builder.Environment.IsDevelopment())
+{
+
+    var migrations = builder.AddProject<Hoyvik_MigrationService>("migrations")
+       .WithReference(db)
+       .WaitFor(db);
+}
 
 var api = builder.AddProject<Hoyvik_API>("backend")
     .WithEnvironment("Stripe__SecretKey", stripeSecretKey)
@@ -72,14 +77,14 @@ var api = builder.AddProject<Hoyvik_API>("backend")
 
 
 
-
-var frontend = builder
-   .AddViteApp("frontend", "../../frontend")
-   .WithHttpEndpoint(port: 54131, name: "http")
-   .WithReference(api)
-   .WaitFor(api);
-
-
+if (builder.Environment.IsDevelopment())
+{
+    var frontend = builder
+       .AddViteApp("frontend", "../../frontend")
+       .WithHttpEndpoint(port: 54131, name: "http")
+       .WithReference(api)
+       .WaitFor(api);
+}
 //api.PublishWithContainerFiles(frontend, "wwwroot");
 
 builder.Build().Run();
