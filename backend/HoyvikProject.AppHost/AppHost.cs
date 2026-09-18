@@ -27,13 +27,7 @@ var postgres = builder
 
 var db = postgres.AddDatabase("database", "hoyvika");
 
-if (builder.Environment.IsDevelopment())
-{
 
-    var migrations = builder.AddProject<Hoyvik_MigrationService>("migrations")
-       .WithReference(db)
-       .WaitFor(db);
-}
 
 var api = builder.AddProject<Hoyvik_API>("backend")
     .WithEnvironment("Stripe__SecretKey", stripeSecretKey)
@@ -56,6 +50,18 @@ var api = builder.AddProject<Hoyvik_API>("backend")
         });
         service.Name = "backend";
     });
+
+if (builder.Environment.IsDevelopment())
+{
+    var migrations = builder.AddProject<Hoyvik_MigrationService>("migrations")
+       .WithReference(db)
+       .WaitFor(db);
+
+    api.WithReference(migrations);
+    api.WaitForCompletion(migrations);
+}
+
+
 
 // var caddy = builder
 //     .AddContainer("caddy", "caddy", "2")
