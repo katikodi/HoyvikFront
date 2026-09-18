@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hoyvik.API.Endpoints.Admin;
 
-public class BlockBookingEndpoint : IEndpoint
+public class BlockBookingEndpoints : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app)
     {
@@ -53,5 +53,5 @@ public class BlockBookingEndpoint : IEndpoint
 
 public record CreateBlockedPeriodRequest(
     DateOnly CheckIn,
-    DateOnly CheckOut,
+    DateOnly? CheckOut,
     string? Reason);
