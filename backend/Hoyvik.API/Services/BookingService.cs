@@ -172,9 +172,7 @@ internal sealed class BookingService(
 
         await db.SaveChangesAsync(ct);
 
-        logger.LogInformation(
-            "Booking {BookingId} expired",
-            booking.Id);
+        logger.LogInformation("Booking {BookingId} expired",booking.Id);
 
         return true;
     }
