@@ -44,7 +44,7 @@ public class BlockBookingEndpoints : IEndpoint
         {
             CheckIn = r.CheckIn,
             CheckOut = r.CheckOut,
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             Reason = r.Reason,
         });
 
