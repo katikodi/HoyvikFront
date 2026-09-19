@@ -20,9 +20,9 @@ import { Route as IndexAboutRouteImport } from './routes/_index/about'
 import { Route as IndexAdminRouteImport } from './routes/_index/admin'
 import { Route as IndexBookingRouteImport } from './routes/_index/booking'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as DashboardBookingsRouteImport } from './routes/dashboard/bookings'
 import { Route as DashboardMiscBookingsRouteImport } from './routes/dashboard/misc-bookings'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as IndexPaymentPaymentSuccessRouteImport } from './routes/_index/payment/payment-success'
 import { Route as ProfileBookingsIndexRouteImport } from './routes/profile/bookings/index'
 
@@ -80,6 +80,21 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardBookingsRoute = DashboardBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardMiscBookingsRoute = DashboardMiscBookingsRouteImport.update({
+  id: '/misc-bookings',
+  path: '/misc-bookings',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProfileRouteRoute,
+} as any)
 const IndexPaymentPaymentSuccessRoute =
   IndexPaymentPaymentSuccessRouteImport.update({
     id: '/payment/payment-success',
@@ -102,7 +117,8 @@ export interface FileRoutesByFullPath {
   '/about': typeof IndexAboutRoute
   '/admin': typeof IndexAdminRoute
   '/booking': typeof IndexBookingRoute
-  '/profile': typeof IndexProfileRoute
+  '/dashboard/bookings': typeof DashboardBookingsRoute
+  '/dashboard/misc-bookings': typeof DashboardMiscBookingsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/payment/payment-success': typeof IndexPaymentPaymentSuccessRoute
@@ -115,7 +131,8 @@ export interface FileRoutesByTo {
   '/about': typeof IndexAboutRoute
   '/admin': typeof IndexAdminRoute
   '/booking': typeof IndexBookingRoute
-  '/profile': typeof IndexProfileRoute
+  '/dashboard/bookings': typeof DashboardBookingsRoute
+  '/dashboard/misc-bookings': typeof DashboardMiscBookingsRoute
   '/': typeof IndexIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/profile': typeof ProfileIndexRoute
@@ -133,7 +150,8 @@ export interface FileRoutesById {
   '/_index/about': typeof IndexAboutRoute
   '/_index/admin': typeof IndexAdminRoute
   '/_index/booking': typeof IndexBookingRoute
-  '/_index/profile': typeof IndexProfileRoute
+  '/dashboard/bookings': typeof DashboardBookingsRoute
+  '/dashboard/misc-bookings': typeof DashboardMiscBookingsRoute
   '/_index/': typeof IndexIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
@@ -152,7 +170,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/booking'
-    | '/profile'
+    | '/dashboard/bookings'
+    | '/dashboard/misc-bookings'
     | '/dashboard/'
     | '/profile/'
     | '/payment/payment-success'
@@ -165,7 +184,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/booking'
-    | '/profile'
+    | '/dashboard/bookings'
+    | '/dashboard/misc-bookings'
     | '/'
     | '/dashboard'
     | '/profile'
@@ -182,7 +202,8 @@ export interface FileRouteTypes {
     | '/_index/about'
     | '/_index/admin'
     | '/_index/booking'
-    | '/_index/profile'
+    | '/dashboard/bookings'
+    | '/dashboard/misc-bookings'
     | '/_index/'
     | '/dashboard/'
     | '/profile/'
@@ -277,6 +298,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/bookings': {
+      id: '/dashboard/bookings'
+      path: '/bookings'
+      fullPath: '/dashboard/bookings'
+      preLoaderRoute: typeof DashboardBookingsRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/misc-bookings': {
+      id: '/dashboard/misc-bookings'
+      path: '/misc-bookings'
+      fullPath: '/dashboard/misc-bookings'
+      preLoaderRoute: typeof DashboardMiscBookingsRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/profile/': {
+      id: '/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof ProfileIndexRouteImport
+      parentRoute: typeof ProfileRouteRoute
     }
     '/_index/payment/payment-success': {
       id: '/_index/payment/payment-success'
