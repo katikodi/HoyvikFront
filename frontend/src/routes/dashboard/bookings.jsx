@@ -55,9 +55,7 @@ function RouteComponent() {
 
     const { idSelected, SetIdSelected } = useState(false);
 
-    const blockedDateRangeIds = {};
-    const bookedDateRangeIds = {};
-    const blockedRanges = {};
+    const blockedRanges = [];
     const bookedRanges = [];
 
     bookedDates.forEach(({ checkIn, checkOut, status }) => {

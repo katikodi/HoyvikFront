@@ -7,8 +7,6 @@ import {
     deleteBlockedBookigns
 } from "@/queries/booking.queries";
 
-import { useState, createContext } from "react";
-
 type DateRange =
     | {
           from?: Date;
@@ -45,7 +43,7 @@ const useBookings = (dateRange: DateRange) => {
 
     const mutation = useMutation({
         mutationFn: async () => {
-            blockRange(dateRange);
+            await blockRange(dateRange);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["blocked bookings"] });
