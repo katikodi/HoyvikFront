@@ -16,14 +16,14 @@ const useBookings = () => {
     const blockDates = useMutation({
         mutationFn: setBlockedBookings,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["blocked bookings"] });
+            queryClient.invalidateQueries({ queryKey: ["blocked bookings", "occupied bookings"] });
         }
     });
     const unBlockDates = useMutation({
         mutationFn: deleteBlockedBookigns,
 
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["blocked bookings"] });
+            queryClient.invalidateQueries({ queryKey: ["blocked bookings", "occupied bookings"] });
         }
     });
     bookedDates = bookedDates || [];
