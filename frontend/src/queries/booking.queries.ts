@@ -1,6 +1,5 @@
 import { api } from "@/services/client";
 import { queryOptions } from "@tanstack/react-query";
-import { AlignHorizontalDistributeCenterIcon } from "lucide-react";
 
 export type Booking = {
     id: number;
@@ -18,26 +17,32 @@ const getOccupiedBookings = async () => {
 };
 
 const getBlockedBookings = async () => {
-    const { data } = await api.get("/admin/blocked-periods");
+    const { data } = await api.get("/admin/blocked-dates");
     return data;
 };
 
-const setBlockedBookings = async (checkIn: string, checkOut: string, reason?: string) => {
-    const res = await api.post("/admin/blocked-periods", {
-        blockedPeriods: [
-            {
-                checkIn,
-                checkOut,
-                reason
-            }
-        ]
+const setBlockedBookings = async (blockedDates: string[]) => {
+    console.log(blockedDates);
+    const res = await api.post("/admin/blocked-dates", {
+        blockedDates: blockedDates
     });
     return res;
 };
 
-const deleteBlockedBookigns = async (dates: Date[]) => {
-    console.log(dates);
-    const res = await api.delete(`/admin/blocked-periods`);
+const deleteBlockedBookigns = async (dates: string[]) => {
+    const res = await fetch("/api/admin/blocked-dates", {
+        method: "DELETE",
+        body: JSON.stringify({
+            blockedDates: dates
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    //       api.delete(`/admin/blocked-periods`, {
+    //     blockedDates: dates,
+    //   });
     return res;
 };
 export const myBookingsQuery = queryOptions({
@@ -46,12 +51,12 @@ export const myBookingsQuery = queryOptions({
 });
 
 export const occupiedBookingsQuery = queryOptions({
-    queryKey: ["occupied bookings"],
+    queryKey: ["occupied bookings", "blocked bookings"],
     queryFn: getOccupiedBookings
 });
 
 export const getBlockedBookingsQuery = queryOptions({
-    queryKey: ["blocked bookings"],
+    queryKey: ["blocked bookings", "occupied bookings"],
     queryFn: getBlockedBookings
 });
 

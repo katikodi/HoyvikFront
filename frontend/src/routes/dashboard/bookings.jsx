@@ -51,27 +51,20 @@ const formatDateResponse = ({ checkIn, checkOut, reason }) => {
 
 function RouteComponent() {
     const [dateRange, setDateRange] = useState();
-    const [blockDates, unblockDates, bookedDates, blockedDates] = useBookings(dateRange);
+    let [blockDates, unblockDates, bookedDates, blockedDates] = useBookings();
 
     const { idSelected, SetIdSelected } = useState(false);
 
-    const blockedRanges = [];
-    const bookedRanges = [];
-
-    bookedDates.forEach(({ checkIn, checkOut, status }) => {
-        const range = {
+    const bookedRanges = bookedDates.map(({ checkIn, checkOut }) => {
+        return {
             from: new Date(checkIn),
             to: new Date(checkOut)
         };
-        bookedRanges.push({ ...range });
     });
 
-    blockedDates.forEach(({ id, checkIn, checkOut }) => {
-        const range = {
-            from: new Date(checkIn),
-            to: new Date(checkOut)
-        };
-        blockedRanges.push({ ...range });
+    const formatedBlockedDates = blockedDates.map(date => {
+        console.log(new Date(date.date));
+        return new Date(date.date);
     });
 
     return (
@@ -103,7 +96,7 @@ function RouteComponent() {
                     }}
                     modifiers={{
                         booked: bookedRanges,
-                        blocked: blockedRanges
+                        blocked: formatedBlockedDates
                     }}
 
                     components={{
@@ -131,7 +124,14 @@ function RouteComponent() {
                                         <ContextMenuContent>
                                             <ContextMenuItem
                                                 variant="destructive"
-                                                onClick={() => blockDates()}
+                                                onClick={() =>
+                                                    blockDates(
+                                                        eachDayOfInterval({
+                                                            start: dateRange.from,
+                                                            end: dateRange.to
+                                                        }).map(date => formatDateOnly(date))
+                                                    )
+                                                }
                                             >
                                                 Block Dates
                                             </ContextMenuItem>
@@ -142,7 +142,7 @@ function RouteComponent() {
                                                         eachDayOfInterval({
                                                             start: dateRange.from,
                                                             end: dateRange.to
-                                                        })
+                                                        }).map(date => formatDateOnly(date))
                                                     );
                                                 }}
                                             >

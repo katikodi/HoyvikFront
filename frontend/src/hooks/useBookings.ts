@@ -6,13 +6,6 @@ import {
     deleteBlockedBookigns
 } from "@/queries/booking.queries";
 
-type DateRange =
-    | {
-          from?: Date;
-          to?: Date;
-      }
-    | undefined;
-
 function formatDateOnly(date: Date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -20,29 +13,15 @@ function formatDateOnly(date: Date) {
 
     return `${year}-${month}-${day}`;
 }
-const blockRange = async (dateRange: DateRange, reason?: string) => {
-    if (!dateRange) {
-        return;
-    }
-    const { from, to } = dateRange;
-    console.log(dateRange);
-    if (!from || !to) {
-        console.log("no daterange in block function");
-        return;
-    }
-    console.log(`calling set blocked bookings with ${from} and ${to}`);
-    await setBlockedBookings(formatDateOnly(from), formatDateOnly(to), reason);
-};
-
-const useBookings = (dateRange: DateRange) => {
+const useBookings = () => {
     const queryClient = useQueryClient();
     let { data: bookedDates } = useQuery(occupiedBookingsQuery);
     let { data: blockedDates } = useQuery(getBlockedBookingsQuery);
 
+    bookedDates = bookedDates || [];
+    blockedDates = blockedDates || [];
     const blockDates = useMutation({
-        mutationFn: async () => {
-            await blockRange(dateRange);
-        },
+        mutationFn: setBlockedBookings,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["blocked bookings"] });
         }
