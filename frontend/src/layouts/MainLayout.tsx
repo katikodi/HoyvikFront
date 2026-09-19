@@ -43,6 +43,7 @@ export default function MainLayout() {
                         </Link>
                     ))}
                 </nav>
+                <HamburgerDropdown />
             </header>
 
             <main className={`min-w-0 w-full flex-1 ${isHome ? "" : "pt-20"}`}>
