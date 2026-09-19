@@ -8,9 +8,13 @@ public class BlockBookingEndpoints : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app)
     {
-        app.MapPost("/admin/blocked-periods", Create);
-        app.MapGet("/admin/blocked-periods", Get);
-        app.MapDelete("/admin/blocked-periods", Delete);
+        var group = app
+            .MapGroup("/admin")
+            .RequireAuthorization(Roles.ADMIN);
+
+        group.MapPost("/blocked-periods", Create);
+        group.MapGet("/blocked-periods", Get);
+        group.MapDelete("/blocked-periods", Delete);
     }
 
     async Task<IResult> Get(Database db, CancellationToken ct)
@@ -44,7 +48,7 @@ public class BlockBookingEndpoints : IEndpoint
         {
             CheckIn = r.CheckIn,
             CheckOut = r.CheckOut,
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             Reason = r.Reason,
         });
 
