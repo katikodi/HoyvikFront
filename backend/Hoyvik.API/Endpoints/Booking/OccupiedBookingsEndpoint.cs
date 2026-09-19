@@ -19,8 +19,8 @@ internal sealed class OccupiedBookingsEndpoint : IEndpoint
             .ToListAsync();
 
 
-        var blockedBookings = await db.BlockedPeriods
-            .Select(x => new OccupiedResponse(x.CheckIn, x.CheckOut, BookingStatus.Confirmed))
+        var blockedBookings = await db.BlockedDates
+            .Select(blockedDate => new OccupiedResponse(blockedDate.Date, blockedDate.Date, BookingStatus.Confirmed))
             .ToListAsync();
         return Results.Ok(bookings.Concat(blockedBookings));
     }

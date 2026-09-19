@@ -9,13 +9,17 @@ internal sealed class Database(DbContextOptions<Database> options) : IdentityDbC
 {
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Image> Images { get; set; }
-    public DbSet<BlockedPeriod> BlockedPeriods { get; set; }
+    public DbSet<BlockedDate> BlockedDates { get; set; }
     public DbSet<EmailOutbox> EmailOutbox { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+
+        builder.Entity<BlockedDate>()
+            .HasKey(x => x.Date);
 
         builder.Entity<Booking>()
             .HasOne(booking => booking.User)
