@@ -1,11 +1,5 @@
-import React from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import {
-    getBlockedBookingsQuery,
-    occupiedBookingsQuery,
-    setBlockedBookings,
-    deleteBlockedBookigns
-} from "@/queries/booking.queries";
+import { getBlockedBookingsQuery, occupiedBookingsQuery, setBlockedBookings } from "@/queries/booking.queries";
 
 type DateRange =
     | {
