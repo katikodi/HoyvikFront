@@ -51,7 +51,7 @@ const formatDateResponse = ({ checkIn, checkOut, reason }) => {
 
 function RouteComponent() {
     const [dateRange, setDateRange] = useState();
-    const [mutation, bookedDates, blockedDates] = useBookings(dateRange);
+    const [blockDates, unblockDates, bookedDates, blockedDates] = useBookings(dateRange);
 
     const { idSelected, SetIdSelected } = useState(false);
 
@@ -73,8 +73,6 @@ function RouteComponent() {
         };
         blockedRanges.push({ ...range });
     });
-
-    const unblockDates = date => {};
 
     return (
         <div>
@@ -133,9 +131,22 @@ function RouteComponent() {
                                         <ContextMenuContent>
                                             <ContextMenuItem
                                                 variant="destructive"
-                                                onClick={() => mutation.mutate()}
+                                                onClick={() => blockDates()}
                                             >
                                                 Block Dates
+                                            </ContextMenuItem>
+                                            <ContextMenuItem
+                                                className="text-green-400"
+                                                onClick={() => {
+                                                    unblockDates(
+                                                        eachDayOfInterval({
+                                                            start: dateRange.from,
+                                                            end: dateRange.to
+                                                        })
+                                                    );
+                                                }}
+                                            >
+                                                Unblock Dates
                                             </ContextMenuItem>
                                         </ContextMenuContent>
                                     </ContextMenu>

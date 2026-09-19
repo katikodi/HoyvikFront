@@ -1,5 +1,10 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { getBlockedBookingsQuery, occupiedBookingsQuery, setBlockedBookings } from "@/queries/booking.queries";
+import {
+    getBlockedBookingsQuery,
+    occupiedBookingsQuery,
+    setBlockedBookings,
+    deleteBlockedBookigns
+} from "@/queries/booking.queries";
 
 type DateRange =
     | {
@@ -16,7 +21,6 @@ function formatDateOnly(date: Date) {
     return `${year}-${month}-${day}`;
 }
 const blockRange = async (dateRange: DateRange, reason?: string) => {
-    console.assert(!dateRange, "there is no range to block");
     if (!dateRange) {
         return;
     }
@@ -35,7 +39,7 @@ const useBookings = (dateRange: DateRange) => {
     let { data: bookedDates } = useQuery(occupiedBookingsQuery);
     let { data: blockedDates } = useQuery(getBlockedBookingsQuery);
 
-    const mutation = useMutation({
+    const blockDates = useMutation({
         mutationFn: async () => {
             await blockRange(dateRange);
         },
@@ -43,10 +47,17 @@ const useBookings = (dateRange: DateRange) => {
             queryClient.invalidateQueries({ queryKey: ["blocked bookings"] });
         }
     });
+    const unBlockDates = useMutation({
+        mutationFn: deleteBlockedBookigns,
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["blocked bookings"] });
+        }
+    });
     bookedDates = bookedDates || [];
     blockedDates = blockedDates || [];
 
-    return [mutation, bookedDates, blockedDates];
+    return [blockDates.mutate, unBlockDates.mutate, bookedDates, blockedDates];
 };
 
 export { useBookings };

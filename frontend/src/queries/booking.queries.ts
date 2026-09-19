@@ -1,5 +1,6 @@
 import { api } from "@/services/client";
 import { queryOptions } from "@tanstack/react-query";
+import { AlignHorizontalDistributeCenterIcon } from "lucide-react";
 
 export type Booking = {
     id: number;
@@ -34,8 +35,9 @@ const setBlockedBookings = async (checkIn: string, checkOut: string, reason?: st
     return res;
 };
 
-const deleteBlockedBookigns = async (id: number) => {
-    const res = await api.delete(`/admin/blocked-periods?id=${id}}`);
+const deleteBlockedBookigns = async (dates: Date[]) => {
+    console.log(dates);
+    const res = await api.delete(`/admin/blocked-periods`);
     return res;
 };
 export const myBookingsQuery = queryOptions({
