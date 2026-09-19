@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hoyvik.API.Endpoints.Admin;
 
-public class BlockBookingEndpoint : IEndpoint
+public class BlockBookingEndpoints : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app)
     {
@@ -33,24 +33,33 @@ public class BlockBookingEndpoint : IEndpoint
         return Results.NoContent();
     }
 
-    async Task<IResult> Create(CreateBlockedPeriodRequest request, Database db,CancellationToken ct)
+    async Task<IResult> Create(CreateBlockedPeriodRequest request, Database db, CancellationToken ct)
     {
-        var blockedPeriod = new BlockedPeriod { 
-            CheckIn = request.CheckIn,
-            CheckOut = request.CheckOut,
-            CreatedAt = DateTime.UtcNow,
-            Reason = request.Reason,
-        };
+        if (request.BlockedPeriods.Count <= 0)
+        {
+            return Results.BadRequest("Array is empty.");
+        }
 
-        db.BlockedPeriods.Add(blockedPeriod);
+        var blockedPeriods = request.BlockedPeriods.Select(r => new BlockedPeriod
+        {
+            CheckIn = r.CheckIn,
+            CheckOut = r.CheckOut,
+            CreatedAt = DateTime.Now,
+            Reason = r.Reason,
+        });
+
+
+        await db.AddRangeAsync(blockedPeriods, ct);
 
         await db.SaveChangesAsync(ct);
 
-        return Results.Ok(blockedPeriod);
+        return Results.Ok(blockedPeriods);
     }
 }
 
-public record CreateBlockedPeriodRequest(
+record CreateBlockedPeriodRequest(List<BlockedPeriodData> BlockedPeriods);
+
+record BlockedPeriodData(
     DateOnly CheckIn,
-    DateOnly CheckOut,
+    DateOnly? CheckOut,
     string? Reason);

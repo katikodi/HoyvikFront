@@ -1,17 +1,4 @@
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import { Menu } from "lucide-react";
 import { Link, Outlet, useLocation } from "@tanstack/react-router";
-import { useTheme } from "@/components/theme-provider";
-import { useAuth } from "@/hooks/authContext";
 
 export default function MainLayout() {
     const location = useLocation();
@@ -43,7 +30,6 @@ export default function MainLayout() {
                         </Link>
                     ))}
                 </nav>
-                <HamburgerDropdown />
             </header>
 
             <main className={`min-w-0 w-full flex-1 ${isHome ? "" : "pt-20"}`}>

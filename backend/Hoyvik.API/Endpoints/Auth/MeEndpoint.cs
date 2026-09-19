@@ -18,7 +18,7 @@ internal sealed class MeEndpoint : IEndpoint
 
         var key = $"auth:me:{userId}";
 
-        if(cache.TryGetValue(key, out MeResponse? value))
+        if (cache.TryGetValue(key, out MeResponse? value))
         {
             logger.LogInformation("Auth/me cache hit for user {UserId}", userId);
             return Results.Ok(value);
@@ -33,15 +33,17 @@ internal sealed class MeEndpoint : IEndpoint
 
         var roles = await userManager.GetRolesAsync(user);
 
+        //TODO HANDLE NULLS
         var me = new MeResponse(
             user.FullName,
-            user.Id, 
-            user.UserName, 
-            user.Email, 
-            [..roles]
+            user.Id,
+            user.UserName!,
+            user.Email!,
+            [.. roles]
             );
 
-        cache.Set(key, me, new MemoryCacheEntryOptions {
+        cache.Set(key, me, new MemoryCacheEntryOptions
+        {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
         });
 

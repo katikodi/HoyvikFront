@@ -1,11 +1,14 @@
-﻿using FluentValidation;
+﻿using System.Threading.RateLimiting;
+using FluentValidation;
 using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
 using Hoyvik.API.Services;
 using Hoyvik.API.Services.Abstractions;
 using Hoyvik.API.Validators;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Resend;
 using Stripe;
 
 namespace Hoyvik.API;
@@ -20,9 +23,10 @@ internal static class Startup
         builder.Services.AddProblemDetails();
 
         builder.Services.AddMemoryCache();
+        builder.Services.AddOptions();
 
-        builder.Services.AddCors(options => options.AddPolicy("frontend",
-            p => p.WithOrigins("http://localhost:54131")
+        builder.Services.AddCors(options => options.AddDefaultPolicy(
+            p => p.WithOrigins("https://hoyvika.no", "https://høyvika.no")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()));
@@ -32,54 +36,34 @@ internal static class Startup
             .AddPolicy(Roles.USER, p => p.RequireRole(Roles.ADMIN, Roles.USER))
             .AddPolicy(Roles.ADMIN, p => p.RequireRole(Roles.ADMIN));
 
-
-        builder.Services.AddScoped<ImageUploaderService>();
-        builder.Services.AddScoped<IBookingService, BookingService>();
-        builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
-        builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
-        builder.Services.AddHostedService<BookingExpirationService>();
-        builder.Services.AddScoped<IEmailService, FakeEmailService>();
-        builder.Services.AddSingleton<IBusinessClock, BusinessClock>();
-
-        builder.Services.AddOptions<BookingConfiguration>()
-            .BindConfiguration("BookingSettings")
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
-
-        builder.Services.AddOptions<FrontendConfiguration>()
-            .BindConfiguration("Frontend")
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
-
-        StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders =
+                ForwardedHeaders.XForwardedFor |
+                ForwardedHeaders.XForwardedProto;
+        });
 
 
-        builder.Services
-            .AddIdentity<ApplicationUser, IdentityRole>(x =>
-            {
-                x.Password.RequireDigit = false;
-                x.Password.RequireUppercase = false;
-                //x.Password.RequiredLength = 0;
-                x.Password.RequireLowercase = false;
-                x.Password.RequireNonAlphanumeric = false;
-            })
-            .AddDefaultTokenProviders()
-            .AddEntityFrameworkStores<Database>();
 
+
+
+        ConfigureServices(builder);
+
+        AddConfigurations(builder);
+
+        ConfigureResend(builder);
+
+        AddIdentityServices(builder);
 
         builder.Services.RegisterEndpoints();
 
-        builder.AddNpgsqlDbContext<Database>("database");
-
+        AddStripe(builder);
 
         builder.Services.ConfigureApplicationCookie(x =>
         {
             x.Cookie.HttpOnly = true;
             x.Cookie.SameSite = SameSiteMode.Lax;
-            x.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
-                ? CookieSecurePolicy.None
-                : CookieSecurePolicy.Always;
-
+            x.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 
             x.Events.OnRedirectToLogin = ctx =>
             {
@@ -92,7 +76,130 @@ internal static class Startup
                 ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
                 return Task.CompletedTask;
             };
-
         });
+
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.OnRejected = async (context, ct) =>
+            {
+                context.HttpContext.Response.ContentType = "application/json";
+
+                var retryAfter = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var ra)
+                    ? ra.TotalSeconds
+                    : (double?)null;
+
+                await context.HttpContext.Response.WriteAsJsonAsync(new
+                {
+                    error = "rate_limited",
+                    message = "Too many attempts. Please wait a moment and try again.",
+                    retryAfterSeconds = retryAfter
+                }, ct);
+            };
+
+            options.AddPolicy("email-sending", ctx =>
+            {
+                var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 3,
+                    Window = TimeSpan.FromMinutes(15),
+                    QueueLimit = 0
+                });
+            });
+
+            options.AddPolicy("login-attempts", ctx =>
+            {
+                var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 10,
+                    Window = TimeSpan.FromMinutes(5),
+                    QueueLimit = 0
+                });
+            });
+        });
+    }
+
+    private static void AddStripe(WebApplicationBuilder builder)
+    {
+        StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"] ?? throw new Exception("Stripe:SecretKey is missing");
+        builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
+
+    }
+
+    private static void AddIdentityServices(WebApplicationBuilder builder)
+    {
+
+        builder.Services
+            .AddIdentity<ApplicationUser, IdentityRole>(x =>
+            {
+                x.Password.RequireDigit = false;
+                x.Password.RequireUppercase = false;
+                //x.Password.RequiredLength = 0;
+                x.User.RequireUniqueEmail = true;
+                x.SignIn.RequireConfirmedEmail = false;
+                x.Password.RequireLowercase = false;
+                x.Password.RequireNonAlphanumeric = false;
+            })
+            .AddDefaultTokenProviders()
+            .AddEntityFrameworkStores<Database>();
+
+
+
+        builder.AddNpgsqlDbContext<Database>("database");
+    }
+
+    private static void ConfigureResend(WebApplicationBuilder builder)
+    {
+        builder.Services.AddHttpClient<ResendClient>();
+        builder.Services.AddTransient<IResend, ResendClient>();
+        builder.Services.Configure<ResendClientOptions>(options =>
+        {
+            options.ApiToken =
+                builder.Configuration["Resend:ApiKey"]
+                ?? throw new InvalidOperationException(
+                    "Resend API key is not configured.");
+        });
+        builder.Services
+    .AddOptions<ResendConfiguration>()
+    .Bind(builder.Configuration.GetSection("Resend"))
+    .Validate(x => !string.IsNullOrWhiteSpace(x.ApiKey),
+        "Resend API key is required.")
+    .Validate(x => !string.IsNullOrWhiteSpace(x.From),
+        "Resend from address is required.")
+    .ValidateOnStart();
+    }
+
+    private static void ConfigureServices(WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<ImageUploaderService>();
+        builder.Services.AddScoped<IBookingService, BookingService>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
+        builder.Services.AddHostedService<BookingExpirationService>();
+        builder.Services.AddHostedService<EmailBackgroundService>();
+        builder.Services.AddScoped<IEmailService, FakeEmailService>();
+        // builder.Services.AddScoped<IEmailService, ResendEmailService>();
+        builder.Services.AddSingleton<IBusinessClock, BusinessClock>();
+        builder.Services.AddScoped<EmailVerificationLinkFactory>();
+
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+    }
+
+    private static void AddConfigurations(WebApplicationBuilder builder)
+    {
+        builder.Services.AddOptions<BookingConfiguration>()
+            .BindConfiguration("BookingSettings")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        builder.Services.AddOptions<FrontendConfiguration>()
+            .BindConfiguration("Frontend")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
     }
 }

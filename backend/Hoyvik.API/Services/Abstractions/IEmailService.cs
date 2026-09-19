@@ -2,5 +2,9 @@
 
 public interface IEmailService
 {
-    Task SendBookingConfirmation(string email, string bookingReference, DateOnly checkIn, DateOnly checkOut);
+    Task Send(
+        string to,
+        string subject,
+        string htmlBody,
+        CancellationToken ct = default);
 }

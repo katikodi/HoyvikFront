@@ -1,5 +1,3 @@
-import svgRawString from "@/icons/manHiking.svg?raw";
-
 const IconSection = ({ icons }) => {
     return (
         <section className="h-fit w-full min-w-0 bg-background px-4 py-24 sm:px-8 lg:px-12">

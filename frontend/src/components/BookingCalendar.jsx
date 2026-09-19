@@ -1,3 +1,4 @@
+import ReactProfiler from "@/components/ReactProfiler";
 import { Calendar } from "@/components/ui/calendar";
 import { api } from "@/services/client";
 import { useEffect, useState } from "react";
@@ -124,14 +125,16 @@ export function BookingCalendar({ onDateChange }) {
     }
 
     return (
-        <Calendar
-            mode="range"
-            selected={dateRange}
-            onSelect={handleSelect}
-            disabled={isDisabled}
-            fromDate={startOfDay(new Date())}
-            toDate={getMaxBookingDate()}
-            className="rounded-lg border"
-        />
+        <ReactProfiler id="BookingCalendar">
+            <Calendar
+                mode="range"
+                selected={dateRange}
+                onSelect={handleSelect}
+                disabled={isDisabled}
+                fromDate={startOfDay(new Date())}
+                toDate={getMaxBookingDate()}
+                className="rounded-lg border"
+            />
+        </ReactProfiler>
     );
 }

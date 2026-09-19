@@ -1,31 +1,50 @@
-using System.Security.Claims;
 using Hoyvik.API;
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
-using Microsoft.Extensions.FileProviders;
+using Hoyvik.API.Services.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddApplication();
-var app = builder.Build();
+
+
 
 
 #region Middleware
+var app = builder.Build();
 
-app.UseCors("frontend");
-app.MapDefaultEndpoints();
+
+app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.MapOpenApi();
     app.UseExceptionHandler("/error");
     app.UseDeveloperExceptionPage();
-    using var scope = app.Services.CreateScope();
-    await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
-if (app.Environment.IsProduction())
-    app.UseHttpsRedirection();
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+
+// app.UseCors();
+app.MapDefaultEndpoints();
+
+
+using var scope = app.Services.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<Database>();
+await db.Database.MigrateAsync();
+await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+
+
+//if (app.Environment.IsProduction())
+//    app.UseHttpsRedirection();
+
+app.UseRateLimiter();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -33,19 +52,34 @@ app.UseAuthorization();
 app.UseStatusCodePages();
 
 app.MapApiEndpoints();
-
-
-Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath!, "uploads"));
-
-app.UseFileServer(new FileServerOptions
+app.MapGet("/test-email", async (
+    IEmailService emailService,
+    CancellationToken ct) =>
 {
-    RequestPath = "/content/uploads",
-    EnableDirectoryBrowsing = true,
-    EnableDefaultFiles = true,
-    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "uploads")),
+    await emailService.Send(
+        "elias96.kodehode@gmail.com",
+        "Hoyvik test email",
+        """
+        <h1>Hello!</h1>
+        <p>This email was sent from Hoyvik.</p>
+        """,
+        ct);
 
+    return Results.Ok();
 });
 
+//Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath!, "uploads"));
+
+//app.UseFileServer(new FileServerOptions
+//{
+//    RequestPath = "/content/uploads",
+//    EnableDirectoryBrowsing = true,
+//    EnableDefaultFiles = true,
+//    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "uploads")),
+
+//});
+
+app.MapFallbackToFile("/index.html");
 
 app.Run();
 #endregion

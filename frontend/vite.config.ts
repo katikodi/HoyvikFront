@@ -6,42 +6,50 @@ import { defineConfig, loadEnv } from "vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
 export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd(), "");
-    return {
-        plugins: [
-            tanstackRouter({
-                target: "react",
-                autoCodeSplitting: true
-            }),
-            react(),
-            tailwindcss(),
-            babel({ presets: [reactCompilerPreset()] })
-        ],
-        server: {
-            port: 54131,
-            proxy: {
-                // Proxy API calls to the app service
-                "/api": {
-                    target: env.services__backend__https__0 || process.env.services__backend__http__0,
-                    changeOrigin: false,
-                    secure: false
-                },
-                "/content": {
-                    target: env.services__backend__https__0 || process.env.services__backend__http__0,
-                    changeOrigin: false,
-                    secure: false
-                }
-            }
+  const env = loadEnv(mode, process.cwd(), "");
+  return {
+    plugins: [
+      tanstackRouter({
+        target: "react",
+        autoCodeSplitting: true,
+      }),
+      react(),
+      tailwindcss(),
+      babel({ presets: [reactCompilerPreset()] }),
+    ],
+    build: {
+      emptyOutDir: false,
+      outDir: "../backend/Hoyvik.API/wwwroot",
+    },
+    server: {
+      // port: 54131,
+      proxy: {
+        // Proxy API calls to the app service
+        "/api": {
+          target:
+            env.services__backend__https__0 ||
+            process.env.services__backend__http__0,
+          changeOrigin: false,
+          secure: true,
         },
-        resolve: {
-            alias: {
-                "@": fileURLToPath(new URL("./src", import.meta.url))
-            }
+        "/content": {
+          target:
+            env.services__backend__https__0 ||
+            process.env.services__backend__http__0,
+          changeOrigin: false,
+          secure: true,
         },
-        test: {
-            globals: true,
-            environment: "jsdom",
-            setupFiles: "./src/unitTests/setupTests.js"
-        }
-    };
+      },
+    },
+    resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("./src", import.meta.url)),
+      },
+    },
+    test: {
+      globals: true,
+      environment: "jsdom",
+      setupFiles: "./src/unitTests/setupTests.js",
+    },
+  };
 });

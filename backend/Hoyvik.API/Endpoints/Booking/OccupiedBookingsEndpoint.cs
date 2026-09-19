@@ -15,16 +15,14 @@ internal sealed class OccupiedBookingsEndpoint : IEndpoint
         var bookings = await db
             .Bookings
             .Where(x => x.Status == BookingStatus.Confirmed || x.Status == BookingStatus.Pending)
+            .Select(x => new OccupiedResponse(x.CheckIn, x.CheckIn, x.Status))
             .ToListAsync();
 
 
-        var blockedBookings = await db.BlockedPeriods.ToListAsync();
-
-        var occupied = bookings.Select(x => new OccupiedResponse(x.CheckIn, x.CheckOut, x.Status)).ToList();
-        var blocked = blockedBookings.Select(x => new OccupiedResponse(x.CheckIn, x.CheckOut, BookingStatus.Confirmed)).ToList();
-
-        var x = occupied.Concat(blocked).ToList();
-        return Results.Ok(x);
+        var blockedBookings = await db.BlockedPeriods
+            .Select(x => new OccupiedResponse(x.CheckIn, x.CheckOut, BookingStatus.Confirmed))
+            .ToListAsync();
+        return Results.Ok(bookings.Concat(blockedBookings));
     }
 
 }

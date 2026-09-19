@@ -12,9 +12,9 @@ namespace Hoyvik.API.Services;
 
 internal sealed class BookingService(
     Database db,
-    IOptionsMonitor<BookingConfiguration> bookingConfiguration, 
+    IOptionsMonitor<BookingConfiguration> bookingConfiguration,
     IStripePaymentService stripePaymentService,
-    IEmailService emailService,
+    //UserManager<ApplicationUser> userManager,
     ILogger<BookingService> logger
     ) : IBookingService
 {
@@ -107,9 +107,29 @@ internal sealed class BookingService(
         booking.ConfirmedAt = now;
         booking.StripeSessionId = stripeSessionId;
 
+        var email = booking.User?.Email;
+
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            db.EmailOutbox.Add(new EmailOutbox
+            {
+                To = email,
+                Subject = $"Booking confirmation #{booking.Id}",
+                Body = CreateBookingConfirmationEmail(booking),
+                CreatedAt = now,
+                NextAttemptAt = now
+            });
+        }
+        else
+        {
+            logger.LogWarning(
+                "Booking {BookingId} has no email address",
+                booking.Id);
+        }
+
         await db.SaveChangesAsync(ct);
 
-        await emailService.SendBookingConfirmation(booking.User?.Email!, booking.Id.ToString(), booking.CheckIn, booking.CheckOut);
+
         logger.LogInformation("Booking {BookingId} confirmed", booking.Id);
 
         return true;
@@ -152,9 +172,7 @@ internal sealed class BookingService(
 
         await db.SaveChangesAsync(ct);
 
-        logger.LogInformation(
-            "Booking {BookingId} expired",
-            booking.Id);
+        logger.LogInformation("Booking {BookingId} expired",booking.Id);
 
         return true;
     }
@@ -168,7 +186,10 @@ internal sealed class BookingService(
     /// <param name="userId"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    public async Task<string> CreateBookingPaymentSession(CreateSessionRequest request, string? userId, CancellationToken ct = default)
+    public async Task<string> CreateBookingPaymentSession(
+        CreateSessionRequest request,
+        string userId,
+        CancellationToken ct = default)
     {
         var booking = await CreatePendingBooking(request, userId, ct);
 
@@ -183,7 +204,7 @@ internal sealed class BookingService(
             //send the checkout url to the customer
             return stripeSession.Url;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             logger.LogError(
                 ex,
@@ -196,7 +217,10 @@ internal sealed class BookingService(
             throw;
         }
     }
-    private async Task<Booking> CreatePendingBooking(CreateSessionRequest request, string? userId, CancellationToken ct)
+    private async Task<Booking> CreatePendingBooking(
+        CreateSessionRequest request,
+        string userId,
+        CancellationToken ct)
     {
         var available = await CheckAvailability(request.CheckIn, request.CheckOut, ct);
 
@@ -210,13 +234,20 @@ internal sealed class BookingService(
 
         var now = DateTime.UtcNow;
 
+
+        ApplicationUser? user = null;
+
+        user = await db.Users.SingleOrDefaultAsync(x => x.Id == userId, ct)
+            ?? throw new InvalidOperationException("User not found.");
+
         var booking = new Booking
         {
             CheckIn = request.CheckIn,
             CheckOut = request.CheckOut,
             Price = totalPrice,
             Status = BookingStatus.Pending,
-            UserId = userId,
+            UserId = user.Id,
+            User = user,
             NumberOfGuests = request.NumberOfGuests,
             CreatedAt = now,
             ExpiresAt = now.AddMinutes(config.ExpirationTime)
@@ -234,5 +265,39 @@ internal sealed class BookingService(
         {
             throw new BookingNotAvailableException();
         }
+    }
+
+
+    private static string CreateBookingConfirmationEmail(Booking booking)
+    {
+        return $"""
+        <html>
+        <body>
+            <h2>Booking confirmed</h2>
+
+            <p>Thank you for your booking!</p>
+
+            <p>
+                <strong>Booking:</strong> #{booking.Id}<br />
+                <strong>Check-in:</strong> {booking.CheckIn:dd.MM.yyyy}<br />
+                <strong>Check-out:</strong> {booking.CheckOut:dd.MM.yyyy}<br />
+                <strong>Guests:</strong> {booking.NumberOfGuests}<br />
+                <strong>Total:</strong> {booking.Price:N2} NOK
+            </p>
+
+            <p>
+                Check-in is available after 15:00.
+            </p>
+
+            <p>
+                We look forward to welcoming you!
+            </p>
+
+            <p>
+                Hoyvik
+            </p>
+        </body>
+        </html>
+        """;
     }
 }

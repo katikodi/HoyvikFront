@@ -1,5 +1,4 @@
 import * as React from "react";
-import { cn } from "cn";
 import { format } from "date-fns";
 import { nn } from "date-fns/locale";
 

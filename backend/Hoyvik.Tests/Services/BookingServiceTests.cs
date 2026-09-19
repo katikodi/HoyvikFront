@@ -42,13 +42,11 @@ public class BookingServiceTests
 
         stripeMock ??= new Mock<IStripePaymentService>();
 
-        var emailMock = new Mock<IEmailService>();
 
         return new BookingService(
             db: db,
             stripePaymentService: stripeMock.Object,
             bookingConfiguration: optionsMonitorMock.Object,
-            emailService: emailMock.Object,
             logger: NullLogger<BookingService>.Instance);
     }
 
@@ -544,6 +542,16 @@ public class BookingServiceTests
     {
         await using var db = CreateDatabase();
 
+        var user = new ApplicationUser
+        {
+            Id = "user-123",
+            UserName = "test@example.com",
+            Email = "test@example.com"
+        };
+
+        db.Users.Add(user);
+        await db.SaveChangesAsync();
+
         var stripeMock = new Mock<IStripePaymentService>();
 
         stripeMock
@@ -563,7 +571,7 @@ public class BookingServiceTests
 
         var result = await service.CreateBookingPaymentSession(
             request,
-            "user-123");
+            user.Id);
 
         result.Should().Be("https://checkout.stripe.com/test");
 
@@ -572,7 +580,7 @@ public class BookingServiceTests
         booking.CheckIn.Should().Be(new DateOnly(2026, 9, 10));
         booking.CheckOut.Should().Be(new DateOnly(2026, 9, 15));
         booking.NumberOfGuests.Should().Be(2);
-        booking.UserId.Should().Be("user-123");
+        booking.UserId.Should().Be(user.Id);
         booking.Status.Should().Be(BookingStatus.Pending);
         booking.Price.Should().Be(5250);
         booking.StripeSessionId.Should().Be("cs_test_123");

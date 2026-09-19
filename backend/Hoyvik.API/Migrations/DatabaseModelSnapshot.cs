@@ -22,6 +22,46 @@ namespace Hoyvik.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("EmailOutbox", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("NextAttemptAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("SentAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("To")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailOutbox");
+                });
+
             modelBuilder.Entity("Hoyvik.API.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -101,7 +141,7 @@ namespace Hoyvik.API.Migrations
                     b.Property<DateOnly>("CheckIn")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly>("CheckOut")
+                    b.Property<DateOnly?>("CheckOut")
                         .HasColumnType("date");
 
                     b.Property<DateTime>("CreatedAt")

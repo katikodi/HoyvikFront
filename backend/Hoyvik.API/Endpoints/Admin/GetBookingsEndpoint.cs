@@ -8,7 +8,7 @@ internal sealed class GetBookingsEndpoint : IEndpoint
 {
     public void MapEndpoint(RouteGroupBuilder app)
         => app.MapGet("/admin/bookings/", GetBookings)
-        .RequireAuthorization("admin", "Admin");
+        .RequireAuthorization(Roles.ADMIN);
 
 
     async Task<IResult> GetBookings(Database db)
