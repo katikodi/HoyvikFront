@@ -8,11 +8,15 @@ using Stripe.Checkout;
 
 namespace Hoyvik.API.Services;
 
-internal sealed class StripePaymentService(IOptions<FrontendConfiguration> frontendConfig, ILogger<StripePaymentService> logger) : IStripePaymentService
+internal sealed class StripePaymentService(
+    IOptions<FrontendConfiguration> frontendConfig,
+    IOptionsMonitor<BookingConfiguration> bookingConfig,
+    ILogger<StripePaymentService> logger) : IStripePaymentService
 {
     public async Task<StripeCheckoutSession> CreateCheckoutSession(Booking booking, CancellationToken ct = default)
     {
         var frontendUrl = frontendConfig.Value.Url;
+        var expirationTime = bookingConfig.CurrentValue.ExpirationTime;
 
         if (string.IsNullOrWhiteSpace(frontendUrl))
         {
@@ -20,12 +24,16 @@ internal sealed class StripePaymentService(IOptions<FrontendConfiguration> front
                 "Frontend URL is missing.");
         }
 
+
+        //stripes minimum is 30 minutes
+        var expiresAt = expirationTime < 30 ? DateTime.UtcNow.AddMinutes(30) : DateTime.UtcNow.AddMinutes(expirationTime);
         var options = new SessionCreateOptions
         {
             Mode = "payment",
             SuccessUrl = $"{frontendUrl}/payment/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
             CancelUrl = $"{frontendUrl}/payment/payment-cancel",
             Currency = "nok",
+            ExpiresAt = expiresAt,
             Metadata = new()
             {
                 ["BookingId"] = booking.Id.ToString()
