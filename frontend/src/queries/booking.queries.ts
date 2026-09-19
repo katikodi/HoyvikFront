@@ -22,7 +22,15 @@ const getBlockedBookings = async () => {
 };
 
 const setBlockedBookings = async (checkIn: string, checkOut: string, reason?: string) => {
-    const res = await api.post("/admin/blocked-periods", { checkIn, checkOut, reason });
+    const res = await api.post("/admin/blocked-periods", {
+        blockedPeriods: [
+            {
+                checkIn,
+                checkOut,
+                reason
+            }
+        ]
+    });
     return res;
 };
 

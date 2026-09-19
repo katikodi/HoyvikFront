@@ -10,15 +10,9 @@ import {
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import {
-    getBlockedBookingsQuery,
-    occupiedBookingsQuery,
-    setBlockedBookings,
-    deleteBlockedBookigns
-} from "@/queries/booking.queries";
+
 import { Circle } from "lucide-react";
-import { useState } from "react";
+import { useState, createContext, use } from "react";
 import {
     Command,
     CommandInput,
@@ -32,6 +26,8 @@ import {
 } from "@/components/ui/command";
 
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
+import { eachDayOfInterval, setDate } from "date-fns";
+import { useBookings } from "@/hooks/useBookings";
 
 export const Route = createFileRoute("/dashboard/bookings")({
     component: RouteComponent
@@ -54,45 +50,30 @@ const formatDateResponse = ({ checkIn, checkOut, reason }) => {
 };
 
 function RouteComponent() {
-    const queryClient = useQueryClient();
+    const [dateRange, setDateRange] = useState();
+    const [mutation, bookedDates, blockedDates] = useBookings(dateRange);
 
-    let { data: bookedDates, refetch: refetchOccupied } = useQuery(occupiedBookingsQuery);
-    let { data: blockedDates, refetch: refetchBlocked } = useQuery(getBlockedBookingsQuery);
+    const { idSelected, SetIdSelected } = useState(false);
 
-    const [reason, setReason] = useState("");
-    bookedDates = bookedDates || [];
+    const blockedDateRangeIds = {};
+    const bookedDateRangeIds = {};
+    const blockedRanges = {};
+    const bookedRanges = [];
 
-    const blockRange = async () => {
-        const { from, to } = dateRange;
-        if (!from || !to) {
-            return;
-        }
-
-        await setBlockedBookings(formatDateOnly(from), formatDateOnly(to), reason);
-    };
-
-    const unblockRange = async () => {};
-
-    const mutation = useMutation({
-        mutationFn: blockRange,
-        onSuccess: data => {
-            queryClient.invalidateQueries(["blocked bookings"]);
-        }
-    });
-    const [dateRange, setDateRange] = useState({
-        from: undefined,
-        to: undefined
-    });
-
-    const bookedRanges = bookedDates.map(formatDateResponse);
-
-    blockedDates = blockedDates || [];
-    const blockedRanges = blockedDates.map(({ id, checkIn, checkOut }) => {
-        return {
+    bookedDates.forEach(({ checkIn, checkOut, status }) => {
+        const range = {
             from: new Date(checkIn),
-            to: new Date(checkOut),
-            id
+            to: new Date(checkOut)
         };
+        bookedRanges.push({ ...range });
+    });
+
+    blockedDates.forEach(({ id, checkIn, checkOut }) => {
+        const range = {
+            from: new Date(checkIn),
+            to: new Date(checkOut)
+        };
+        blockedRanges.push({ ...range });
     });
 
     const unblockDates = date => {};
