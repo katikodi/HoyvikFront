@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { createContext, useMemo } from "react";
+import { createContext } from "react";
 
 export const BookingContext = createContext({});
 
@@ -9,11 +9,11 @@ import {
     setBlockedBookings,
     deleteBlockedBookigns
 } from "@/queries/booking.queries";
-type Booking = {
-    checkIn: string;
-    checkOut: string;
-    status: number;
-};
+// type Booking = {
+//   checkIn: string;
+//   checkOut: string;
+//   status: number;
+// };
 
 const useBookings = () => {
     const queryClient = useQueryClient();
