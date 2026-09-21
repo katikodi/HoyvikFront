@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
 
-import { Circle } from "lucide-react";
-import { useState, createContext, use } from "react";
+import { Circle, CalendarCheck, CalendarX, CalendarClock, Book } from "lucide-react";
+import { useState, createContext, use, useMemo } from "react";
 import {
     Command,
     CommandInput,
@@ -27,8 +27,14 @@ import {
 
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { eachDayOfInterval, setDate } from "date-fns";
-import { useBookings } from "@/hooks/useBookings";
-
+import {
+    occupiedBookingsQuery,
+    getBlockedBookingsQuery,
+    setBlockedBookings,
+    deleteBlockedBookigns
+} from "@/queries/booking.queries";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+const formatStatus = status => (status === 1 ? "Confirmed" : "Pending");
 export const Route = createFileRoute("/dashboard/bookings")({
     component: RouteComponent
 });
@@ -51,21 +57,74 @@ const formatDateResponse = ({ checkIn, checkOut, reason }) => {
 
 function RouteComponent() {
     const [dateRange, setDateRange] = useState();
-    let [blockDates, unblockDates, bookedDates, blockedDates] = useBookings();
-
-    const { idSelected, SetIdSelected } = useState(false);
-
-    const bookedRanges = bookedDates.map(({ checkIn, checkOut }) => {
-        return {
-            from: new Date(checkIn),
-            to: new Date(checkOut)
-        };
+    const queryClient = useQueryClient();
+    let { data: bookedDates } = useQuery(occupiedBookingsQuery);
+    let { data: blockedDates } = useQuery(getBlockedBookingsQuery);
+    bookedDates = bookedDates || [];
+    blockedDates = blockedDates || [];
+    const blockDates = useMutation({
+        mutationFn: setBlockedBookings,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["blocked bookings", "occupied bookings"]
+            });
+        }
     });
+    const getRange = (modifiers, day) => {
+        if (modifiers.range_end || modifiers.range_middle || modifiers.range_start) {
+            return eachDayOfInterval({
+                start: dateRange.from,
+                end: dateRange.to
+            }).map(date => formatDateOnly(date));
+        }
+        return [formatDateOnly(day.date)];
+    };
 
-    const formatedBlockedDates = blockedDates.map(date => {
-        console.log(new Date(date.date));
-        return new Date(date.date);
+    const unBlockDates = useMutation({
+        mutationFn: deleteBlockedBookigns,
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["blocked bookings", "occupied bookings"]
+            });
+        }
     });
+    const confirmedBookings = useMemo(() => {
+        return bookedDates
+            .filter(({ status }) => formatStatus(status) === "Confirmed")
+            .map(({ checkIn, checkOut }) => {
+                return {
+                    from: new Date(checkIn),
+                    to: new Date(checkOut)
+                };
+            });
+    }, [bookedDates]);
+
+    const pendingBookings = useMemo(() => {
+        return bookedDates
+            .filter(({ status }) => formatStatus(status) === "Pending")
+            .map(({ checkIn, checkOut }) => {
+                return {
+                    from: new Date(checkIn),
+                    to: new Date(checkOut)
+                };
+            });
+    }, [bookedDates]);
+
+    const bookedRanges = useMemo(() => {
+        return bookedDates.map(({ checkIn, checkOut }) => {
+            return {
+                from: new Date(checkIn),
+                to: new Date(checkOut)
+            };
+        });
+    }, [bookedDates]);
+
+    const formatedBlockedDates = useMemo(() => {
+        return blockedDates.map(date => {
+            return new Date(date.date);
+        });
+    }, [blockedDates]);
 
     return (
         <div>
@@ -96,73 +155,48 @@ function RouteComponent() {
                     }}
                     modifiers={{
                         booked: bookedRanges,
-                        blocked: formatedBlockedDates
+                        blocked: formatedBlockedDates,
+                        confirmedBookings: confirmedBookings,
+                        pendingBookings: pendingBookings
                     }}
 
                     components={{
                         DayButton: ({ children, modifiers, day, ...props }) => {
-                            if (modifiers.today) {
-                                console.log(modifiers);
-                            }
-                            if (modifiers.range_end || modifiers.range_middle || modifiers.range_start) {
-                                return (
-                                    <ContextMenu>
-                                        <ContextMenuTrigger asChild>
-                                            <CalendarDayButton
-                                                day={day}
-                                                modifiers={modifiers}
-                                                {...props}
-                                            >
-                                                {children}
-                                                <Circle
-                                                    color={
-                                                        modifiers.blocked ? "#0000ff" : modifiers.booked ? "#ff0000" : "#00ff00"
-                                                    }
-                                                />
-                                            </CalendarDayButton>
-                                        </ContextMenuTrigger>
-                                        <ContextMenuContent>
-                                            <ContextMenuItem
-                                                variant="destructive"
-                                                onClick={() =>
-                                                    blockDates(
-                                                        eachDayOfInterval({
-                                                            start: dateRange.from,
-                                                            end: dateRange.to
-                                                        }).map(date => formatDateOnly(date))
-                                                    )
-                                                }
-                                            >
-                                                Block Dates
-                                            </ContextMenuItem>
-                                            <ContextMenuItem
-                                                className="text-green-400"
-                                                onClick={() => {
-                                                    unblockDates(
-                                                        eachDayOfInterval({
-                                                            start: dateRange.from,
-                                                            end: dateRange.to
-                                                        }).map(date => formatDateOnly(date))
-                                                    );
-                                                }}
-                                            >
-                                                Unblock Dates
-                                            </ContextMenuItem>
-                                        </ContextMenuContent>
-                                    </ContextMenu>
-                                );
-                            }
-
+                            // return (
+                            //   <DayButton
+                            //     children={children}
+                            //     modifiers={modifiers}
+                            //     day={day}
+                            //     dateRange={dateRange}
+                            //     {...props}
+                            //   />
+                            // );
                             return (
-                                <CalendarDayButton
-                                    day={day}
-                                    modifiers={modifiers}
-                                    {...props}
-                                >
-                                    {children}
-
-                                    <Circle color={modifiers.blocked ? "#0000ff" : modifiers.booked ? "#ff0000" : "#00ff00"} />
-                                </CalendarDayButton>
+                                <ContextMenu>
+                                    <ContextMenuTrigger asChild>
+                                        <DayButton
+                                            children={children}
+                                            modifiers={modifiers}
+                                            day={day}
+                                            dateRange={dateRange}
+                                            {...props}
+                                        />
+                                    </ContextMenuTrigger>
+                                    <ContextMenuContent>
+                                        <ContextMenuItem
+                                            variant="destructive"
+                                            onClick={() => blockDates.mutate(getRange(modifiers, day))}
+                                        >
+                                            Block Dates
+                                        </ContextMenuItem>
+                                        <ContextMenuItem
+                                            className="text-green-400"
+                                            onClick={() => unBlockDates.mutate(getRange(modifiers, day))}
+                                        >
+                                            Unblock Dates
+                                        </ContextMenuItem>
+                                    </ContextMenuContent>
+                                </ContextMenu>
                             );
                         }
                     }}
@@ -171,3 +205,30 @@ function RouteComponent() {
         </div>
     );
 }
+
+const DayButton = ({ modifiers, children, day, dateRange, status, ...props }) => {
+    return (
+        <CalendarDayButton
+            day={day}
+            modifiers={modifiers}
+            {...props}
+        >
+            {children}
+            <DayButtonIcon modifiers={modifiers} />
+        </CalendarDayButton>
+    );
+};
+
+const DayButtonIcon = ({ modifiers }) => {
+    if (modifiers.blocked) {
+        return <CalendarX className="stroke-red-500" />;
+    }
+    if (modifiers.confirmedBookings) {
+        return <CalendarCheck className="stroke-green-500" />;
+    }
+    if (modifiers.pendingBookings) {
+        return <CalendarClock className="stroke-yellow-500" />;
+    }
+};
+
+const BookingContext = () => {};

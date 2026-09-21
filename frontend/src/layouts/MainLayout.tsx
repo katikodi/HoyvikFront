@@ -12,8 +12,13 @@ import {
 import { useAuth } from "@/hooks/authContext";
 import { Link, Outlet, useLocation } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { MainLayoutMobileSidebar } from "@/components/MainLayoutMobileSidebar";
+import { SidebarMenuItem, SidebarMenuButton, SidebarMenu } from "@/components/ui/sidebar";
 
 export default function MainLayout() {
+    const { user, logout } = useAuth();
+    const isMobile = useIsMobile();
     const location = useLocation();
 
     const navLinks = [
@@ -28,13 +33,91 @@ export default function MainLayout() {
 
     const isHome = location.pathname === "/";
 
+    if (isMobile) {
+        return (
+            <MainLayoutMobileSidebar
+                myAccount={
+                    <SidebarMenu>
+                        {user && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link
+                                        to="/profile"
+                                        preload="render"
+                                        className="font-sans text-[#B8CBBE] h-9 content-center cursor-pointer"
+                                    >
+                                        Profile
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
+                        {user && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link
+                                        preload="render"
+                                        to="/profile"
+                                        className="font-sans text-[#B8CBBE] h-9 content-center cursor-pointer"
+                                    >
+                                        My Bookings
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
+                        {user && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton
+                                    className="font-sans text-[#B8CBBE] h-9 content-center cursor-pointer"
+                                    onClick={() => logout()}
+                                >
+                                    Logout
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
+
+                        {!user && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link
+                                        preload="render"
+
+                                        className="font-sans text-[#B8CBBE] h-9 content-center cursor-pointer"
+                                        to="/login"
+                                    >
+                                        Login
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
+                    </SidebarMenu>
+                }
+                navLinks={navLinks.map(({ to, text }, i) => (
+                    <SidebarMenuItem key={i}>
+                        <SidebarMenuButton asChild>
+                            <Link
+                                preload="render"
+                                to={to}
+                                className="font-sans text-[#B8CBBE] h-9 content-center"
+                            >
+                                {text}
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                ))}
+            >
+                <Outlet />
+            </MainLayoutMobileSidebar>
+        );
+    }
+
     return (
         <div className="flex h-dvh w-full flex-col">
             {/* Header does not belong inside of main */}
             <header className="absolute inset-x-0 top-0 z-50">
-                <nav className="fixed flex w-full items-center justify-around gap-4 p-4 pr-24 backdrop-blur-sm bg-background/80">
+                <nav className="hidden fixed md:flex w-full items-center justify-around gap-4 p-4 pr-24 backdrop-blur-sm bg-background/80">
                     {navLinks.map(({ to, text }) => (
                         <Link
+                            preload="render"
                             to={to}
                             key={to}
                             className="font-serif text-[#B8CBBE] h-9 content-center"

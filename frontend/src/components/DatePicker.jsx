@@ -29,7 +29,14 @@ export function DatePickerDemo({ value, onChange, ...props }) {
                     className="justify-start text-left font-normal data-[empty=true]:text-muted-foreground data-[empty=false]:bg-muted rounded-none h-full w-fit bg-transparent border-2 border-solid border-[#2A3430] tracking-tighter"
                 >
                     <CalendarIcon className="size-8" />
-                    {value ? format(new Date(value).setHours(12), "PPPP GGGG BBBB", { locale: nn }) : <span>Pick a date</span>}
+
+                    {value ? (
+                        format(new Date(value).setHours(12), "PP", {
+                            locale: nn
+                        })
+                    ) : (
+                        <span>Pick a date</span>
+                    )}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">

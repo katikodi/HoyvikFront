@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_index/")({
                 </ReactProfiler>
 
                 <ReactProfiler id="IconSection">
-                    <IconSection icons={icons} />
+                    <IconSection />
                 </ReactProfiler>
 
                 <ReactProfiler id="HomeAbout">

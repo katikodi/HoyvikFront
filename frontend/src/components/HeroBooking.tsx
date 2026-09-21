@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGr
 import { DatePickerDemo } from "./DatePicker";
 import { PeopleIcon } from "./ui/icons/people-icon";
 import { CabinIcon } from "./ui/icons/cabin-icon";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Link } from "@tanstack/react-router";
 
 const formSchema = z
     .object({
@@ -26,7 +28,7 @@ const formSchema = z
 
 const HeroBooking = () => {
     // TODO: figure out how to handle stale cache
-
+    const isMobile = useIsMobile();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -41,6 +43,17 @@ const HeroBooking = () => {
     function onSubmit(/*data: z.infer<typeof formSchema>*/) {
         console.log("TODO: do something cool here");
     }
+    if (isMobile)
+        return (
+            <Button className="rounded-none h-14 px-12 mt-auto bg-[#44383E] text-[#BCE8EF]">
+                <Link
+                    preload="render"
+                    to="/booking"
+                >
+                    Bestill nå
+                </Link>
+            </Button>
+        );
 
     return (
         <Card className="w-full h-fit rounded-none bg-[#B8CBBE]">
@@ -48,7 +61,7 @@ const HeroBooking = () => {
                 <form
                     id="hero-booking-form"
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="w-full h-auto flex flex-row justify-around  "
+                    className="w-full h-auto flex flex-row justify-around overflow-x-clip"
                 >
                     <FieldGroup className="@container/field-group flex flex-row gap-2 h-auto items-end">
                         <Controller
