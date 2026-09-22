@@ -1,4 +1,5 @@
-﻿using Hoyvik.API.Data;
+﻿using Hoyvik.API.Common;
+using Hoyvik.API.Data;
 using Hoyvik.API.Services;
 using Hoyvik.API.Services.Abstractions;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +22,7 @@ internal sealed class RegisterEndpoint : IEndpoint
     static async Task<IResult> Register(
         RegisterRequest request,
         IEmailService emailService,
-        EmailVerificationLinkFactory linkFactory,
+        EmailLinkFactory linkFactory,
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         CancellationToken ct = default)
@@ -60,7 +61,7 @@ internal sealed class RegisterEndpoint : IEndpoint
         var emailVerificationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
 
-        var link = linkFactory.Create(user.Id, emailVerificationToken);
+        var link = linkFactory.CreateVerifyEmailLink(user.Id, emailVerificationToken);
 
         await emailService.Send(
             user.Email,
@@ -107,7 +108,7 @@ internal sealed class RegisterEndpoint : IEndpoint
     static async Task<IResult> ResendVerification(
         ResendVerificationRequest request,
         IEmailService emailService,
-        EmailVerificationLinkFactory linkFactory,
+        EmailLinkFactory linkFactory,
         UserManager<ApplicationUser> userManager,
         CancellationToken ct = default)
     {
@@ -120,7 +121,7 @@ internal sealed class RegisterEndpoint : IEndpoint
 
 
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        var link = linkFactory.Create(user.Id, token);
+        var link = linkFactory.CreateVerifyEmailLink(user.Id, token);
 
         await emailService.Send(
          user.Email!,

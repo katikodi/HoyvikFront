@@ -1,4 +1,4 @@
-﻿namespace Hoyvik.API;
+﻿namespace Hoyvik.API.Common;
 
 public class Roles
 {

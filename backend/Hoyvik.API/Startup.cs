@@ -1,5 +1,6 @@
 ﻿using System.Threading.RateLimiting;
 using FluentValidation;
+using Hoyvik.API.Common;
 using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
 using Hoyvik.API.Endpoints;
@@ -165,13 +166,13 @@ internal static class Startup
                     "Resend API key is not configured.");
         });
         builder.Services
-    .AddOptions<ResendConfiguration>()
-    .Bind(builder.Configuration.GetSection("Resend"))
-    .Validate(x => !string.IsNullOrWhiteSpace(x.ApiKey),
-        "Resend API key is required.")
-    .Validate(x => !string.IsNullOrWhiteSpace(x.From),
-        "Resend from address is required.")
-    .ValidateOnStart();
+            .AddOptions<ResendConfiguration>()
+            .Bind(builder.Configuration.GetSection("Resend"))
+            .Validate(x => !string.IsNullOrWhiteSpace(x.ApiKey),
+                "Resend API key is required.")
+            .Validate(x => !string.IsNullOrWhiteSpace(x.From),
+                "Resend from address is required.")
+            .ValidateOnStart();
     }
 
     private static void ConfigureServices(WebApplicationBuilder builder)
@@ -181,10 +182,11 @@ internal static class Startup
         builder.Services.AddValidatorsFromAssemblyContaining<CreateSessionValidator>();
         builder.Services.AddHostedService<BookingExpirationService>();
         builder.Services.AddHostedService<EmailBackgroundService>();
-        builder.Services.AddScoped<IEmailService, FakeEmailService>();
-        // builder.Services.AddScoped<IEmailService, ResendEmailService>();
+        //builder.Services.AddScoped<IEmailService, FakeEmailService>();
+         builder.Services.AddScoped<IEmailService, ResendEmailService>();
+        builder.Services.AddScoped<IPasswordService, PasswordService>();
         builder.Services.AddSingleton<IBusinessClock, BusinessClock>();
-        builder.Services.AddScoped<EmailVerificationLinkFactory>();
+        builder.Services.AddScoped<EmailLinkFactory>();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();

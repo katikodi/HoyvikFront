@@ -1,4 +1,5 @@
-﻿using Hoyvik.API.Data;
+﻿using Hoyvik.API.Common;
+using Hoyvik.API.Data;
 using Hoyvik.API.Models.Responses;
 using Microsoft.EntityFrameworkCore;
 
