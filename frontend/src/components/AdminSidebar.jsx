@@ -10,20 +10,15 @@ import {
     SidebarGroupLabel,
     SidebarGroupAction,
     SidebarGroupContent,
-    SidebarMenuAction,
-    SidebarMenuBadge,
-    SidebarMenuSkeleton,
-    SidebarRail
+    SidebarMenuAction
 } from "@/components/ui/sidebar";
-import { useSidebar } from "@/components/ui/sidebar";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 import { ChevronDown, Plus } from "lucide-react";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { Collapsible } from "@/components/ui/collapsible";
 import { Link } from "@tanstack/react-router";
 import { useLocation } from "@tanstack/react-router";
 
 export function AppSidebar() {
-    const { state, open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar } = useSidebar();
     const location = useLocation();
     console.log(location);
     return (
