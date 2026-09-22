@@ -3,7 +3,6 @@ using Hoyvik.API.Common;
 using Hoyvik.API.Data;
 using Hoyvik.API.Services.Abstractions;
 using Microsoft.AspNetCore.Identity;
-
 namespace Hoyvik.API.Services;
 
 public class PasswordService(
@@ -20,7 +19,7 @@ public class PasswordService(
 
         if (user is null)
         {
-            return Result.Failure(error: new("", "", ErrorType.Validation));
+            return Result.Failure(error: new("Auth:UserNotFound", "how did u get here?", ErrorType.Validation));
         }
 
         var results = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);

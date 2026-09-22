@@ -1,6 +1,7 @@
 ﻿using Hoyvik.API.Common;
 using Hoyvik.API.Services.Abstractions;
 
+using static Hoyvik.API.Common.ResultExtensions;
 namespace Hoyvik.API.Endpoints.Auth.Password;
 
 record ChangePasswordRequest(string CurrentPassword, string NewPassword, string ConfirmPassword);
@@ -21,7 +22,7 @@ public class ChangePasswordEndpoint : IEndpoint
     {
         if (request.NewPassword != request.ConfirmPassword)
         {
-            return Result.Failure(Error.Validation("PasswordMismatch", "Passwords do not match")).ToHttpResult();
+            return ValidationFailure("Auth:PasswordMismatch", "Passwords do not match.");
         }
         var result = await passwordService.ChangePasswordAsync(context.User, request.CurrentPassword, request.NewPassword);
         return result.ToHttpResult();
