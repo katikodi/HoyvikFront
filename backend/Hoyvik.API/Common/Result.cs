@@ -1,65 +1,49 @@
-﻿namespace Hoyvik.API.Common;
-
-public record Error(string Code, string Description)
-{
-    public static readonly Error None = new(string.Empty, string.Empty);
-}
-
-public class Result<TValue>
-{
-    public bool IsSuccess { get; }
-    public bool IsFailure => !IsSuccess;
-
-    public TValue? Value { get; }
-
-    public Error Error { get; }
-
-    private Result(TValue? value, bool isSuccess, Error error)
-    {
-        if ((isSuccess && error != Error.None) || (!isSuccess && error == Error.None))
-        {
-            throw new ArgumentException(
-                "Invalid error state configuration.",
-                nameof(error));
-        }
-        this.Value = value;
-        this.IsSuccess = isSuccess;
-        this.Error = error;
-    }
-
-    public static Result<TValue> Success(TValue value) => new(value, true, Error.None);
-    public static Result<TValue> Failure(Error error) => new(default, false, error);
-    public static implicit operator Result<TValue>(TValue value) => Success(value);
-    public static implicit operator Result<TValue>(Error error) => Failure(error);
-}
+﻿using Hoyvik.API.Common;
 
 public class Result
 {
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
-
     public Error Error { get; }
+    public Error[] Errors { get; }
 
-    private Result(bool isSuccess, Error error)
+    protected Result(bool isSuccess, Error error)
+        : this(isSuccess, error, error == Error.None ? [] : [error])
     {
-        if ((isSuccess && error != Error.None) ||
-            (!isSuccess && error == Error.None))
-        {
-            throw new ArgumentException(
-                "Invalid error state configuration.",
-                nameof(error));
-        }
-
-        IsSuccess = isSuccess;
-        Error = error;
     }
 
-    public static Result Success() =>
-        new(true, Error.None);
+    protected Result(bool isSuccess, Error error, Error[] errors)
+    {
+        IsSuccess = isSuccess;
+        Error = error;
+        Errors = errors;
+    }
 
-    public static Result Failure(Error error) =>
-        new(false, error);
+    public static Result Success() => new(true, Error.None);
+    public static Result Failure(Error error) => new(false, error);
 
-    public static implicit operator Result(Error error) =>
-        Failure(error);
+    public static Result Failure(Error[] errors) =>
+        new(false, errors.FirstOrDefault() ?? Error.None, errors);
+
+    public static Result<TValue> Success<TValue>(TValue value) => new(value, true, Error.None, []);
+    public static Result<TValue> Failure<TValue>(Error error) => new(default, false, error, [error]);
+    public static Result<TValue> Failure<TValue>(Error[] errors) =>
+        new(default, false, errors.FirstOrDefault() ?? Error.None, errors);
+}
+
+public class Result<TValue> : Result
+{
+    private readonly TValue? _value;
+
+    protected internal Result(TValue? value, bool isSuccess, Error error, Error[] errors)
+        : base(isSuccess, error, errors)
+    {
+        _value = value;
+    }
+
+    public TValue Value => IsSuccess
+        ? _value!
+        : throw new InvalidOperationException("Cannot access value of a failed result");
+
+    public static implicit operator Result<TValue>(TValue value) => Success(value);
 }

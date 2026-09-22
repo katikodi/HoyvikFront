@@ -1,6 +1,5 @@
 ﻿using Hoyvik.API.Data;
 using Microsoft.AspNetCore.Identity;
-
 namespace Hoyvik.API.Endpoints.Auth;
 
 internal sealed class LogoutEndpoint : IEndpoint
@@ -12,6 +11,6 @@ internal sealed class LogoutEndpoint : IEndpoint
     async Task<IResult> Logout(SignInManager<ApplicationUser> signInManager)
     {
         await signInManager.SignOutAsync();
-        return Results.Ok();
+        return Results.NoContent();
     }
 }

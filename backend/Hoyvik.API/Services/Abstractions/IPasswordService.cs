@@ -1,13 +1,11 @@
-﻿using Hoyvik.API.Common;
-using Hoyvik.API.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
 
 namespace Hoyvik.API.Services.Abstractions;
 
 public interface IPasswordService
 {
     Task<Result> ChangePasswordAsync(
-        ApplicationUser user,
+        ClaimsPrincipal user,
         string currentPassword,
         string newPassword);
 }

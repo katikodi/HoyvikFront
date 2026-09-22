@@ -1,16 +1,18 @@
 ﻿using System.Security.Claims;
 using FluentValidation;
-using Hoyvik.API.Exceptions;
+using Hoyvik.API.Common;
 using Hoyvik.API.Models.Requests;
 using Hoyvik.API.Services.Abstractions;
 using Stripe;
-
 namespace Hoyvik.API.Endpoints.Payment;
 
 internal sealed class CheckoutEndpoint : IEndpoint
 {
-    public void MapEndpoint(RouteGroupBuilder app) =>
-        app.MapPost("/payment/create-checkout-session", CreateCheckoutSession);
+    public void MapEndpoint(RouteGroupBuilder app)
+    {
+        app.MapPost("/payment/create-checkout-session", CreateCheckoutSession)
+            .RequireAuthorization(Roles.USER);
+    }
 
 
     /*Stripe test cards:
@@ -32,26 +34,17 @@ internal sealed class CheckoutEndpoint : IEndpoint
 
         if (!validationResult.IsValid)
         {
-            return Results.ValidationProblem(validationResult.ToDictionary());
+            return validationResult.ToResult().ToHttpResult();
         }
-        var userId = ctx.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+        //should never be null if RequireAuthorization is on the endpoint.
+        var userId = ctx.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
         try
         {
-            var checkoutUrl = await bookingService.CreateBookingPaymentSession(request, userId, ct);
+            var result = await bookingService.CreateBookingPaymentSession(request, userId, ct);
 
-            return Results.Ok(new
-            {
-                url = checkoutUrl
-            });
-        }
-        catch (BookingNotAvailableException ex)
-        {
-            return Results.Conflict(new
-            {
-                message = ex.Message
-            });
+            return result.ToHttpResult();
         }
         catch (StripeException ex)
         {

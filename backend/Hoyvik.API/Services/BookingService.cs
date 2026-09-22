@@ -1,20 +1,18 @@
-﻿using Hoyvik.API.Configuration;
+﻿using Hoyvik.API.Common;
+using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
-using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models;
 using Hoyvik.API.Models.Requests;
 using Hoyvik.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;
-
 namespace Hoyvik.API.Services;
 
 internal sealed class BookingService(
     Database db,
     IOptionsMonitor<BookingConfiguration> bookingConfiguration,
     IStripePaymentService stripePaymentService,
-    //UserManager<ApplicationUser> userManager,
     ILogger<BookingService> logger
     ) : IBookingService
 {
@@ -172,7 +170,7 @@ internal sealed class BookingService(
 
         await db.SaveChangesAsync(ct);
 
-        logger.LogInformation("Booking {BookingId} expired",booking.Id);
+        logger.LogInformation("Booking {BookingId} expired", booking.Id);
 
         return true;
     }
@@ -186,12 +184,16 @@ internal sealed class BookingService(
     /// <param name="userId"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    public async Task<string> CreateBookingPaymentSession(
+    public async Task<Result<string>> CreateBookingPaymentSession(
         CreateSessionRequest request,
         string userId,
         CancellationToken ct = default)
     {
-        var booking = await CreatePendingBooking(request, userId, ct);
+        var bookingResult = await CreatePendingBooking(request, userId, ct);
+
+        if (bookingResult.IsFailure)
+            return Result.Failure<string>(bookingResult.Error);
+        var booking = bookingResult.Value;
 
         try
         {
@@ -202,7 +204,7 @@ internal sealed class BookingService(
             await db.SaveChangesAsync(ct);
 
             //send the checkout url to the customer
-            return stripeSession.Url;
+            return Result.Success(stripeSession.Url);
         }
         catch (Exception ex)
         {
@@ -217,28 +219,25 @@ internal sealed class BookingService(
             throw;
         }
     }
-    private async Task<Booking> CreatePendingBooking(
+    private async Task<Result<Booking>> CreatePendingBooking(
         CreateSessionRequest request,
         string userId,
         CancellationToken ct)
     {
         var available = await CheckAvailability(request.CheckIn, request.CheckOut, ct);
 
-        if (!available) throw new BookingNotAvailableException();
+        if (!available)
+            return Result.Failure<Booking>(Error.Conflict("Booking:NotAvailable", "This booking is no longer available."));
+
+        var user = await db.Users.SingleOrDefaultAsync(x => x.Id == userId, ct);
+
+        if (user is null)
+            return Result.Failure<Booking>(Error.NotFound("User:NotFound", "User not found."));
 
         var config = bookingConfiguration.CurrentValue;
-
         var numberOfNights = request.CheckOut.DayNumber - request.CheckIn.DayNumber;
-
         var totalPrice = numberOfNights * config.PricePerNight;
-
         var now = DateTime.UtcNow;
-
-
-        ApplicationUser? user = null;
-
-        user = await db.Users.SingleOrDefaultAsync(x => x.Id == userId, ct)
-            ?? throw new InvalidOperationException("User not found.");
 
         var booking = new Booking
         {
@@ -259,15 +258,16 @@ internal sealed class BookingService(
 
             await db.SaveChangesAsync(ct);
 
-            return booking;
+            return Result.Success(booking);
         }
         catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.ExclusionViolation)
         {
-            throw new BookingNotAvailableException();
+            return Result.Failure<Booking>(Error.Conflict("Booking:NotAvailable", "This booking is no longer available."));
         }
     }
 
 
+    //TODO: MOVE THIS SOMEWHERE ELSE
     private static string CreateBookingConfirmationEmail(Booking booking)
     {
         return $"""

@@ -3,7 +3,7 @@ using Hoyvik.API.Data;
 using Hoyvik.API.Services;
 using Hoyvik.API.Services.Abstractions;
 using Microsoft.AspNetCore.Identity;
-
+using static Hoyvik.API.Common.ResultExtensions;
 namespace Hoyvik.API.Endpoints.Auth;
 
 internal sealed class RegisterEndpoint : IEndpoint
@@ -24,12 +24,11 @@ internal sealed class RegisterEndpoint : IEndpoint
         IEmailService emailService,
         EmailLinkFactory linkFactory,
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager,
         CancellationToken ct = default)
     {
         if (request.Password != request.ConfirmPassword)
         {
-            return Results.BadRequest();
+            return ValidationFailure("Auth:PasswordMismatch", "Passwords do not match.");
         }
 
 
@@ -46,16 +45,15 @@ internal sealed class RegisterEndpoint : IEndpoint
 
         if (!result.Succeeded)
         {
-            return Results.BadRequest(
-                result.Errors.Select(x => x.Description));
+            return result.ToResult().ToHttpResult();
         }
 
         var roleResult = await userManager.AddToRoleAsync(user, Roles.USER);
 
         if (!roleResult.Succeeded)
         {
-            return Results.BadRequest(
-                roleResult.Errors.Select(x => x.Description));
+            await userManager.DeleteAsync(user);
+            return roleResult.ToResult().ToHttpResult();
         }
 
         var emailVerificationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -68,8 +66,6 @@ internal sealed class RegisterEndpoint : IEndpoint
             "Verify Email",
             $"""<a href="{link}">Click here to verify</a>""",
         ct);
-
-        //await signInManager.SignInAsync(user, true);
 
         return Results.Ok();
 
@@ -86,23 +82,22 @@ internal sealed class RegisterEndpoint : IEndpoint
 
         if (user is null)
         {
-            return Results.BadRequest("Invalid verification link.");
+            return ValidationFailure("Auth:InvalidVerificationLink", "Invalid or expired verification link.");
         }
 
         if (user.EmailConfirmed)
         {
-            return Results.Ok("Email is already verified.");
+            return Results.Ok();
         }
 
         var result = await userManager.ConfirmEmailAsync(user, token);
 
         if (!result.Succeeded)
         {
-            return Results.BadRequest(
-                result.Errors.Select(x => x.Description));
+            return ValidationFailure("Auth:InvalidVerificationLink", "Invalid or expired verification link.");
         }
 
-        return Results.Ok("Email verified successfully.");
+        return Results.Ok();
     }
 
     static async Task<IResult> ResendVerification(
@@ -124,10 +119,10 @@ internal sealed class RegisterEndpoint : IEndpoint
         var link = linkFactory.CreateVerifyEmailLink(user.Id, token);
 
         await emailService.Send(
-         user.Email!,
-         "Verify Email",
-         $"""<a href="{link}">Click here to verify</a>""",
-         ct);
+             user.Email!,
+             "Verify Email",
+             $"""<a href="{link}">Click here to verify</a>""",
+             ct);
 
         return Results.Ok();
     }

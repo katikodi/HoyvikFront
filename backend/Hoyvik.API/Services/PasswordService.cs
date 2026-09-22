@@ -1,4 +1,5 @@
-﻿using Hoyvik.API.Common;
+﻿using System.Security.Claims;
+using Hoyvik.API.Common;
 using Hoyvik.API.Data;
 using Hoyvik.API.Services.Abstractions;
 using Microsoft.AspNetCore.Identity;
@@ -11,27 +12,22 @@ public class PasswordService(
     ) : IPasswordService
 {
     public async Task<Result> ChangePasswordAsync(
-        ApplicationUser user,
+        ClaimsPrincipal claimsPrincipal,
         string currentPassword,
         string newPassword)
     {
+        var user = await userManager.GetUserAsync(claimsPrincipal);
+
+        if (user is null)
+        {
+            return Result.Failure(error: new("", "", ErrorType.Validation));
+        }
+
         var results = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
 
         if (!results.Succeeded)
         {
-
-            var errors = results.Errors.Select(x =>
-            {
-                return new
-                {
-                    error = x.Code,
-                    message = x.Description
-                };
-            });
-
-            return Result.Failure(new Error { 
-
-            });
+            return results.ToResult();
         }
 
         await signInManager.RefreshSignInAsync(user);

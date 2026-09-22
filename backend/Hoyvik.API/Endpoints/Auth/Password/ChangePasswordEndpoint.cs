@@ -1,7 +1,5 @@
 ﻿using Hoyvik.API.Common;
-using Hoyvik.API.Data;
 using Hoyvik.API.Services.Abstractions;
-using Microsoft.AspNetCore.Identity;
 
 namespace Hoyvik.API.Endpoints.Auth.Password;
 
@@ -21,42 +19,14 @@ public class ChangePasswordEndpoint : IEndpoint
         HttpContext context,
         IPasswordService passwordService)
     {
-        var user = await userManager.GetUserAsync(context.User);
-
-        if(user is null)
+        if (request.NewPassword != request.ConfirmPassword)
         {
-            return Results.Unauthorized();
+            return Result.Failure(Error.Validation("PasswordMismatch", "Passwords do not match")).ToHttpResult();
         }
-
-
-        if (!request.NewPassword.Equals(request.ConfirmPassword))
-        {
-            return Results.BadRequest(new {
-                error = "password_mismatch",
-                message = "Your new password and confirm passwords must be the same."
-            });
-        }
-
-
-
-        await passwordService.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
-
-        var results = await userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
-
-        if (!results.Succeeded)
-        {
-
-
-
-            return Results.BadRequest(errors);
-
-        }
-        await signInManager.RefreshSignInAsync(user);
-        return Results.Ok();
+        var result = await passwordService.ChangePasswordAsync(context.User, request.CurrentPassword, request.NewPassword);
+        return result.ToHttpResult();
     }
 
 
 }
-
-
 

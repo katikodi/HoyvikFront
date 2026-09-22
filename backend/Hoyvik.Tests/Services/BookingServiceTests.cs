@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
-using Hoyvik.API.Exceptions;
 using Hoyvik.API.Models;
 using Hoyvik.API.Models.Requests;
 using Hoyvik.API.Models.Stripe;
@@ -573,7 +572,9 @@ public class BookingServiceTests
             request,
             user.Id);
 
-        result.Should().Be("https://checkout.stripe.com/test");
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().Be("https://checkout.stripe.com/test");
 
         var booking = await db.Bookings.SingleAsync();
 
@@ -618,12 +619,18 @@ public class BookingServiceTests
             new DateOnly(2026, 9, 14),
             2);
 
-        var act = () => service.CreateBookingPaymentSession(
-            request,
-            "user-123");
+        //var act = () => service.CreateBookingPaymentSession(
+        //    request,
+        //    "user-123");
 
-        await act.Should()
-            .ThrowAsync<BookingNotAvailableException>();
+        var result = await service.CreateBookingPaymentSession(request, "user-123");
+
+
+        result.IsFailure.Should().Be(true);
+        result.Error.Code.Should().Be("Booking:NotAvailable");
+
+        //await act.Should()
+        //    .ThrowAsync<BookingNotAvailableException>();
 
         stripeMock.Verify(
             x => x.CreateCheckoutSession(

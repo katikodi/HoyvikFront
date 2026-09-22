@@ -22,7 +22,7 @@ internal sealed class OccupiedBookingsEndpoint : IEndpoint
         var blockedBookings = await db.BlockedPeriods
             .Select(x => new OccupiedResponse(x.CheckIn, x.CheckOut, BookingStatus.Confirmed))
             .ToListAsync();
-        return Results.Ok(bookings.Concat(blockedBookings));
+        return Results.Ok(bookings.Concat(blockedBookings).ToList());
     }
 
 }
