@@ -12,7 +12,7 @@ import {
     SidebarProvider
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { useSidebar } from "@/components/ui/sidebar";
+import { useSidebar } from "@/hooks/useSidebar";
 
 import { ChevronRight, Menu } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";

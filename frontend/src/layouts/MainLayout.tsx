@@ -114,7 +114,7 @@ export default function MainLayout() {
         <div className="flex h-dvh w-full flex-col">
             {/* Header does not belong inside of main */}
             <header className="absolute inset-x-0 top-0 z-50">
-                <nav className="hidden fixed md:flex w-full items-center justify-around gap-4 p-4 pr-24 backdrop-blur-sm bg-background/80">
+                <nav className="hidden fixed md:flex w-full items-center justify-around gap-4 py-4 pr-16 backdrop-blur-sm bg-background/80">
                     {navLinks.map(({ to, text }) => (
                         <Link
                             preload="render"
