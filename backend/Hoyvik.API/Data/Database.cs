@@ -12,6 +12,7 @@ internal sealed class Database(DbContextOptions<Database> options) : IdentityDbC
     public DbSet<BlockedPeriod> BlockedPeriods { get; set; }
     public DbSet<EmailOutbox> EmailOutbox { get; set; }
 
+    //public DbSet<object> PasswordReset { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
