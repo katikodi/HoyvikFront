@@ -16,8 +16,6 @@ import { useSidebar } from "@/components/ui/sidebar";
 
 import { ChevronRight, Menu } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
-
-import { Link } from "@tanstack/react-router";
 import { useTheme } from "./theme-provider";
 
 // {user?.roles.includes("admin") && (
