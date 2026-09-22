@@ -106,29 +106,33 @@ internal sealed class StripeWebhook : IEndpoint
                     return Results.Ok();
                 }
 
-                var confirmed = await bookingService.ConfirmBooking(
+                var confirmResult = await bookingService.ConfirmBooking(
                     bookingId,
                     session.Id,
                     ct);
 
-                if (!confirmed)
+                if (confirmResult.IsFailure)
                 {
                     logger.LogWarning(
                         "Could not confirm booking {BookingId} from Stripe session {SessionId}",
                         bookingId,
                         session.Id);
+
+                    //possible race condition?
+                    //if (confirmResult.Error.Type == Common.ErrorType.NotFound)
+                    //    return Results.NotFound();
                 }
 
                 break;
 
             case "checkout.session.expired":
 
-                var expired = await bookingService.ExpireBooking(
+                var expiredResult = await bookingService.ExpireBooking(
                     bookingId,
                     session.Id,
                     ct);
 
-                if (!expired)
+                if (expiredResult.IsFailure)
                 {
                     logger.LogWarning(
                         "Could not expire booking {BookingId} from Stripe session {SessionId}",

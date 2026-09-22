@@ -45,7 +45,7 @@ internal sealed class BookingService(
         return !blocked;
     }
 
-    public async Task<bool> ConfirmBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
+    public async Task<Result> ConfirmBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
     {
         var booking = await db.Bookings
             .Include(x => x.User)
@@ -56,8 +56,7 @@ internal sealed class BookingService(
             logger.LogWarning(
                 "Booking {BookingId} not found",
                 bookingId);
-
-            return false;
+            return Result.Failure(Error.NotFound("Booking:NotFound", "Booking not found."));
         }
 
         // Make sure this Stripe session belongs to this booking
@@ -70,13 +69,13 @@ internal sealed class BookingService(
                 booking.StripeSessionId,
                 stripeSessionId);
 
-            return false;
+            return Result.Failure(Error.Conflict("Booking:SessionMismatch", "Stripe session does not match this booking."));
         }
 
         // Already confirmed
         if (booking.Status == BookingStatus.Confirmed)
         {
-            return true;
+            return Result.Success();
         }
 
         // Don't confirm cancelled/expired bookings
@@ -86,8 +85,7 @@ internal sealed class BookingService(
                 "Booking {BookingId} has status {Status}, cannot confirm",
                 booking.Id,
                 booking.Status);
-
-            return false;
+            return Result.Failure(Error.Conflict("Booking:InvalidStatus", $"Booking has status {booking.Status} and cannot be confirmed."));
         }
 
         var now = DateTime.UtcNow;
@@ -97,8 +95,7 @@ internal sealed class BookingService(
             logger.LogWarning(
                 "Booking {BookingId} expired before payment confirmation",
                 booking.Id);
-
-            return false;
+            return Result.Failure(Error.Conflict("Booking:Expired", "Booking expired before payment confirmation."));
         }
 
         booking.Status = BookingStatus.Confirmed;
@@ -129,11 +126,10 @@ internal sealed class BookingService(
 
 
         logger.LogInformation("Booking {BookingId} confirmed", booking.Id);
-
-        return true;
+        return Result.Success();
     }
 
-    public async Task<bool> ExpireBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
+    public async Task<Result> ExpireBooking(int bookingId, string stripeSessionId, CancellationToken ct = default)
     {
         var booking = await db.Bookings
             .SingleOrDefaultAsync(x => x.Id == bookingId, ct);
@@ -144,7 +140,8 @@ internal sealed class BookingService(
                 "Booking {BookingId} not found",
                 bookingId);
 
-            return false;
+            return Result.Failure(Error.NotFound("Booking:NotFound", "Booking not found."));
+
         }
 
         // Make sure this Stripe session belongs to this booking
@@ -157,13 +154,12 @@ internal sealed class BookingService(
                 booking.Id,
                 booking.StripeSessionId,
                 stripeSessionId);
-
-            return false;
+            return Result.Failure(Error.Conflict("Booking:SessionMismatch", "Stripe session does not match this booking."));
         }
 
         if (booking.Status != BookingStatus.Pending)
         {
-            return false;
+            return Result.Failure(Error.Conflict("Booking:InvalidStatus", $"Booking has status {booking.Status} and cannot be expired."));
         }
 
         booking.Status = BookingStatus.Expired;
@@ -172,7 +168,7 @@ internal sealed class BookingService(
 
         logger.LogInformation("Booking {BookingId} expired", booking.Id);
 
-        return true;
+        return Result.Success();
     }
 
     /// <summary>

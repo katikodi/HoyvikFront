@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Hoyvik.API.Common;
 using Hoyvik.API.Configuration;
 using Hoyvik.API.Data;
 using Hoyvik.API.Models;
@@ -13,6 +14,7 @@ using Moq;
 
 namespace Hoyvik.Tests.Services;
 
+//TODO: re-write tests
 public class BookingServiceTests
 {
     private static Database CreateDatabase()
@@ -158,7 +160,7 @@ public class BookingServiceTests
 
 
     [Fact]
-    public async Task ConfirmBooking_ReturnsFalse_WhenBookingDoesNotExist()
+    public async Task ConfirmBooking_ReturnsNotFound_WhenBookingDoesNotExist()
     {
         // Arrange
         await using var db = CreateDatabase();
@@ -171,7 +173,10 @@ public class BookingServiceTests
             stripeSessionId: "cs_test_123");
 
         // Assert
-        result.Should().BeFalse();
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("Booking:NotFound");
+        result.Error.Type.Should().Be(ErrorType.NotFound);
     }
 
 
@@ -202,7 +207,7 @@ public class BookingServiceTests
             "cs_test_123");
 
         // Assert
-        result.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
 
         // Clear EF Core's tracked entities
         db.ChangeTracker.Clear();
@@ -240,8 +245,7 @@ public class BookingServiceTests
             "cs_test_123");
 
         // Assert
-        result.Should().BeTrue();
-
+        result.IsSuccess.Should().BeTrue();
         booking.Status.Should().Be(BookingStatus.Confirmed);
     }
 
@@ -270,7 +274,12 @@ public class BookingServiceTests
             "cs_test_wrong");
 
         // Assert
-        result.Should().BeFalse();
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("Booking:SessionMismatch");
+        result.Error.Description.Should().Be("Stripe session does not match this booking.");
+        result.Error.Type.Should().Be(ErrorType.Conflict);
+        //result.Should().Be(false);
+        //result.Should().BeFalse();
 
         var updatedBooking = await db.Bookings.FindAsync(booking.Id);
 
@@ -303,8 +312,10 @@ public class BookingServiceTests
             "cs_test_123");
 
         // Assert
-        result.Should().BeFalse();
-
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("Booking:InvalidStatus");
+        result.Error.Description.Should().Be("Booking has status Expired and cannot be confirmed.");
+        result.Error.Type.Should().Be(ErrorType.Conflict);
         var updatedBooking = await db.Bookings.FindAsync(booking.Id);
 
         updatedBooking!.Status.Should().Be(BookingStatus.Expired);
@@ -335,8 +346,7 @@ public class BookingServiceTests
             "cs_test_new");
 
         // Assert
-        result.Should().BeTrue();
-
+        result.IsSuccess.Should().BeTrue();
         var updatedBooking = await db.Bookings.FindAsync(booking.Id);
 
         updatedBooking!.Status.Should().Be(BookingStatus.Confirmed);
