@@ -20,7 +20,9 @@ function VerifyEmailPage() {
             return await api.get(
                 `/auth/verify-email?userId=${encodeURIComponent(search.userId)}&token=${encodeURIComponent(search.token)}`
             );
-        }
+        },
+        staleTime: 0,
+        gcTime: 0
     });
 
     return (
