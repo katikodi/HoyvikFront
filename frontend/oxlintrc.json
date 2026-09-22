@@ -7,5 +7,13 @@
         "react/only-export-components": ["warn", { "allowConstantExport": true }],
         "typescript/no-explicit-any": "warn"
     },
-    "ignorePatterns": ["**/*.gen.*"]
+    "ignorePatterns": ["**/*.gen.*"],
+    "overrides": [
+        {
+            "files": ["src/components/ui/**/*.{js,jsx,ts,tsx}"],
+            "rules": {
+                "complexity": "off"
+            }
+        }
+    ]
 }
