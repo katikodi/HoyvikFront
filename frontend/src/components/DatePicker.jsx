@@ -26,7 +26,7 @@ export function DatePickerDemo({ value, onChange, ...props }) {
                 <Button
                     variant="outline"
                     data-empty={!value}
-                    className="justify-start text-left font-normal data-[empty=true]:text-muted-foreground data-[empty=false]:bg-muted rounded-none h-full w-fit bg-transparent border-2 border-solid border-[#2A3430] tracking-tighter"
+                    className="justify-start text-left font-normal data-[empty=true]:text-muted-foreground data-[empty=false]:bg-muted rounded-none h-full w-full bg-transparent border-2 border-solid border-[#2A3430] tracking-tighter"
                 >
                     <CalendarIcon className="size-8" />
 

@@ -144,9 +144,9 @@ function HamburgerDropdown() {
         <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
                 <Button
-                    variant="outline"
+                    variant="default"
                     size="icon"
-                    className="fixed right-4 top-4 z-50 rounded-none"
+                    className="fixed right-4 top-4 z-50 rounded-none bg-background"
                 >
                     <Menu />
                     <span className="sr-only">Open menu</span>

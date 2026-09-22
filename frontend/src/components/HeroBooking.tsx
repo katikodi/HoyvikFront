@@ -68,7 +68,10 @@ const HeroBooking = () => {
                             control={form.control}
                             name="checkIn"
                             render={({ field, fieldState }) => (
-                                <Field orientation="vertical">
+                                <Field
+                                    orientation="vertical"
+                                    className="grow"
+                                >
                                     <FieldLabel className="font-light">Innsjekk</FieldLabel>
                                     <div className="h-14">
                                         {/* TODO: maybe combine the two calendars to one with range selection */}
@@ -87,7 +90,10 @@ const HeroBooking = () => {
                             control={form.control}
                             name="checkOut"
                             render={({ field, fieldState }) => (
-                                <Field orientation="vertical">
+                                <Field
+                                    orientation="vertical"
+                                    className="grow"
+                                >
                                     <FieldLabel className="font-light">Utsjekk</FieldLabel>
                                     <div className="h-14">
                                         {/* TODO: maybe combine the two calendars to one with range selection */}

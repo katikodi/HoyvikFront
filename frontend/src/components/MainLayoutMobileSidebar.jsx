@@ -156,9 +156,9 @@ const SideBarTrigger = () => {
     const { toggleSidebar } = useSidebar();
     return (
         <Button
-            variant="outline"
+            variant="default"
             size="icon"
-            className="fixed right-4 top-4 z-50 rounded-none"
+            className="fixed right-4 top-4 z-50 rounded-none bg-background"
             onClick={toggleSidebar}
         >
             <Menu />

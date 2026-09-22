@@ -15,15 +15,15 @@ export default function HomeImageCarousel() {
             <div className="w-full flex justify-center items-center overflow-x-clip">
                 <Carousel
                     opts={{
-                        align: "start",
+                        align: "center",
                         loop: true
                     }}
-                    className="w-8/12"
+                    className="w-12/12 lg:w-10/12"
                 >
                     <CarouselContent>
                         {cards.map((card, i) => (
                             <CarouselItem
-                                className="basis-9/12 overflow-clip md:basis-7/12 p-1"
+                                className="basis-9/12 overflow-clip md:basis-9/12 p-1"
                                 key={i}
                             >
                                 <Card className="rounded-none bg-light-background pt-0 h-auto text-ellipsis">
@@ -57,8 +57,8 @@ export default function HomeImageCarousel() {
                             </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselNext />
-                    <CarouselPrevious />
+                    <CarouselNext className="hidden lg:flex" />
+                    <CarouselPrevious className="hidden lg:flex" />
                 </Carousel>
             </div>
         </div>
