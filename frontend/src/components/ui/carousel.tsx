@@ -173,4 +173,4 @@ function CarouselNext({ className, variant = "outline", size = "icon-sm", ...pro
     );
 }
 
-export { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, useCarousel };
+export { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext };
