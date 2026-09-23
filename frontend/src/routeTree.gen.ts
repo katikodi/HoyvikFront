@@ -22,6 +22,7 @@ import { Route as IndexAboutRouteImport } from './routes/_index/about'
 import { Route as IndexBookingRouteImport } from './routes/_index/booking'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as ProfileChangePasswordRouteImport } from './routes/profile/change-password'
 import { Route as IndexPaymentPaymentSuccessRouteImport } from './routes/_index/payment/payment-success'
 import { Route as ProfileBookingsIndexRouteImport } from './routes/profile/bookings/index'
 
@@ -89,6 +90,11 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ProfileRouteRoute,
 } as any)
+const ProfileChangePasswordRoute = ProfileChangePasswordRouteImport.update({
+  id: '/change-password',
+  path: '/change-password',
+  getParentRoute: () => ProfileRouteRoute,
+} as any)
 const IndexPaymentPaymentSuccessRoute =
   IndexPaymentPaymentSuccessRouteImport.update({
     id: '/payment/payment-success',
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/verify-email': typeof VerifyEmailRoute
   '/about': typeof IndexAboutRoute
   '/booking': typeof IndexBookingRoute
+  '/profile/change-password': typeof ProfileChangePasswordRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/payment/payment-success': typeof IndexPaymentPaymentSuccessRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/verify-email': typeof VerifyEmailRoute
   '/about': typeof IndexAboutRoute
   '/booking': typeof IndexBookingRoute
+  '/profile/change-password': typeof ProfileChangePasswordRoute
   '/': typeof IndexIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/profile': typeof ProfileIndexRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/verify-email': typeof VerifyEmailRoute
   '/_index/about': typeof IndexAboutRoute
   '/_index/booking': typeof IndexBookingRoute
+  '/profile/change-password': typeof ProfileChangePasswordRoute
   '/_index/': typeof IndexIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/about'
     | '/booking'
+    | '/profile/change-password'
     | '/dashboard/'
     | '/profile/'
     | '/payment/payment-success'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/about'
     | '/booking'
+    | '/profile/change-password'
     | '/'
     | '/dashboard'
     | '/profile'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/_index/about'
     | '/_index/booking'
+    | '/profile/change-password'
     | '/_index/'
     | '/dashboard/'
     | '/profile/'
@@ -303,6 +315,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof ProfileRouteRoute
     }
+    '/profile/change-password': {
+      id: '/profile/change-password'
+      path: '/change-password'
+      fullPath: '/profile/change-password'
+      preLoaderRoute: typeof ProfileChangePasswordRouteImport
+      parentRoute: typeof ProfileRouteRoute
+    }
     '/_index/payment/payment-success': {
       id: '/_index/payment/payment-success'
       path: '/payment/payment-success'
@@ -351,11 +370,13 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 )
 
 interface ProfileRouteRouteChildren {
+  ProfileChangePasswordRoute: typeof ProfileChangePasswordRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   ProfileBookingsIndexRoute: typeof ProfileBookingsIndexRoute
 }
 
 const ProfileRouteRouteChildren: ProfileRouteRouteChildren = {
+  ProfileChangePasswordRoute: ProfileChangePasswordRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   ProfileBookingsIndexRoute: ProfileBookingsIndexRoute,
 }

@@ -4,10 +4,10 @@ namespace Hoyvik.API.Common;
 public static class ResultExtensions
 {
     public static IResult ToHttpResult(this Result result) =>
-        result.IsSuccess ? TypedResults.Ok() : MapFailure(result);
+        result.IsSuccess ? TypedResults.Ok() : MapError(result.Error);
 
     public static IResult ToHttpResult<T>(this Result<T> result) =>
-        result.IsSuccess ? TypedResults.Ok(result.Value) : MapFailure(result);
+        result.IsSuccess ? TypedResults.Ok(result.Value) : MapError(result.Error);
 
     public static IResult Unauthorized(string code, string description) =>
         Result.Failure(Error.Unauthorized(code, description)).ToHttpResult();
@@ -23,11 +23,14 @@ public static class ResultExtensions
 
     private static IResult MapFailure(Result result)
     {
-        if (result.Errors.Length > 1)
+        if (result.Error.Type == ErrorType.Validation)
         {
             var validationErrors = result.Errors
                 .GroupBy(e => e.Code)
-                .ToDictionary(g => g.Key, g => g.Select(e => e.Description).ToArray());
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(e => e.Description).ToArray()
+                );
 
             return TypedResults.ValidationProblem(validationErrors);
         }
