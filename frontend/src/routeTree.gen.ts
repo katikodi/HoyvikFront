@@ -19,6 +19,7 @@ import { Route as IndexIndexRouteImport } from './routes/_index/index'
 import { Route as IndexAboutRouteImport } from './routes/_index/about'
 import { Route as IndexAdminRouteImport } from './routes/_index/admin'
 import { Route as IndexBookingRouteImport } from './routes/_index/booking'
+import { Route as IndexShopRouteImport } from './routes/_index/shop'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardBookingsRouteImport } from './routes/dashboard/bookings'
 import { Route as DashboardMiscBookingsRouteImport } from './routes/dashboard/misc-bookings'
@@ -75,6 +76,11 @@ const IndexBookingRoute = IndexBookingRouteImport.update({
   path: '/booking',
   getParentRoute: () => IndexRouteRoute,
 } as any)
+const IndexShopRoute = IndexShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => IndexRouteRoute,
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof IndexAboutRoute
   '/admin': typeof IndexAdminRoute
   '/booking': typeof IndexBookingRoute
+  '/shop': typeof IndexShopRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/misc-bookings': typeof DashboardMiscBookingsRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/about': typeof IndexAboutRoute
   '/admin': typeof IndexAdminRoute
   '/booking': typeof IndexBookingRoute
+  '/shop': typeof IndexShopRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/misc-bookings': typeof DashboardMiscBookingsRoute
   '/': typeof IndexIndexRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/_index/about': typeof IndexAboutRoute
   '/_index/admin': typeof IndexAdminRoute
   '/_index/booking': typeof IndexBookingRoute
+  '/_index/shop': typeof IndexShopRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/misc-bookings': typeof DashboardMiscBookingsRoute
   '/_index/': typeof IndexIndexRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/booking'
+    | '/shop'
     | '/dashboard/bookings'
     | '/dashboard/misc-bookings'
     | '/dashboard/'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/booking'
+    | '/shop'
     | '/dashboard/bookings'
     | '/dashboard/misc-bookings'
     | '/'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/_index/about'
     | '/_index/admin'
     | '/_index/booking'
+    | '/_index/shop'
     | '/dashboard/bookings'
     | '/dashboard/misc-bookings'
     | '/_index/'
@@ -292,6 +304,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexBookingRouteImport
       parentRoute: typeof IndexRouteRoute
     }
+    '/_index/shop': {
+      id: '/_index/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof IndexShopRouteImport
+      parentRoute: typeof IndexRouteRoute
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -341,6 +360,7 @@ interface IndexRouteRouteChildren {
   IndexAboutRoute: typeof IndexAboutRoute
   IndexAdminRoute: typeof IndexAdminRoute
   IndexBookingRoute: typeof IndexBookingRoute
+  IndexShopRoute: typeof IndexShopRoute
   IndexIndexRoute: typeof IndexIndexRoute
   IndexPaymentPaymentSuccessRoute: typeof IndexPaymentPaymentSuccessRoute
 }
@@ -349,6 +369,7 @@ const IndexRouteRouteChildren: IndexRouteRouteChildren = {
   IndexAboutRoute: IndexAboutRoute,
   IndexAdminRoute: IndexAdminRoute,
   IndexBookingRoute: IndexBookingRoute,
+  IndexShopRoute: IndexShopRoute,
   IndexIndexRoute: IndexIndexRoute,
   IndexPaymentPaymentSuccessRoute: IndexPaymentPaymentSuccessRoute,
 }
