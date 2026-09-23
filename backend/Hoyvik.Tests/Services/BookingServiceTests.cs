@@ -25,7 +25,9 @@ public class BookingServiceTests
         return new Database(options);
     }
 
-    private static BookingService CreateService(Database db, Mock<IStripePaymentService>? stripeMock = null)
+    private static BookingService CreateService(
+        Database db,
+        Mock<IStripePaymentService>? stripeMock = null)
     {
         var bookingConfig = new BookingConfiguration
         {
@@ -41,7 +43,6 @@ public class BookingServiceTests
             .Returns(bookingConfig);
 
         stripeMock ??= new Mock<IStripePaymentService>();
-
 
         return new BookingService(
             db: db,
@@ -157,316 +158,6 @@ public class BookingServiceTests
         result.Should().BeTrue();
     }
 
-
-    [Fact]
-    public async Task ConfirmBooking_ReturnsFalse_WhenBookingDoesNotExist()
-    {
-        // Arrange
-        await using var db = CreateDatabase();
-
-        var service = CreateService(db);
-
-        // Act
-        var result = await service.ConfirmBooking(
-            bookingId: 999,
-            stripeSessionId: "cs_test_123");
-
-        // Assert
-        result.Should().BeFalse();
-    }
-
-
-    [Fact]
-    public async Task ConfirmBooking_ConfirmsPendingBooking()
-    {
-        // Arrange
-        await using var db = CreateDatabase();
-
-        var booking = new Booking
-        {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Status = BookingStatus.Pending,
-            StripeSessionId = "cs_test_123",
-            NumberOfGuests = 2,
-            Price = 5250
-        };
-
-        db.Bookings.Add(booking);
-        await db.SaveChangesAsync();
-
-        var service = CreateService(db);
-
-        // Act
-        var result = await service.ConfirmBooking(
-            booking.Id,
-            "cs_test_123");
-
-        // Assert
-        result.Should().BeTrue();
-
-        // Clear EF Core's tracked entities
-        db.ChangeTracker.Clear();
-
-        // Load a fresh copy from the database
-        var updatedBooking = await db.Bookings.FindAsync(booking.Id);
-
-        updatedBooking.Should().NotBeNull();
-        updatedBooking!.Status.Should().Be(BookingStatus.Confirmed);
-        updatedBooking.StripeSessionId.Should().Be("cs_test_123");
-    }
-
-    [Fact]
-    public async Task ConfirmBooking_ReturnsTrue_WhenAlreadyConfirmed()
-    {
-        // Arrange
-        await using var db = CreateDatabase();
-
-        var booking = new Booking
-        {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Status = BookingStatus.Confirmed,
-            StripeSessionId = "cs_test_123"
-        };
-
-        db.Bookings.Add(booking);
-        await db.SaveChangesAsync();
-
-        var service = CreateService(db);
-
-        // Act
-        var result = await service.ConfirmBooking(
-            booking.Id,
-            "cs_test_123");
-
-        // Assert
-        result.Should().BeTrue();
-
-        booking.Status.Should().Be(BookingStatus.Confirmed);
-    }
-
-    [Fact]
-    public async Task ConfirmBooking_ReturnsFalse_WhenStripeSessionDoesNotMatch()
-    {
-        // Arrange
-        await using var db = CreateDatabase();
-
-        var booking = new Booking
-        {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Status = BookingStatus.Pending,
-            StripeSessionId = "cs_test_correct"
-        };
-
-        db.Bookings.Add(booking);
-        await db.SaveChangesAsync();
-
-        var service = CreateService(db);
-
-        // Act
-        var result = await service.ConfirmBooking(
-            booking.Id,
-            "cs_test_wrong");
-
-        // Assert
-        result.Should().BeFalse();
-
-        var updatedBooking = await db.Bookings.FindAsync(booking.Id);
-
-        updatedBooking!.Status.Should().Be(BookingStatus.Pending);
-        updatedBooking.StripeSessionId.Should().Be("cs_test_correct");
-    }
-
-    [Fact]
-    public async Task ConfirmBooking_ReturnsFalse_WhenBookingIsExpired()
-    {
-        // Arrange
-        await using var db = CreateDatabase();
-
-        var booking = new Booking
-        {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Status = BookingStatus.Expired,
-            StripeSessionId = "cs_test_123"
-        };
-
-        db.Bookings.Add(booking);
-        await db.SaveChangesAsync();
-
-        var service = CreateService(db);
-
-        // Act
-        var result = await service.ConfirmBooking(
-            booking.Id,
-            "cs_test_123");
-
-        // Assert
-        result.Should().BeFalse();
-
-        var updatedBooking = await db.Bookings.FindAsync(booking.Id);
-
-        updatedBooking!.Status.Should().Be(BookingStatus.Expired);
-    }
-
-    [Fact]
-    public async Task ConfirmBooking_AssignsStripeSessionId_WhenNoneExists()
-    {
-        // Arrange
-        await using var db = CreateDatabase();
-
-        var booking = new Booking
-        {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Status = BookingStatus.Pending,
-            StripeSessionId = null
-        };
-
-        db.Bookings.Add(booking);
-        await db.SaveChangesAsync();
-
-        var service = CreateService(db);
-
-        // Act
-        var result = await service.ConfirmBooking(
-            booking.Id,
-            "cs_test_new");
-
-        // Assert
-        result.Should().BeTrue();
-
-        var updatedBooking = await db.Bookings.FindAsync(booking.Id);
-
-        updatedBooking!.Status.Should().Be(BookingStatus.Confirmed);
-        updatedBooking.StripeSessionId.Should().Be("cs_test_new");
-    }
-
-    [Fact]
-    public async Task CheckAvailability_ReturnsFalse_WhenDatesAreBlocked()
-    {
-        await using var db = CreateDatabase();
-        var service = CreateService(db);
-
-        db.BlockedPeriods.Add(new BlockedPeriod
-        {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Reason = "Private use",
-            CreatedAt = DateTime.UtcNow
-        });
-
-        await db.SaveChangesAsync();
-
-        var result = await service.CheckAvailability(
-            new DateOnly(2026, 9, 12),
-            new DateOnly(2026, 9, 14));
-
-        result.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task CheckAvailability_ReturnsTrue_WhenDatesAreOutsideBlockedPeriod()
-    {
-        await using var db = CreateDatabase();
-        var service = CreateService(db);
-
-        db.BlockedPeriods.Add(new BlockedPeriod
-        {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Reason = "Private use",
-            CreatedAt = DateTime.UtcNow
-        });
-
-        await db.SaveChangesAsync();
-
-        var result = await service.CheckAvailability(
-            new DateOnly(2026, 9, 15),
-            new DateOnly(2026, 9, 20));
-
-        result.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task CheckAvailability_ReturnsFalse_WhenBookingPartiallyOverlapsBlockedPeriod()
-    {
-        await using var db = CreateDatabase();
-        var service = CreateService(db);
-
-        db.BlockedPeriods.Add(new BlockedPeriod
-        {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Reason = "Maintenance",
-            CreatedAt = DateTime.UtcNow
-        });
-
-        await db.SaveChangesAsync();
-
-        var result = await service.CheckAvailability(
-            new DateOnly(2026, 9, 8),
-            new DateOnly(2026, 9, 12));
-
-        result.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task CheckAvailability_ReturnsFalse_WhenBookingCompletelyContainsBlockedPeriod()
-    {
-        await using var db = CreateDatabase();
-        var service = CreateService(db);
-
-        db.BlockedPeriods.Add(new BlockedPeriod
-        {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Reason = "Private use",
-            CreatedAt = DateTime.UtcNow
-        });
-
-        await db.SaveChangesAsync();
-
-        var result = await service.CheckAvailability(
-            new DateOnly(2026, 9, 5),
-            new DateOnly(2026, 9, 20));
-
-        result.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task CheckAvailability_ReturnsFalse_WhenDatesOverlapAnyBlockedPeriod()
-    {
-        await using var db = CreateDatabase();
-        var service = CreateService(db);
-
-        db.BlockedPeriods.AddRange(
-            new BlockedPeriod
-            {
-                CheckIn = new DateOnly(2026, 9, 10),
-                CheckOut = new DateOnly(2026, 9, 15),
-                Reason = "Private use",
-                CreatedAt = DateTime.UtcNow
-            },
-            new BlockedPeriod
-            {
-                CheckIn = new DateOnly(2026, 9, 20),
-                CheckOut = new DateOnly(2026, 9, 25),
-                Reason = "Maintenance",
-                CreatedAt = DateTime.UtcNow
-            });
-
-        await db.SaveChangesAsync();
-
-        var result = await service.CheckAvailability(
-            new DateOnly(2026, 9, 22),
-            new DateOnly(2026, 9, 24));
-
-        result.Should().BeFalse();
-    }
-
     [Fact]
     public async Task CheckAvailability_ReturnsFalse_WhenPendingBookingHasNotExpired()
     {
@@ -515,26 +206,334 @@ public class BookingServiceTests
     }
 
     [Fact]
-    public async Task CheckAvailability_ReturnsTrue_WhenBookingEndsOnBlockedPeriodCheckIn()
+    public async Task CheckAvailability_ReturnsFalse_WhenCheckOutIsBeforeCheckIn()
     {
         await using var db = CreateDatabase();
+
         var service = CreateService(db);
 
-        db.BlockedPeriods.Add(new BlockedPeriod
+        var result = await service.CheckAvailability(
+            new DateOnly(2026, 9, 15),
+            new DateOnly(2026, 9, 10));
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task CheckAvailability_ReturnsFalse_WhenCheckInEqualsCheckOut()
+    {
+        await using var db = CreateDatabase();
+
+        var service = CreateService(db);
+
+        var result = await service.CheckAvailability(
+            new DateOnly(2026, 9, 10),
+            new DateOnly(2026, 9, 10));
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task CheckAvailability_ReturnsFalse_WhenCheckInDateIsBlocked()
+    {
+        await using var db = CreateDatabase();
+
+        db.BlockedDates.Add(new BlockedDate
         {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Reason = "Private use",
+            Date = new DateOnly(2026, 9, 10),
             CreatedAt = DateTime.UtcNow
         });
 
         await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.CheckAvailability(
+            new DateOnly(2026, 9, 10),
+            new DateOnly(2026, 9, 15));
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task CheckAvailability_ReturnsFalse_WhenDateInsideBookingIsBlocked()
+    {
+        await using var db = CreateDatabase();
+
+        db.BlockedDates.Add(new BlockedDate
+        {
+            Date = new DateOnly(2026, 9, 12),
+            CreatedAt = DateTime.UtcNow
+        });
+
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.CheckAvailability(
+            new DateOnly(2026, 9, 10),
+            new DateOnly(2026, 9, 15));
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task CheckAvailability_ReturnsTrue_WhenBlockedDateIsAfterCheckOut()
+    {
+        await using var db = CreateDatabase();
+
+        db.BlockedDates.Add(new BlockedDate
+        {
+            Date = new DateOnly(2026, 9, 15),
+            CreatedAt = DateTime.UtcNow
+        });
+
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.CheckAvailability(
+            new DateOnly(2026, 9, 10),
+            new DateOnly(2026, 9, 15));
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task CheckAvailability_ReturnsTrue_WhenNoRequestedDatesAreBlocked()
+    {
+        await using var db = CreateDatabase();
+
+        db.BlockedDates.Add(new BlockedDate
+        {
+            Date = new DateOnly(2026, 9, 20),
+            CreatedAt = DateTime.UtcNow
+        });
+
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.CheckAvailability(
+            new DateOnly(2026, 9, 10),
+            new DateOnly(2026, 9, 15));
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task CheckAvailability_ReturnsFalse_WhenAnyRequestedDateIsBlocked()
+    {
+        await using var db = CreateDatabase();
+
+        db.BlockedDates.AddRange(
+            new BlockedDate
+            {
+                Date = new DateOnly(2026, 9, 10),
+                CreatedAt = DateTime.UtcNow
+            },
+            new BlockedDate
+            {
+                Date = new DateOnly(2026, 9, 20),
+                CreatedAt = DateTime.UtcNow
+            });
+
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.CheckAvailability(
+            new DateOnly(2026, 9, 18),
+            new DateOnly(2026, 9, 22));
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task CheckAvailability_ReturnsTrue_WhenBookingEndsOnBlockedDate()
+    {
+        await using var db = CreateDatabase();
+
+        db.BlockedDates.Add(new BlockedDate
+        {
+            Date = new DateOnly(2026, 9, 10),
+            CreatedAt = DateTime.UtcNow
+        });
+
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
 
         var result = await service.CheckAvailability(
             new DateOnly(2026, 9, 5),
             new DateOnly(2026, 9, 10));
 
         result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ConfirmBooking_ReturnsFalse_WhenBookingDoesNotExist()
+    {
+        await using var db = CreateDatabase();
+
+        var service = CreateService(db);
+
+        var result = await service.ConfirmBooking(
+            bookingId: 999,
+            stripeSessionId: "cs_test_123");
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ConfirmBooking_ConfirmsPendingBooking()
+    {
+        await using var db = CreateDatabase();
+
+        var booking = new Booking
+        {
+            CheckIn = new DateOnly(2026, 9, 10),
+            CheckOut = new DateOnly(2026, 9, 15),
+            Status = BookingStatus.Pending,
+            StripeSessionId = "cs_test_123",
+            NumberOfGuests = 2,
+            Price = 5250
+        };
+
+        db.Bookings.Add(booking);
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.ConfirmBooking(
+            booking.Id,
+            "cs_test_123");
+
+        result.Should().BeTrue();
+
+        db.ChangeTracker.Clear();
+
+        var updatedBooking = await db.Bookings.FindAsync(booking.Id);
+
+        updatedBooking.Should().NotBeNull();
+        updatedBooking!.Status.Should().Be(BookingStatus.Confirmed);
+        updatedBooking.StripeSessionId.Should().Be("cs_test_123");
+    }
+
+    [Fact]
+    public async Task ConfirmBooking_ReturnsTrue_WhenAlreadyConfirmed()
+    {
+        await using var db = CreateDatabase();
+
+        var booking = new Booking
+        {
+            CheckIn = new DateOnly(2026, 9, 10),
+            CheckOut = new DateOnly(2026, 9, 15),
+            Status = BookingStatus.Confirmed,
+            StripeSessionId = "cs_test_123"
+        };
+
+        db.Bookings.Add(booking);
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.ConfirmBooking(
+            booking.Id,
+            "cs_test_123");
+
+        result.Should().BeTrue();
+
+        booking.Status.Should().Be(BookingStatus.Confirmed);
+    }
+
+    [Fact]
+    public async Task ConfirmBooking_ReturnsFalse_WhenStripeSessionDoesNotMatch()
+    {
+        await using var db = CreateDatabase();
+
+        var booking = new Booking
+        {
+            CheckIn = new DateOnly(2026, 9, 10),
+            CheckOut = new DateOnly(2026, 9, 15),
+            Status = BookingStatus.Pending,
+            StripeSessionId = "cs_test_correct"
+        };
+
+        db.Bookings.Add(booking);
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.ConfirmBooking(
+            booking.Id,
+            "cs_test_wrong");
+
+        result.Should().BeFalse();
+
+        var updatedBooking = await db.Bookings.FindAsync(booking.Id);
+
+        updatedBooking!.Status.Should().Be(BookingStatus.Pending);
+        updatedBooking.StripeSessionId.Should().Be("cs_test_correct");
+    }
+
+    [Fact]
+    public async Task ConfirmBooking_ReturnsFalse_WhenBookingIsExpired()
+    {
+        await using var db = CreateDatabase();
+
+        var booking = new Booking
+        {
+            CheckIn = new DateOnly(2026, 9, 10),
+            CheckOut = new DateOnly(2026, 9, 15),
+            Status = BookingStatus.Expired,
+            StripeSessionId = "cs_test_123"
+        };
+
+        db.Bookings.Add(booking);
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.ConfirmBooking(
+            booking.Id,
+            "cs_test_123");
+
+        result.Should().BeFalse();
+
+        var updatedBooking = await db.Bookings.FindAsync(booking.Id);
+
+        updatedBooking!.Status.Should().Be(BookingStatus.Expired);
+    }
+
+    [Fact]
+    public async Task ConfirmBooking_AssignsStripeSessionId_WhenNoneExists()
+    {
+        await using var db = CreateDatabase();
+
+        var booking = new Booking
+        {
+            CheckIn = new DateOnly(2026, 9, 10),
+            CheckOut = new DateOnly(2026, 9, 15),
+            Status = BookingStatus.Pending,
+            StripeSessionId = null
+        };
+
+        db.Bookings.Add(booking);
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.ConfirmBooking(
+            booking.Id,
+            "cs_test_new");
+
+        result.Should().BeTrue();
+
+        var updatedBooking = await db.Bookings.FindAsync(booking.Id);
+
+        updatedBooking!.Status.Should().Be(BookingStatus.Confirmed);
+        updatedBooking.StripeSessionId.Should().Be("cs_test_new");
     }
 
     [Fact]
@@ -600,11 +599,9 @@ public class BookingServiceTests
     {
         await using var db = CreateDatabase();
 
-        db.BlockedPeriods.Add(new BlockedPeriod
+        db.BlockedDates.Add(new BlockedDate
         {
-            CheckIn = new DateOnly(2026, 9, 10),
-            CheckOut = new DateOnly(2026, 9, 15),
-            Reason = "Private use",
+            Date = new DateOnly(2026, 9, 12),
             CreatedAt = DateTime.UtcNow
         });
 
@@ -614,7 +611,7 @@ public class BookingServiceTests
         var service = CreateService(db, stripeMock);
 
         var request = new CreateSessionRequest(
-            new DateOnly(2026, 9, 12),
+            new DateOnly(2026, 9, 10),
             new DateOnly(2026, 9, 14),
             2);
 
@@ -636,5 +633,47 @@ public class BookingServiceTests
         bookingCount.Should().Be(0);
     }
 
+    [Fact]
+    public async Task ConfirmBooking_CreatesEmailOutbox_WhenUserHasEmail()
+    {
+        await using var db = CreateDatabase();
 
+        var user = new ApplicationUser
+        {
+            Id = "user-123",
+            UserName = "test@example.com",
+            Email = "test@example.com"
+        };
+
+        db.Users.Add(user);
+
+        var booking = new Booking
+        {
+            CheckIn = new DateOnly(2026, 9, 10),
+            CheckOut = new DateOnly(2026, 9, 15),
+            Status = BookingStatus.Pending,
+            StripeSessionId = "cs_test_123",
+            NumberOfGuests = 2,
+            Price = 5250,
+            UserId = user.Id
+        };
+
+        db.Bookings.Add(booking);
+
+        await db.SaveChangesAsync();
+
+        var service = CreateService(db);
+
+        var result = await service.ConfirmBooking(
+            booking.Id,
+            "cs_test_123");
+
+        result.Should().BeTrue();
+
+        var email = await db.EmailOutbox.SingleAsync();
+
+        email.To.Should().Be("test@example.com");
+        email.Subject.Should().Be($"Booking confirmation #{booking.Id}");
+        email.Body.Should().Contain("Booking confirmed");
+    }
 }

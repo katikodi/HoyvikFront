@@ -21,7 +21,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.MapOpenApi();
     app.UseExceptionHandler("/error");
     app.UseDeveloperExceptionPage();
 }

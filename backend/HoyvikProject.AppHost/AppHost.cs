@@ -38,7 +38,7 @@ var api = builder.AddProject<Hoyvik_API>("backend")
     //.WithReference(migrations)
     //.WaitForCompletion(migrations)
     .WithExternalHttpEndpoints()
-    .WithHttpEndpoint(targetPort: 5127, port: 5128)
+    .WithHttpEndpoint(targetPort: 5127, port: 5128, name: "http")
     .PublishAsDockerComposeService((resource, service) =>
     {
         service.AddVolume(new Volume
