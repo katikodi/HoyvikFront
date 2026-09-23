@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
-import { type CarouselApi, useCarousel } from "@/hooks/useCarousel";
+import { type CarouselApi } from "@/hooks/useCarousel";
 import { type EmblaEventType } from "embla-carousel";
 import "@/styles/parallax.css";
 import { Button } from "@/components/ui/button";
@@ -18,28 +18,14 @@ const TWEEN_FACTOR_BASE = 0.2;
 
 const ParallaxCarousel = ({ slides }: { slides: cardProps[] }) => {
     const [api, setApi] = React.useState<CarouselApi>();
-    const [current, setCurrent] = useState(0);
-    const [count, setCount] = useState(0);
     const tweenFactor = useRef(0);
     const tweenNodes = useRef<(HTMLElement | null)[] | undefined>([]);
     React.useEffect(() => {
         if (!api) {
             return;
         }
-
-        setCount(api.scrollSnapList().length);
-        setCurrent(api.selectedScrollSnap() + 1);
-
-        api.on("select", () => {
-            setCurrent(api.selectedScrollSnap() + 1);
-        });
     }, [api]);
 
-    // const setTweenNodes = useCallback((api: CarouselApi) => {
-    //   tweenNodes.current = api?.slideNodes().map((slideNode) => {
-    //     return slideNode.querySelector(".embla__parallax__layer");
-    //   });
-    // }, []);
     const setTweenFactor = useCallback((api: CarouselApi) => {
         if (!api?.scrollSnapList) {
             return;
@@ -159,6 +145,8 @@ const ParallaxCarousel = ({ slides }: { slides: cardProps[] }) => {
                     </CarouselItem>
                 ))}
             </CarouselContent>
+            <CarouselNext />
+            <CarouselPrevious />
         </Carousel>
     );
 };
