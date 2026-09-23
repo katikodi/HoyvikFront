@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteRouteImport } from './routes/_index/route'
+import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProfileRouteRouteImport } from './routes/profile/route'
@@ -25,6 +26,11 @@ import { Route as ProfileBookingsIndexRouteImport } from './routes/profile/booki
 
 const IndexRouteRoute = IndexRouteRouteImport.update({
   id: '/_index',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangePasswordRoute = ChangePasswordRouteImport.update({
+  id: '/change-password',
+  path: '/change-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexIndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/profile': typeof ProfileRouteRouteWithChildren
+  '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/profile/bookings/': typeof ProfileBookingsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/_index': typeof IndexRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/profile': typeof ProfileRouteRouteWithChildren
+  '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/profile'
+    | '/change-password'
     | '/login'
     | '/register'
     | '/verify-email'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/profile/bookings/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/change-password'
     | '/login'
     | '/register'
     | '/verify-email'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/_index'
     | '/dashboard'
     | '/profile'
+    | '/change-password'
     | '/login'
     | '/register'
     | '/verify-email'
@@ -179,6 +191,7 @@ export interface RootRouteChildren {
   IndexRouteRoute: typeof IndexRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   ProfileRouteRoute: typeof ProfileRouteRouteWithChildren
+  ChangePasswordRoute: typeof ChangePasswordRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/change-password': {
+      id: '/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof ChangePasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRouteRoute: IndexRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   ProfileRouteRoute: ProfileRouteRouteWithChildren,
+  ChangePasswordRoute: ChangePasswordRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   VerifyEmailRoute: VerifyEmailRoute,
