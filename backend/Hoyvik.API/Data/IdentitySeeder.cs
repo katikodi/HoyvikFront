@@ -36,14 +36,16 @@ internal static class IdentitySeeder
         {
             admin = new ApplicationUser
             {
-                FullName = adminEmail,
+                FirstName = adminEmail,
+                LastName = "last_name",
                 UserName = adminEmail,
                 Email = adminEmail,
                 EmailConfirmed = true
             };
             var appUser = new ApplicationUser
             {
-                FullName = "billy bob",
+                FirstName = "billy",
+                LastName = "bob",
                 UserName = "test@test.com",
                 Email = "test@test.com",
                 EmailConfirmed = true

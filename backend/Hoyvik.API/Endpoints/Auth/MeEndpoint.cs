@@ -35,7 +35,8 @@ internal sealed class MeEndpoint : IEndpoint
 
         //TODO HANDLE NULLS
         var me = new MeResponse(
-            user.FullName,
+            user.FirstName,
+            user.LastName,
             user.Id,
             user.UserName!,
             user.Email!,
@@ -73,7 +74,8 @@ internal sealed class MeEndpoint : IEndpoint
     }
 
     record MeResponse(
-        string FullName,
+        string FirstName,
+        string LastName,
         string Id,
         string UserName,
         string Email,
