@@ -33,11 +33,12 @@ internal sealed class MeEndpoint : IEndpoint
 
         var roles = await userManager.GetRolesAsync(user);
 
+        //TODO HANDLE NULLS
         var me = new MeResponse(
             user.FullName,
             user.Id,
-            user.UserName,
-            user.Email,
+            user.UserName!,
+            user.Email!,
             [.. roles]
             );
 

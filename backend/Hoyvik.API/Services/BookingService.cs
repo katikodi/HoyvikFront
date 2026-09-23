@@ -31,6 +31,9 @@ internal sealed class BookingService(
     /// <returns></returns>
     public async Task<bool> CheckAvailability(DateOnly checkIn, DateOnly checkOut, CancellationToken ct = default)
     {
+        if (checkOut <= checkIn)
+            return false;
+
         var now = DateTime.UtcNow;
         logger.LogInformation("Checking availability: {CheckIn} -> {CheckOut}", checkIn, checkOut);
 
@@ -43,7 +46,9 @@ internal sealed class BookingService(
         if (bookingExists)
             return false;
 
-        var blocked = await db.BlockedPeriods.AnyAsync(x => x.CheckIn < checkOut && x.CheckOut > checkIn, ct);
+        var blocked = await db.BlockedDates.AnyAsync(
+            x => x.Date >= checkIn && x.Date < checkOut,
+            ct);
         return !blocked;
     }
 
@@ -172,7 +177,7 @@ internal sealed class BookingService(
 
         await db.SaveChangesAsync(ct);
 
-        logger.LogInformation("Booking {BookingId} expired",booking.Id);
+        logger.LogInformation("Booking {BookingId} expired", booking.Id);
 
         return true;
     }

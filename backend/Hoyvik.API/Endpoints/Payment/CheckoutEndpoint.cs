@@ -39,7 +39,8 @@ internal sealed class CheckoutEndpoint : IEndpoint
 
         try
         {
-            var checkoutUrl = await bookingService.CreateBookingPaymentSession(request, userId, ct);
+            //TODO: HANDLE NULLS
+            var checkoutUrl = await bookingService.CreateBookingPaymentSession(request, userId!, ct);
 
             return Results.Ok(new
             {
