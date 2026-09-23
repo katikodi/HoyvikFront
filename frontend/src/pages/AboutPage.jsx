@@ -1,6 +1,6 @@
 export default function RouteComponent() {
     return (
-        <div className="w-full h-full flex flex-col bg-secondary text-brown/70 font-sans items-center py-32 gap-20 text-xl px-44">
+        <div className="w-full h-full flex flex-col bg-secondary text-brown/70 font-sans items-center pt-24 pb-32 gap-14 text-xl px-44">
             <h1 className="font-serif text-hero-green text-4xl font-semibold">Om Høyvika</h1>
             <div className="flex flex-col gap-10 text-left">
                 <div className="flex flex-col">
