@@ -55,6 +55,7 @@
     --sidebar-ring: oklch(0.708 0 0);
     --brown-button: #44383e;
     --brown: #271c22;
+    --hero-green: #9bb678;
 }
 
 .dark {
@@ -97,6 +98,7 @@
     --font-serif: "Cinzel Variable", serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-brown: var(--brown);
+    --color-hero-green: var(--hero-green);
     --color-light-background: var(--light-background);
     --color-brown-button: var(--brown-button);
     --color-sidebar-border: var(--sidebar-border);

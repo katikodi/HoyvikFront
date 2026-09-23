@@ -23,7 +23,7 @@ export default function HomeImageCarousel() {
                     <CarouselContent>
                         {cards.map((card, i) => (
                             <CarouselItem
-                                className="basis-9/12 overflow-clip md:basis-9/12 p-1"
+                                className="basis-9/12 overflow-clip md:basis-6/12 p-1"
                                 key={i}
                             >
                                 <Card className="rounded-none bg-light-background pt-0 h-auto text-ellipsis">
