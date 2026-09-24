@@ -34,7 +34,8 @@ internal sealed class RegisterEndpoint : IEndpoint
 
         var user = new ApplicationUser
         {
-            FullName = request.FullName,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
             UserName = request.Email,
             Email = request.Email,
         };
@@ -134,7 +135,8 @@ internal sealed class RegisterEndpoint : IEndpoint
 
     internal sealed record ResendVerificationRequest(string Email);
     internal sealed record RegisterRequest(
-        string FullName,
+        string FirstName,
+        string LastName,
         string Email,
         string Password,
         string ConfirmPassword);
