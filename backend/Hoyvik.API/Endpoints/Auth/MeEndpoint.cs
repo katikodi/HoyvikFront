@@ -49,28 +49,6 @@ internal sealed class MeEndpoint : IEndpoint
         });
 
         return Results.Ok(me);
-
-        //var result = await cache.GetOrCreateAsync($"auth:me:{userId}", 
-        //    async entry => {
-        //        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-
-        //        var user = await userManager.FindByIdAsync(userId);
-
-        //        if(user is null)
-        //            return null;
-        //        var roles = await userManager.GetRolesAsync(user);
-
-        //        return Results.Ok(new
-        //        {
-        //            user.FullName,
-        //            user.Id,
-        //            user.UserName,
-        //            user.Email,
-        //            roles
-        //        });
-        //    });
-
-        //return result ?? Results.BadRequest();
     }
 
     record MeResponse(
@@ -81,26 +59,4 @@ internal sealed class MeEndpoint : IEndpoint
         string Email,
         List<string> Roles
         );
-
-    //static async Task<IResult> Get(ClaimsPrincipal principal, IMemoryCache cache,UserManager<ApplicationUser> userManager)
-    //{
-    //    var user = await userManager.GetUserAsync(principal);
-
-    //    if (user is null)
-    //    {
-    //        return Results.Ok(null);
-    //    }
-
-    //    var roles = await userManager.GetRolesAsync(user);
-
-
-    //    return Results.Ok(new
-    //    {
-    //        user.FullName,
-    //        user.Id,
-    //        user.UserName,
-    //        user.Email,
-    //        roles
-    //    });
-    //}
 }
