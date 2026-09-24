@@ -93,10 +93,7 @@ function Calendar({
                     "relative isolate z-0 rounded-r-(--cell-radius) bg-muted after:absolute after:inset-y-0 after:left-0 after:w-4 after:bg-muted",
                     defaultClassNames.range_end
                 ),
-                today: cn(
-                    "rounded-(--cell-radius) bg-muted text-foreground data-[selected=true]:rounded-none",
-                    defaultClassNames.today
-                ),
+                today: cn("rounded-(--cell-radius) text-blue-500 data-[selected=true]:rounded-none", defaultClassNames.today),
                 outside: cn("text-muted-foreground aria-selected:text-muted-foreground", defaultClassNames.outside),
                 disabled: cn("text-muted-foreground opacity-50", defaultClassNames.disabled),
                 hidden: cn("invisible", defaultClassNames.hidden),

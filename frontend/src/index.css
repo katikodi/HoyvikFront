@@ -45,9 +45,9 @@
     --chart-4: oklch(0.371 0 0);
     --chart-5: oklch(0.269 0 0);
     --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar: oklch(27.937% 0.07821 23.631);
+    --sidebar-foreground: oklch(72.855% 0.24391 142.269);
+    --sidebar-primary: oklch(59.822% 0.20051 341.186);
     --sidebar-primary-foreground: oklch(0.985 0 0);
     --sidebar-accent: oklch(0.97 0 0);
     --sidebar-accent-foreground: oklch(0.205 0 0);
@@ -55,6 +55,9 @@
     --sidebar-ring: oklch(0.708 0 0);
     --brown-button: #44383e;
     --brown: #271c22;
+    --hero-green: #9bb678;
+    --seafoam-green: #b8cbbe;
+    --heading-stroke-color: #283a29;
 }
 
 .dark {
@@ -97,6 +100,7 @@
     --font-serif: "Cinzel Variable", serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-brown: var(--brown);
+    --color-hero-green: var(--hero-green);
     --color-light-background: var(--light-background);
     --color-brown-button: var(--brown-button);
     --color-sidebar-border: var(--sidebar-border);
@@ -105,6 +109,7 @@
     --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
     --color-sidebar-primary: var(--sidebar-primary);
     --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-seafoam-green: var(--seafoam-green);
     --color-sidebar: var(--sidebar);
     --color-chart-5: var(--chart-5);
     --color-chart-4: var(--chart-4);

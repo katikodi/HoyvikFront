@@ -21,7 +21,7 @@ export default function HomeAbout() {
 
                 <figure className="flex grow">
                     <img
-                        className="ml-auto h-auto w-[80%]"
+                        className="hidden md:inline ml-auto h-auto w-[80%]"
                         src="/images/randomVikingStuff.webp"
                         alt="Image of random viking stuff"
                     />

@@ -13,13 +13,14 @@ import {
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useTheme } from "@/components/theme-provider";
 import { useAuth } from "@/hooks/authContext";
+import { StrictMode } from "react";
 export default function RootLayout() {
     return (
-        <>
+        <StrictMode>
             <Outlet />
             <TanStackRouterDevtools />
             <HamburgerDropdown />
-        </>
+        </StrictMode>
     );
 }
 function HamburgerDropdown() {
@@ -32,9 +33,9 @@ function HamburgerDropdown() {
         <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
                 <Button
-                    variant="outline"
+                    variant="default"
                     size="icon"
-                    className="fixed right-4 top-4 z-50 rounded-none"
+                    className="fixed right-4 top-4 z-50 rounded-none bg-background"
                 >
                     <Menu />
                     <span className="sr-only">Open menu</span>
@@ -42,6 +43,13 @@ function HamburgerDropdown() {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="rounded-none">
+                {user?.roles.includes("admin") && (
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>Admin</DropdownMenuLabel>
+                        <DropdownMenuItemLink to="/admin">Admin Page</DropdownMenuItemLink>
+                        <DropdownMenuItemLink to="/dashboard">Dashboard</DropdownMenuItemLink>
+                    </DropdownMenuGroup>
+                )}
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuItemLink to="/profile">Profile</DropdownMenuItemLink>

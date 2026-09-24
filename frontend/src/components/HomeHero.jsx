@@ -2,9 +2,11 @@ import { HeroBooking } from "@/components/HeroBooking";
 
 export default function HomeHero() {
     return (
-        <section className="flex h-dvh flex-col bg-[url(/images/heroImage.webp)] bg-cover bg-no-repeat">
-            <header className="pt-52 pl-20 text-[#9BB678] text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
-                <h1 className="font-serif text-3xl/normal font-normal not-italic">Høyvika Ferie og Fritid</h1>
+        <section className="flex h-dvh flex-col bg-[url(/images/real-photos/aerial-photo.webp)] bg-cover bg-no-repeat bg-center bg-black bg-fixed brightness-100 ">
+            <header className="pt-52 pl-4 md:pl-20 text-hero-green text-shadow-[0_4px_4px_rgb(0_0_0/0.25)]">
+                <h1 className="font-serif text-2xl/normal md:text-3xl/normal not-italic brightness-150 [paint-order:stroke] [-webkit-text-stroke:1px_var(--heading-stroke-color)]">
+                    Høyvika Ferie og Fritid
+                </h1>
 
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -19,12 +21,12 @@ export default function HomeHero() {
                     />
                 </svg>
 
-                <h2 className="font-sans text-base/[150%] font-normal not-italic">
+                <h2 className="font-sans text-base/[150%] font-normal not-italic brightness-150 [paint-order:stroke] [-webkit-text-stroke:1px_var(--heading-stroke-color)]">
                     CTA Tagline tekst, må vere fangande keywords som er SEO
                 </h2>
             </header>
 
-            <div className="mt-auto translate-y-12 transform px-44">
+            <div className="mt-auto translate-y-1/2 md:translate-y-12 transform px-44">
                 <HeroBooking />
             </div>
         </section>
