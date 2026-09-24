@@ -136,85 +136,85 @@ export default function MainLayout() {
     );
 }
 
-function HamburgerDropdown() {
-    const { setTheme } = useTheme();
-    const { user, logout } = useAuth();
+// function HamburgerDropdown() {
+//     const { setTheme } = useTheme();
+//     const { user, logout } = useAuth();
 
-    return (
-        <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-                <Button
-                    variant="default"
-                    size="icon"
-                    className="fixed right-4 top-4 z-50 rounded-none bg-background"
-                >
-                    <Menu />
-                    <span className="sr-only">Open menu</span>
-                </Button>
-            </DropdownMenuTrigger>
+//     return (
+//         <DropdownMenu modal={false}>
+//             <DropdownMenuTrigger asChild>
+//                 <Button
+//                     variant="default"
+//                     size="icon"
+//                     className="fixed right-4 top-4 z-50 rounded-none bg-background"
+//                 >
+//                     <Menu />
+//                     <span className="sr-only">Open menu</span>
+//                 </Button>
+//             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="rounded-none">
-                {user?.roles.includes("admin") && (
-                    <DropdownMenuGroup>
-                        <DropdownMenuLabel>Admin</DropdownMenuLabel>
-                        <DropdownMenuItem asChild>
-                            <Link to="/admin">Admin Page</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <Link to="/dashboard">Dashboard</Link>
-                        </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                )}
-                <DropdownMenuGroup>
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+//             <DropdownMenuContent className="rounded-none">
+//                 {user?.roles.includes("admin") && (
+//                     <DropdownMenuGroup>
+//                         <DropdownMenuLabel>Admin</DropdownMenuLabel>
+//                         <DropdownMenuItem asChild>
+//                             <Link to="/admin">Admin Page</Link>
+//                         </DropdownMenuItem>
+//                         <DropdownMenuItem asChild>
+//                             <Link to="/dashboard">Dashboard</Link>
+//                         </DropdownMenuItem>
+//                     </DropdownMenuGroup>
+//                 )}
+//                 <DropdownMenuGroup>
+//                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
 
-                    <DropdownMenuItem asChild>
-                        <Link to="/profile">Profile</Link>
-                    </DropdownMenuItem>
-                    {user ? (
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem asChild>
-                                <Link
-                                    preload="render"
-                                    to="/profile"
-                                >
-                                    My Bookings
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => logout()}
-                                className="cursor-pointer"
-                            >
-                                Logout
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                    ) : (
-                        <DropdownMenuItem
-                            asChild
-                            className="cursor-pointer"
-                        >
-                            <Link
-                                preload="render"
-                                to="/login"
-                            >
-                                Login
-                            </Link>
-                        </DropdownMenuItem>
-                    )}
-                </DropdownMenuGroup>
+//                     <DropdownMenuItem asChild>
+//                         <Link to="/profile">Profile</Link>
+//                     </DropdownMenuItem>
+//                     {user ? (
+//                         <DropdownMenuGroup>
+//                             <DropdownMenuItem asChild>
+//                                 <Link
+//                                     preload="render"
+//                                     to="/profile"
+//                                 >
+//                                     My Bookings
+//                                 </Link>
+//                             </DropdownMenuItem>
+//                             <DropdownMenuItem
+//                                 onClick={() => logout()}
+//                                 className="cursor-pointer"
+//                             >
+//                                 Logout
+//                             </DropdownMenuItem>
+//                         </DropdownMenuGroup>
+//                     ) : (
+//                         <DropdownMenuItem
+//                             asChild
+//                             className="cursor-pointer"
+//                         >
+//                             <Link
+//                                 preload="render"
+//                                 to="/login"
+//                             >
+//                                 Login
+//                             </Link>
+//                         </DropdownMenuItem>
+//                     )}
+//                 </DropdownMenuGroup>
 
-                <DropdownMenuSeparator />
+//                 <DropdownMenuSeparator />
 
-                <DropdownMenuGroup>
-                    <DropdownMenuLabel>Theme</DropdownMenuLabel>
+//                 <DropdownMenuGroup>
+//                     <DropdownMenuLabel>Theme</DropdownMenuLabel>
 
-                    <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
+//                     <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
 
-                    <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+//                     <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
 
-                    <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
-                </DropdownMenuGroup>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-}
+//                     <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
+//                 </DropdownMenuGroup>
+//             </DropdownMenuContent>
+//         </DropdownMenu>
+//     );
+// }
