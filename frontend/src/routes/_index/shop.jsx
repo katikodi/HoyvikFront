@@ -9,7 +9,8 @@ export const Route = createFileRoute("/_index/shop")({
 
 function ShopPage() {
     return (
-        <div className="w-full h-full flex flex-col bg-secondary items-center">
+        <div className="w-full h-full flex flex-col bg-secondary pt-24 items-center">
+            <h1 className="text-4xl font-serif font-bold text-hero-green">Hello, shop</h1>
             <div className="grid grid-cols-3 gap-2 pt-24">
                 <ProductCard
                     img="/images/fake-producs/leaf-nightlight.webp"
@@ -48,11 +49,11 @@ function ShopPage() {
 
 const ProductCard = ({ img, altText, title, desc }) => {
     return (
-        <Card className="w-md rounded-none bg-background text-seafoam-green">
+        <Card className="w-md aspect-square rounded-none bg-background text-seafoam-green">
             <img
                 src={img}
                 alt={altText}
-                className="relative z-20 aspect-16/11 w-full object-cover object-[25%_20%] center rounded-none"
+                className="relative z-20 aspect-video w-full object-cover object-[25%_20%] center rounded-none"
             />
             <CardHeader>
                 <CardAction>
@@ -67,9 +68,7 @@ const ProductCard = ({ img, altText, title, desc }) => {
                 <CardDescription className="text-seafoam-green">{desc}</CardDescription>
             </CardHeader>
             <CardFooter>
-                <Button className="w-full rounded-none bg-background border-2 border-light-background hover:border-0 hover:bg-light-background">
-                    Buy Now!
-                </Button>
+                <Button className="w-full rounded-none">Buy Now!</Button>
             </CardFooter>
         </Card>
     );

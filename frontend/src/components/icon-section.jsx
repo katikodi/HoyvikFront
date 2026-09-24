@@ -23,7 +23,6 @@ const icons = [
 ];
 
 const IconSection = () => {
-    const seafoamGreen = "#B8CBBE";
     return (
         <section className="h-fit w-full min-w-0 bg-background px-12 py-6 md:py-24 lg:px-12">
             <div className="grid grid-cols-2 grid-rows-2 md:flex w-full min-w-0 items-start justify-around md:gap-4">
@@ -31,7 +30,7 @@ const IconSection = () => {
                     <IconContainer key={text}>
                         {icon}
                         <p
-                            className={`text-center text-sm md:text-lg font-semibold text-pretty w-full hyphens-auto text-[${seafoamGreen}] hyphens-manual`}
+                            className={`text-center text-sm md:text-lg font-semibold text-pretty w-full text-seafoam-green hyphens-manual`}
                         >
                             {text}
                         </p>
