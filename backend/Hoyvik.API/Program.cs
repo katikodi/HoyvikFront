@@ -84,4 +84,4 @@ app.Run();
 #endregion
 
 //assembly marker
-internal partial class Program;
+namespace Hoyvik.API { internal partial class Program; }
