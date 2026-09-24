@@ -91,7 +91,7 @@ const ParallaxCarousel = ({ slides }: { slides: cardProps[] }) => {
     return (
         <Carousel
             setApi={setApi}
-            className="w-6/12"
+            className="w-10/12"
             opts={{
                 align: "center",
                 loop: true
@@ -99,7 +99,7 @@ const ParallaxCarousel = ({ slides }: { slides: cardProps[] }) => {
         >
             <CarouselContent>
                 {slides.map((card, i) => (
-                    <CarouselItem className="basis-12/12">
+                    <CarouselItem className="basis-8/12">
                         <Card className="rounded-none bg-light-background pt-0 h-auto text-ellipsis">
                             <div
                                 className="relative h-full w-full flex justify-center"
@@ -115,7 +115,7 @@ const ParallaxCarousel = ({ slides }: { slides: cardProps[] }) => {
                                 }}
                             >
                                 <img
-                                    className="aspect-video block h-76 w-full object-cover rounded-none max-w-none flex-none basis-[calc(115% + 1rem * 2))]"
+                                    className="aspect-video block h-76 object-cover rounded-none max-w-none grow-0 shrink-0 basis-[calc(115%+1rem*2)]"
                                     src={card.image}
                                     alt={`${card.title} cover`}
                                 />
