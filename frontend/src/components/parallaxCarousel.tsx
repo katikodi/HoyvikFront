@@ -99,7 +99,7 @@ const ParallaxCarousel = ({ slides }: { slides: cardProps[] }) => {
         >
             <CarouselContent>
                 {slides.map((card, i) => (
-                    <CarouselItem className="basis-12/12">
+                    <CarouselItem className="basis-10/12">
                         <Card className="rounded-none bg-light-background pt-0 h-auto text-ellipsis">
                             <div
                                 className="relative h-full w-full flex justify-center"
@@ -115,7 +115,7 @@ const ParallaxCarousel = ({ slides }: { slides: cardProps[] }) => {
                                 }}
                             >
                                 <img
-                                    className="aspect-video block h-76 w-full object-cover rounded-none max-w-none flex-none basis-[calc(115% + 1rem * 2))]"
+                                    className="aspect-video block h-76 w-full object-cover rounded-none max-w-none flex-none basis-[calc(130% + 1rem * 2))]"
                                     src={card.image}
                                     alt={`${card.title} cover`}
                                 />

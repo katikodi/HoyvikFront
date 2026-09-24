@@ -56,6 +56,8 @@
     --brown-button: #44383e;
     --brown: #271c22;
     --hero-green: #9bb678;
+    --seafoam-green: #b8cbbe;
+    --heading-stroke-color: #283a29;
 }
 
 .dark {
@@ -107,6 +109,7 @@
     --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
     --color-sidebar-primary: var(--sidebar-primary);
     --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-seafoam-green: var(--seafoam-green);
     --color-sidebar: var(--sidebar);
     --color-chart-5: var(--chart-5);
     --color-chart-4: var(--chart-4);

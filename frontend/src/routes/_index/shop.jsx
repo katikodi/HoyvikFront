@@ -49,7 +49,7 @@ function ShopPage() {
 
 const ProductCard = ({ img, altText, title, desc }) => {
     return (
-        <Card className="w-md aspect-square rounded-none bg-background">
+        <Card className="w-md aspect-square rounded-none bg-background text-seafoam-green">
             <img
                 src={img}
                 alt={altText}
@@ -65,7 +65,7 @@ const ProductCard = ({ img, altText, title, desc }) => {
                     </Badge>
                 </CardAction>
                 <CardTitle>{title}</CardTitle>
-                <CardDescription>{desc}</CardDescription>
+                <CardDescription className="text-seafoam-green">{desc}</CardDescription>
             </CardHeader>
             <CardFooter>
                 <Button className="w-full rounded-none">Buy Now!</Button>
