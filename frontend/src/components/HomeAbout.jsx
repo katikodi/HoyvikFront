@@ -11,7 +11,10 @@ export default function HomeAbout() {
                     <p className="font-sans text-2xl/normal">{description}</p>
 
                     <Button
-                        onClick={() => toast("test")}
+                        onClick={() => {
+                            toast("Congratulations!!!!");
+                            toast("You have won!!!");
+                        }}
                         variant="outline"
                         className="w-52 rounded-none border-brown-button bg-secondary hover:bg-brown-button hover:text-secondary"
                     >

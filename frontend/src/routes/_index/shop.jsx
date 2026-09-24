@@ -10,7 +10,6 @@ export const Route = createFileRoute("/_index/shop")({
 function ShopPage() {
     return (
         <div className="w-full h-full flex flex-col bg-secondary pt-24 items-center">
-            <h1 className="text-4xl font-serif font-bold text-hero-green">Hello, shop</h1>
             <div className="grid grid-cols-3 gap-2 pt-24">
                 <ProductCard
                     img="/images/fake-producs/leaf-nightlight.webp"
