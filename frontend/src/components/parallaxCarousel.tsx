@@ -99,7 +99,10 @@ const ParallaxCarousel = ({ slides }: { slides: cardProps[] }) => {
         >
             <CarouselContent>
                 {slides.map((card, i) => (
-                    <CarouselItem className="basis-12/12 md:basis-8/12">
+                    <CarouselItem
+                        className="basis-12/12 md:basis-8/12"
+                        key={i}
+                    >
                         <Card className="rounded-none bg-light-background pt-0 h-auto text-ellipsis">
                             <div
                                 className="relative h-full w-full flex justify-center"
