@@ -32,7 +32,7 @@ internal static class Startup
                 .AllowCredentials()));
 
         builder.Services.AddAuthorizationBuilder()
-            .AddDefaultPolicy(Roles.GUEST, p => p.RequireRole(Roles.GUEST))
+            .AddDefaultPolicy(Roles.GUEST, p => p.RequireRole(Roles.GUEST, Roles.USER, Roles.ADMIN))
             .AddPolicy(Roles.USER, p => p.RequireRole(Roles.ADMIN, Roles.USER))
             .AddPolicy(Roles.ADMIN, p => p.RequireRole(Roles.ADMIN));
 
