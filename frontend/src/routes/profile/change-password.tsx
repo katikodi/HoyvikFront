@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FieldDescription, FieldLabel, Field, FieldError } from "@/components/ui/field";
+import { FieldDescription, FieldLabel, Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/authContext";
-import { useState } from "react";
 import { api } from "@/services/client";
 
 export const Route = createFileRoute("/profile/change-password")({
