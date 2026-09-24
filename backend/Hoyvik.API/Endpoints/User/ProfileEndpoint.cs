@@ -45,6 +45,7 @@ public class ProfileEndpoint : IEndpoint
 
         if(userId is not null)
         {
+            //invalidate the cache so the user sees the updated state right away
             cache.Remove($"auth:me:{userId}");
         }
         return Results.NoContent();
