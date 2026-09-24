@@ -42,16 +42,6 @@ internal static class IdentitySeeder
                 Email = adminEmail,
                 EmailConfirmed = true
             };
-            var appUser = new ApplicationUser
-            {
-                FirstName = "billy",
-                LastName = "bob",
-                UserName = "test@test.com",
-                Email = "test@test.com",
-                EmailConfirmed = true
-            };
-
-            await userManager.CreateAsync(appUser, "test@test.com");
             var result = await userManager.CreateAsync(admin, adminPassword);
 
             if (!result.Succeeded)
@@ -66,7 +56,5 @@ internal static class IdentitySeeder
         {
             await userManager.AddToRoleAsync(admin, adminRole);
         }
-
-
     }
 }
