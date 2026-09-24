@@ -15,7 +15,7 @@ if (!rootElement.innerHTML) {
     root.render(
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
-                <ThemeProvider>
+                <ThemeProvider defaultTheme="light">
                     <ReactProfiler id="App">
                         <App />
                     </ReactProfiler>

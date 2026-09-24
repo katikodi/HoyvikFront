@@ -5,7 +5,9 @@
         "prettier": "^3.9.6"
     },
     "scripts": {
-        "prepare": "husky"
+        "prepare": "husky",
+        "build": "cd frontend && npm run build && cd ..",
+        "publish-vps": "cd frontend && npm run build && cd .. && aspire publish && aspire deploy"
     },
     "lint-staged": {
         "frontend/**/*.{ts,tsx,js,jsx,css,html,json,md}": "prettier --write --config .prettierrc_prod.json",
