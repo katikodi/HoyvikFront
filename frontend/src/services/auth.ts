@@ -1,40 +1,40 @@
-import type { User } from "@/hooks/authContext";
+import type { User } from "@/types/user";
 import { api } from "./client";
 
 export async function getCurrentUser(): Promise<User> {
-    const { data } = await api.get<User>("/auth/me");
-    return data;
+  const { data } = await api.get<User>("/auth/me");
+  return data;
 }
 
 export async function login(email: string, password: string): Promise<void> {
-    await api.post("/auth/login", {
-        email,
-        password
-    });
+  await api.post("/auth/login", {
+    email,
+    password,
+  });
 }
 
 export async function register(
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    confirmPassword: string
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  confirmPassword: string,
 ): Promise<void> {
-    await api.post("/auth/register", {
-        firstName,
-        lastName,
-        email,
-        password,
-        confirmPassword
-    });
+  await api.post("/auth/register", {
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+  });
 }
 
 export async function resendVerification(email: string): Promise<void> {
-    await api.post("/auth/resend-verification", {
-        email
-    });
+  await api.post("/auth/resend-verification", {
+    email,
+  });
 }
 
 export async function logout(): Promise<void> {
-    await api.post("/auth/logout");
+  await api.post("/auth/logout");
 }

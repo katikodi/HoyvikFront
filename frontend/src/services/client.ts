@@ -1,6 +1,8 @@
 import axios from "axios";
 
 export const api = axios.create({
-    baseURL: "/api",
-    withCredentials: true
+  baseURL: "/api",
+  withCredentials: true,
 });
+
+//TODO: result pattern
