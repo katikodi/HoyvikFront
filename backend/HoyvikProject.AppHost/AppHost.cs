@@ -17,9 +17,18 @@ var env = builder.AddDockerComposeEnvironment("env")
 
 env.ConfigureComposeFile(compose =>
 {
-    compose.AddVolume(new Volume { Name = "backend_uploads" });
+    compose.AddVolume(new Volume
+    {
+        Name = "backend_uploads",
+        External = true
+    });
 
-    compose.AddNetwork(new Network { 
+
+    var postgresVolume = compose.Volumes["hoyvik_data"];
+    postgresVolume.External = true;
+    postgresVolume.Driver = null;
+    compose.AddNetwork(new Network
+    {
         Name = "web",
         Driver = "bridge",
         External = true
@@ -37,7 +46,6 @@ var postgres = builder
     .WithDataVolume("hoyvik_data")
     .WithPgWeb(x => x.WithLifetime(ContainerLifetime.Persistent))
     .WithEndpoint(targetPort: 5432, port: 5432, name: "postgres")
-    //.WithHttpEndpoint(port: 5400, targetPort: 5400)
     .WithLifetime(ContainerLifetime.Persistent);
 
 var db = postgres.AddDatabase("database", "hoyvika");
@@ -79,27 +87,6 @@ if (builder.Environment.IsDevelopment())
 }
 
 
-
-// var caddy = builder
-//     .AddContainer("caddy", "caddy", "2")
-//     .WithEntrypoint("/usr/bin/caddy")
-//     .WithArgs(
-//         "reverse-proxy",
-//         "--from", "hoyvik.home.arpa",
-//         "--to", "backend:8080",
-//         "--internal-certs")
-//     .WithVolume("caddy_data", "/data")
-//     .WithVolume("caddy_config", "/config")
-//     .WithHttpEndpoint(port: 80, targetPort: 80)
-//     .WithHttpsEndpoint(port: 443, targetPort: 443)
-//     .PublishAsDockerComposeService((resource, service) =>
-//     {
-//         service.Ports.Add("80:80");
-//         service.Ports.Add("443:443");
-//     });
-
-
-
 if (builder.Environment.IsDevelopment())
 {
     var frontend = builder
@@ -108,6 +95,5 @@ if (builder.Environment.IsDevelopment())
        .WithReference(api)
        .WaitFor(api);
 }
-//api.PublishWithContainerFiles(frontend, "wwwroot");
 
 builder.Build().Run();
