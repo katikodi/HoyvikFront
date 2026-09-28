@@ -8,4 +8,10 @@ public class FakeEmailService(ILogger<FakeEmailService> logger) : IEmailService
         logger.LogInformation("sending email {to} with subject {subject}: content {htmlBody}", to, subject, htmlBody);
         return Task.CompletedTask;
     }
+
+    public Task SendTemplate(string to, string templateId, Dictionary<string, object> variables, CancellationToken ct = default)
+    {
+        logger.LogInformation($"Send template to {to}", ct);
+        return Task.CompletedTask;
+    }
 }
