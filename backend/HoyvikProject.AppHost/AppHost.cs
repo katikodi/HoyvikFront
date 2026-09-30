@@ -48,6 +48,7 @@ env.ConfigureComposeFile(compose =>
     var postgresVolume = compose.Volumes["hoyvik_data"];
     postgresVolume.External = true;
     postgresVolume.Driver = null;
+
     compose.AddNetwork(new Network
     {
         Name = "web",
@@ -58,6 +59,10 @@ env.ConfigureComposeFile(compose =>
     var dashboard = compose.Services["env-dashboard"];
     dashboard.Ports.Clear();
     dashboard.Ports.Add("127.0.0.1:18888:18888");
+
+    var postgresService = compose.Services["postgres"];
+    postgresService.Ports.Clear();
+    postgresService.Ports.Add("127.0.0.1:5432:5432");
 });
 
 
@@ -76,7 +81,7 @@ var db = postgres.AddDatabase("database", "hoyvika");
 var api = builder.AddProject<Hoyvik_API>("backend")
     .WithEnvironment("Stripe__SecretKey", stripeSecretKey)
     .WithEnvironment("Resend__ApiKey", resendKey)
-    .WithEnvironment("Stripe__Webhook", stripeWebhookKey)
+    .WithEnvironment("Stripe__WebhookSecret", stripeWebhookKey)
     .WithReference(db)
     .WaitFor(db)
     //.WithReference(migrations)

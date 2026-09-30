@@ -34,7 +34,7 @@ internal sealed class StripeWebhook : IEndpoint
         }
 
         Event stripeEvent;
-
+        logger.LogInformation("Webhook received. Stripe-Signature present: {HasSignature}", !string.IsNullOrWhiteSpace(stripeSignature));
         try
         {
             stripeEvent = EventUtility.ConstructEvent(
