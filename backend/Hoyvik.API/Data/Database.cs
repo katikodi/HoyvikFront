@@ -12,8 +12,8 @@ internal sealed class Database(DbContextOptions<Database> options) : IdentityDbC
     public DbSet<Image> Images { get; set; }
     public DbSet<BlockedDate> BlockedDates { get; set; }
     public DbSet<EmailOutbox> EmailOutbox { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<Product> Products { get; set; }
+    //public DbSet<Order> Orders { get; set; }
+    //public DbSet<Product> Products { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
