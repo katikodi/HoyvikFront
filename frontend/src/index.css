@@ -4,6 +4,8 @@
 @import "@fontsource-variable/montserrat";
 @import "@fontsource-variable/merriweather";
 @import "@fontsource-variable/cinzel";
+@import url("https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap");
 @custom-variant dark (&:is(.dark *));
 /* 
 --bg1: #678a73;
@@ -57,7 +59,7 @@
     --brown: #271c22;
     --hero-green: #9bb678;
     --seafoam-green: #b8cbbe;
-    --heading-stroke-color: #283a29;
+    --heading-stroke-color: #374e41;
 }
 
 .dark {
@@ -96,8 +98,11 @@
 
 @theme inline {
     --font-sans: "Montserrat Variable", sans-serif;
+
     --font-heading: "Cinzel Variable", serif;
-    --font-serif: "Cinzel Variable", serif;
+    --font-old-serif: "Cinzel Variable", serif;
+    /* --font-serif: "PT Serif", serif; */
+    --font-serif: "Cinzel Decorative", serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-brown: var(--brown);
     --color-hero-green: var(--hero-green);
