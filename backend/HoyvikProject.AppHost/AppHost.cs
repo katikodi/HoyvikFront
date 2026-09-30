@@ -17,6 +17,8 @@ var env = builder.AddDockerComposeEnvironment("env")
 
 env.ConfigureComposeFile(compose =>
 {
+    compose.Name = "hoyvik";
+
     compose.AddVolume(new Volume
     {
         Name = "backend_uploads",
