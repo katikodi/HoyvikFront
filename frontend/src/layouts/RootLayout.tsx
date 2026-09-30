@@ -14,9 +14,24 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import { useTheme } from "@/components/theme-provider";
 import { useAuth } from "@/hooks/authContext";
 import { StrictMode } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
+// import { Menu } from "lucide-react";
+import { MainLayoutMobileSidebar } from "@/components/MainLayoutMobileSidebar";
+import { SidebarMenuItem, SidebarMenuButton, SidebarMenu } from "@/components/ui/sidebar";
+const navLinks = [
+    { to: "/", text: "Home" },
+    { to: "/activities", text: "Activities" },
+    { to: "/about", text: "About" },
+    { to: "/contact", text: "Contact Us" },
+    { to: "/shop", text: "Shop" },
+    { to: "/booking", text: "Booking" },
+    { to: "/utleige-diverse", text: "Utleige diverse" }
+];
 export default function RootLayout() {
     //REMOVE THIS LATER, its for testing purposes only
+    const isMobile = useIsMobile();
+    const { logout } = useAuth();
 
     const context = useRouterState({
         select: state => state.matches[0]?.context
@@ -35,7 +50,82 @@ export default function RootLayout() {
         <StrictMode>
             <Outlet />
             <TanStackRouterDevtools />
-            <HamburgerDropdown />
+            {!isMobile && <HamburgerDropdown />}
+            {isMobile && (
+                <MainLayoutMobileSidebar
+                    myAccount={
+                        <SidebarMenu>
+                            {user && (
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            to="/profile"
+                                            preload="render"
+                                            className="font-sans text-[#B8CBBE] h-9 content-center cursor-pointer"
+                                        >
+                                            Profile
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            )}
+                            {user && (
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            preload="render"
+                                            to="/profile"
+                                            className="font-sans text-[#B8CBBE] h-9 content-center cursor-pointer"
+                                        >
+                                            My Bookings
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            )}
+                            {user && (
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton
+                                        className="font-sans text-[#B8CBBE] h-9 content-center cursor-pointer"
+                                        onClick={() => logout()}
+                                    >
+                                        Logout
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            )}
+
+                            {!user && (
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            preload="render"
+
+                                            className="font-sans text-[#B8CBBE] h-9 content-center cursor-pointer"
+                                            to="/login"
+                                        >
+                                            Login
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            )}
+                        </SidebarMenu>
+                    }
+                    navLinks={navLinks.map(({ to, text }, i) => (
+                        <SidebarMenuItem key={i}>
+                            <SidebarMenuButton asChild>
+                                <Link
+                                    preload="render"
+                                    to={to}
+                                    className="font-sans text-[#B8CBBE] h-9 content-center"
+                                >
+                                    {text}
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    ))}
+                >
+                    <Outlet />
+                </MainLayoutMobileSidebar>
+            )}
+            ;
         </StrictMode>
     );
 }
