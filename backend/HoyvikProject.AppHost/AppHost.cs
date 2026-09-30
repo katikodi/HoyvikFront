@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Aspire.Hosting.Docker.Resources.ComposeNodes;
 using Aspire.Hosting.Docker.Resources.ServiceNodes;
 
@@ -5,6 +6,24 @@ using Microsoft.Extensions.Hosting;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
+
+if (builder.Environment.IsDevelopment())
+{
+    var dockerHost = Environment.GetEnvironmentVariable("DOCKER_HOST");
+    var dockerContext = RunCommand("docker", "context show");
+    if (dockerContext != "default")
+    {
+        throw new InvalidOperationException(
+            $"DEVELOPMENT BLOCKED: Docker context is '{dockerContext}'. " +
+            "Development requires the 'default' Docker context. \n Please run the command 'docker context use default'");
+    }
+
+    if (!string.IsNullOrWhiteSpace(dockerHost))
+    {
+        throw new InvalidOperationException(
+            $"DEVELOPMENT BLOCKED: DOCKER_HOST is set to '{dockerHost}'.");
+    }
+}
 
 
 var stripeSecretKey = builder.AddParameter("stripe-secret-key", secret: true);
@@ -99,3 +118,35 @@ if (builder.Environment.IsDevelopment())
 }
 
 builder.Build().Run();
+
+
+
+
+
+
+
+
+
+static string RunCommand(string fileName, string arguments)
+{
+    using var process = Process.Start(new ProcessStartInfo
+    {
+        FileName = fileName,
+        Arguments = arguments,
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        UseShellExecute = false,
+        CreateNoWindow = true
+    });
+
+    if (process is null)
+        throw new InvalidOperationException("Could not start Docker.");
+
+    var output = process.StandardOutput.ReadToEnd().Trim();
+    process.WaitForExit();
+
+    if (process.ExitCode != 0)
+        throw new InvalidOperationException("Could not determine Docker context.");
+
+    return output;
+}
