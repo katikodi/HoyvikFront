@@ -1,4 +1,5 @@
-﻿using Hoyvik.API.Data;
+﻿using Hoyvik.API.Common;
+using Hoyvik.API.Data;
 using Hoyvik.API.Services;
 using Hoyvik.API.Services.Abstractions;
 using Microsoft.AspNetCore.Identity;
@@ -63,13 +64,15 @@ internal sealed class RegisterEndpoint : IEndpoint
 
         var link = linkFactory.Create(user.Id, emailVerificationToken);
 
-        await emailService.Send(
-            user.Email,
-            "Verify Email",
-            $"""<a href="{link}">Click here to verify</a>""",
-        ct);
-
-        //await signInManager.SignInAsync(user, true);
+        await emailService.SendTemplate(
+            user.Email!,
+            EmailTemplates.RegisterVerificationLink,
+            new Dictionary<string, object>
+            {
+                ["first_name"] = user.FirstName,
+                ["verification_url"] = link,
+                ["company_name"] = "Høyvika",
+            }, ct);
 
         return Results.Ok();
 
@@ -123,12 +126,15 @@ internal sealed class RegisterEndpoint : IEndpoint
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         var link = linkFactory.Create(user.Id, token);
 
-        await emailService.Send(
-         user.Email!,
-         "Verify Email",
-         $"""<a href="{link}">Click here to verify</a>""",
-         ct);
-
+        await emailService.SendTemplate(
+            user.Email!,
+            EmailTemplates.RegisterVerificationLink,
+            new Dictionary<string, object>
+            {
+                ["first_name"] = user.FirstName,
+                ["verification_url"] = link,
+                ["company_name"] = "Høyvika",
+            }, ct);
         return Results.Ok();
     }
 

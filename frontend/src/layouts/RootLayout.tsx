@@ -10,11 +10,27 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useTheme } from "@/components/theme-provider";
 import { useAuth } from "@/hooks/authContext";
 import { StrictMode } from "react";
+
 export default function RootLayout() {
+    //REMOVE THIS LATER, its for testing purposes only
+
+    const context = useRouterState({
+        select: state => state.matches[0]?.context
+    });
+
+    const user = context?.user;
+
+    if (!user || !user?.roles.includes("admin")) {
+        return (
+            <div>
+                <h1>Under construction</h1>
+            </div>
+        );
+    }
     return (
         <StrictMode>
             <Outlet />

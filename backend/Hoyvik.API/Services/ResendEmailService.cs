@@ -44,4 +44,30 @@ internal sealed class ResendEmailService(
             "Email sent to {Email}",
             to);
     }
+
+    public async Task SendTemplate(string to, string templateId, Dictionary<string, object> variables, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(to))
+            throw new ArgumentException(
+                "Recipient email address is required.",
+                nameof(to));
+
+        if (string.IsNullOrWhiteSpace(configuration.Value.From))
+            throw new InvalidOperationException(
+                "Resend:From is not configured.");
+
+        var message = new EmailMessage
+        {
+            From = configuration.Value.From,
+            Template = new EmailMessageTemplate
+            {
+                TemplateId = templateId,
+                Variables = variables
+            }
+        };
+
+        message.To.Add(to);
+
+        await resend.EmailSendAsync(message, ct);
+    }
 }

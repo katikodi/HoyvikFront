@@ -7,4 +7,5 @@ public interface IEmailService
         string subject,
         string htmlBody,
         CancellationToken ct = default);
+    Task SendTemplate(string to, string templateId, Dictionary<string, object> variables, CancellationToken ct = default);
 }
