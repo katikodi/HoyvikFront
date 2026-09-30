@@ -7,7 +7,7 @@
     "scripts": {
         "prepare": "husky",
         "build": "npm --prefix ./frontend run build",
-        "publish-vps": "npm --prefix ./frontend run build && aspire publish && aspire deploy"
+        "publish-vps": "if [ \"$(git branch --show-current)\" = \"publish\" ]; then npm --prefix ./frontend run build && aspire publish && aspire deploy; else echo \"Stop right there, criminal scum! You must be on 'publish' branch to publish to the VPS\"; exit 1; fi"
     },
     "lint-staged": {
         "frontend/**/*.{ts,tsx,js,jsx,css,html,json,md}": "prettier --write --config .prettierrc_prod.json",
