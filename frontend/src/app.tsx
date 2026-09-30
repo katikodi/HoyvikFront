@@ -25,12 +25,10 @@ declare global {
 }
 //REMOVE THIS LATER, its for testing purposes only
 
-if (import.meta.env.DEV) {
-    window.login = async (email: string, password: string) => {
-        await api.post("/auth/login", { email, password });
-        window.location.reload();
-    };
-}
+window.login = async (email: string, password: string) => {
+    await api.post("/auth/login", { email, password });
+    window.location.reload();
+};
 // Register things for typesafety
 declare module "@tanstack/react-router" {
     interface Register {
