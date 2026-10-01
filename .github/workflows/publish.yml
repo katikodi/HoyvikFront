@@ -65,19 +65,3 @@ jobs:
           echo "Built image: $IMAGE"
           docker tag "$IMAGE" ghcr.io/katikodi/hoyvikfront/backend:latest
           docker push ghcr.io/katikodi/hoyvikfront/backend:latest
-
-        uses: appleboy/ssh-action@v1.2.2
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            set -e
-
-            cd ~/HoyvikFront
-            git fetch origin publish
-            git reset --hard origin/publish
-
-            npm ci
-            npm --prefix ./frontend ci
-            npm run deploy-on-vps
