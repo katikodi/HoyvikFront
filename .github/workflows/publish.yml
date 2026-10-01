@@ -18,7 +18,7 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Test VPS connection
+            - name: Another Test
               uses: appleboy/ssh-action@v1.2.2
               with:
                   host: ${{ secrets.VPS_HOST }}
@@ -27,7 +27,15 @@ jobs:
                   script: |
                       set -e
 
-                      echo "SSH connection works"
-                      echo "User: $(whoami)"
-                      echo "Host: $(hostname)"
-                      echo "Working directory: $(pwd)"
+                      cd ~/HoyvikFront
+
+                      echo "Repository:"
+                      git remote -v
+
+                      echo "Current commit:"
+                      git rev-parse HEAD
+
+                      echo "Fetching repository..."
+                      git fetch origin publish
+
+                      echo "Git access works"
