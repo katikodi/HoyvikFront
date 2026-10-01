@@ -100,3 +100,69 @@ jobs:
             fi
 
             echo "Backend is running."
+
+      - name: Notify Discord of successful deployment
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          REPOSITORY: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+          AUTHOR: ${{ github.actor }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "DISCORD_WEBHOOK secret is not configured"
+            exit 1
+          fi
+
+          COMMIT_URL="https://github.com/$REPOSITORY/commit/$SHA"
+          SHORT_SHA="${SHA:0:7}"
+
+          jq -n \
+            --arg title "🚀 Høyvika successfully deployed!" \
+            --arg website "https://hoyvika.no" \
+            --arg repository "$REPOSITORY" \
+            --arg commit_url "$COMMIT_URL" \
+            --arg sha "$SHORT_SHA" \
+            --arg branch "$BRANCH" \
+            --arg author "$AUTHOR" \
+            '{
+              embeds: [{
+                title: $title,
+                url: $website,
+                description: "A new version of **Høyvika** is now up and running.",
+                color: 5763719,
+                fields: [
+                  {
+                    name: "Website",
+                    value: "[hoyvika.no](https://hoyvika.no)",
+                    inline: true
+                  },
+                  {
+                    name: "Branch",
+                    value: $branch,
+                    inline: true
+                  },
+                  {
+                    name: "Deployed by",
+                    value: $author,
+                    inline: true
+                  },
+                  {
+                    name: "Commit",
+                    value: ("[" + $sha + "](" + $commit_url + ")"),
+                    inline: true
+                  },
+                  {
+                    name: "Repository",
+                    value: $repository,
+                    inline: true
+                  }
+                ]
+              }]
+            }' |
+          curl \
+            --fail-with-body \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d @- \
+            "$DISCORD_WEBHOOK"
