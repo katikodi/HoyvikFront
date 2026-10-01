@@ -55,6 +55,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build and push backend image
+        working-directory: ./backend/HoyvikProject.AppHost
+        run: aspire do push
+
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.2.2
         with:
