@@ -45,8 +45,8 @@ jobs:
       - name: Show generated Compose
         run: cat ./backend/HoyvikProject.AppHost/aspire-output/docker-compose.yaml
 
-      - name: Show Aspire output files
-        run: find ./backend/HoyvikProject.AppHost/aspire-output -maxdepth 2 -type f -print
+      - name: Show backend image
+        run: grep '^BACKEND_IMAGE=' ./backend/HoyvikProject.AppHost/aspire-output/.env
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
