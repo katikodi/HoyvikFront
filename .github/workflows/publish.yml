@@ -39,8 +39,8 @@ jobs:
       - name: Install frontend dependencies
         run: npm --prefix ./frontend ci
 
-      - name: Build frontend
-        run: ./build.sh --target Frontend
+      - name: Publish with Fallout
+        run: ./build.sh --target Publish
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
