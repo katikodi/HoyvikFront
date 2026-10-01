@@ -36,6 +36,9 @@ jobs:
       - name: Restore Fallout
         run: dotnet tool restore
 
+      - name: Build frontend
+        run: ./build.sh --target Frontend
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
