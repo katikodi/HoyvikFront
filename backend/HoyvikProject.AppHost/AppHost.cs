@@ -7,6 +7,14 @@ using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+#pragma warning disable ASPIRECOMPUTE003
+
+var registry = builder.AddContainerRegistry(
+    "ghcr",
+    "ghcr.io",
+    "katikodi/hoyvikfront"
+);
+
 if (builder.Environment.IsDevelopment())
 {
     var dockerHost = Environment.GetEnvironmentVariable("DOCKER_HOST");
@@ -100,7 +108,7 @@ var api = builder.AddProject<Hoyvik_API>("backend")
         service.Name = "backend";
         service.Networks = ["aspire", "web"];
         service.Ports.Clear();
-    });
+    }).WithContainerRegistry(registry);
 
 if (builder.Environment.IsDevelopment())
 {
