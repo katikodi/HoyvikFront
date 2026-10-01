@@ -59,7 +59,13 @@ jobs:
         working-directory: ./backend/HoyvikProject.AppHost
         run: aspire do push
 
-      - name: Deploy to VPS
+      - name: Tag backend as latest
+        run: |
+          IMAGE=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep '^ghcr.io/katikodi/hoyvikfront/backend:' | head -n 1)
+          echo "Built image: $IMAGE"
+          docker tag "$IMAGE" ghcr.io/katikodi/hoyvikfront/backend:latest
+          docker push ghcr.io/katikodi/hoyvikfront/backend:latest
+
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.VPS_HOST }}
