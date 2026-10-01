@@ -18,7 +18,7 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: TEST TEST TEST
+            - name: Deploy to VPS
               uses: appleboy/ssh-action@v1.2.2
               with:
                   host: ${{ secrets.VPS_HOST }}
@@ -28,15 +28,9 @@ jobs:
                       set -e
 
                       cd ~/HoyvikFront
+                      git fetch origin publish
+                      git reset --hard origin/publish
 
-                      echo "Repository structure:"
-                      ls -la
-
-                      echo "Backend structure:"
-                      ls -la backend
-
-                      echo "Node version:"
-                      node --version
-
-                      echo "npm version:"
-                      npm --version
+                      npm ci
+                      npm --prefix ./frontend ci
+                      npm run deploy-on-vps
