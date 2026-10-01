@@ -18,7 +18,7 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Another Test
+            - name: TEST TEST TEST
               uses: appleboy/ssh-action@v1.2.2
               with:
                   host: ${{ secrets.VPS_HOST }}
@@ -29,13 +29,14 @@ jobs:
 
                       cd ~/HoyvikFront
 
-                      echo "Repository:"
-                      git remote -v
+                      echo "Repository structure:"
+                      ls -la
 
-                      echo "Current commit:"
-                      git rev-parse HEAD
+                      echo "Backend structure:"
+                      ls -la backend
 
-                      echo "Fetching repository..."
-                      git fetch origin publish
+                      echo "Node version:"
+                      node --version
 
-                      echo "Git access works"
+                      echo "npm version:"
+                      npm --version
