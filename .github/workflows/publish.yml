@@ -1,0 +1,33 @@
+name: Deploy to VPS
+
+on:
+    push:
+        branches:
+            - publish
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: vps-deployment
+    cancel-in-progress: true
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Test VPS connection
+              uses: appleboy/ssh-action@v1.2.2
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  script: |
+                      set -e
+
+                      echo "SSH connection works"
+                      echo "User: $(whoami)"
+                      echo "Host: $(hostname)"
+                      echo "Working directory: $(pwd)"
