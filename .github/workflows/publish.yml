@@ -28,7 +28,10 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Install Aspire CLI
-        run: curl -sSL https://aspire.dev/install.sh | bash
+        run: |
+          curl -sSL https://aspire.dev/install.sh | bash
+          echo "$HOME/.aspire/bin" >> "$GITHUB_PATH"
+          "$HOME/.aspire/bin/aspire" --version
 
       - name: Restore Fallout
         run: dotnet tool restore
