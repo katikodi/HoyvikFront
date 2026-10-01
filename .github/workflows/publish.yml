@@ -36,6 +36,9 @@ jobs:
       - name: Restore Fallout
         run: dotnet tool restore
 
+      - name: Install frontend dependencies
+        run: npm --prefix ./frontend ci
+
       - name: Build frontend
         run: ./build.sh --target Frontend
 
