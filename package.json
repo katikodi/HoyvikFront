@@ -1,17 +1,18 @@
 {
-    "devDependencies": {
-        "husky": "^9.1.7",
-        "lint-staged": "^17.3.0",
-        "prettier": "^3.9.6"
-    },
-    "scripts": {
-        "prepare": "husky",
-        "build": "npm --prefix ./frontend run build",
-        "publish-vps": "node -e \"if (require('child_process').execSync('git branch --show-current').toString().trim() !== 'publish') { console.error('\\x1b[31mStop right there, criminal scum! You must be on \\'publish\\' branch to publish to the VPS\\x1b[0m'); process.exit(1); }\" && npm --prefix ./frontend run build && cd .. && aspire publish && aspire deploy"
-    },
-    "lint-staged": {
-        "frontend/**/*.{ts,tsx,js,jsx,css,html,json,md}": "prettier --write --config .prettierrc_prod.json",
-        "backend/Hoyvik.API/**/*.cs": "dotnet format backend/Hoyvik.API/Hoyvik.API.csproj --no-restore --include --exclude backend/Hoyvik.API/Migrations",
-        "backend/Hoyvik.MigrationService/**/*.cs": "dotnet format backend/Hoyvik.MigrationService/Hoyvik.MigrationService.csproj --no-restore --include"
-    }
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
+    "prettier": "^3.9.6"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "build": "npm --prefix ./frontend run build",
+    "publish-vps": "node -e \"if (require('child_process').execSync('git branch --show-current').toString().trim() !== 'publish') { console.error('\\x1b[31mStop right there, criminal scum! You must be on \\'publish\\' branch to publish to the VPS\\x1b[0m'); process.exit(1); }\" && npm --prefix ./frontend run build && cd .. && aspire publish && aspire deploy",
+    "deploy-on-vps": "npm --prefix ./frontend ci && npm --prefix ./frontend run build && cd ./backend/HoyvikProject.AppHost && aspire publish && aspire deploy --non-interactive"
+  },
+  "lint-staged": {
+    "frontend/**/*.{ts,tsx,js,jsx,css,html,json,md}": "prettier --write --config .prettierrc_prod.json",
+    "backend/Hoyvik.API/**/*.cs": "dotnet format backend/Hoyvik.API/Hoyvik.API.csproj --no-restore --include --exclude backend/Hoyvik.API/Migrations",
+    "backend/Hoyvik.MigrationService/**/*.cs": "dotnet format backend/Hoyvik.MigrationService/Hoyvik.MigrationService.csproj --no-restore --include"
+  }
 }
