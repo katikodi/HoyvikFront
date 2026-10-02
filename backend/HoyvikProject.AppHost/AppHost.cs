@@ -12,7 +12,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 var registry = builder.AddContainerRegistry(
     "ghcr",
     "ghcr.io",
-    "katikodi/hoyvikfront"
+    "kodehode-2026/hoyvikfront"
 );
 
 if (builder.Environment.IsDevelopment())

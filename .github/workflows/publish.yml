@@ -55,10 +55,10 @@ jobs:
 
       - name: Tag backend as latest
         run: |
-          IMAGE=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep '^ghcr.io/katikodi/hoyvikfront/backend:' | head -n 1)
+          IMAGE=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep '^ghcr.io/kodehode-2026/hoyvikfront/backend:' | head -n 1)
           echo "Built image: $IMAGE"
-          docker tag "$IMAGE" ghcr.io/katikodi/hoyvikfront/backend:latest
-          docker push ghcr.io/katikodi/hoyvikfront/backend:latest
+          docker tag "$IMAGE" ghcr.io/kodehode-2026/hoyvikfront/backend:latest
+          docker push ghcr.io/kodehode-2026/hoyvikfront/backend:latest
 
       - name: Copy Compose file to VPS
         uses: appleboy/scp-action@v1
