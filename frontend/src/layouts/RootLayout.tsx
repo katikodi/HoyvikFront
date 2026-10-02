@@ -27,7 +27,7 @@ export default function RootLayout() {
     if (!user || !user?.roles.includes("admin")) {
         return (
             <div className="flex h-screen w-screen items-center justify-center">
-                <h1 className="text-2xl font-bold">Under construction!</h1>
+                <h1 className="text-2xl font-bold">Under construction.</h1>
             </div>
         );
     }
